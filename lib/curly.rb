@@ -33,34 +33,38 @@ module Curly
   class InvalidReference < StandardError
   end
 
-  def self.compile(template)
-    source = template.inspect
-    source.gsub!(REFERENCE_REGEX) { compile_reference($1) }
+  class << self
 
-    source
-  end
+    def compile(template)
+      source = template.inspect
+      source.gsub!(REFERENCE_REGEX) { compile_reference($1) }
 
-  def self.valid?(template, presenter_class)
-    references = extract_references(template)
-    methods = presenter_class.available_methods.map(&:to_s)
-    references & methods == references
-  end
+      source
+    end
 
-  private
+    def valid?(template, presenter_class)
+      references = extract_references(template)
+      methods = presenter_class.available_methods.map(&:to_s)
+      references & methods == references
+    end
 
-  def self.compile_reference(reference)
-    %(\#{
-      if presenter.method_available?(:#{reference})
-        result = presenter.#{reference} {|*args| yield(*args) }
-        ERB::Util.html_escape(result)
-      else
-        raise Curly::InvalidReference, "invalid reference `{{#{reference}}}'"
-      end
-    })
-  end
+    private
 
-  def self.extract_references(template)
-    template.scan(REFERENCE_REGEX).flatten
+    def compile_reference(reference)
+      %(\#{
+        if presenter.method_available?(:#{reference})
+          result = presenter.#{reference} {|*args| yield(*args) }
+          ERB::Util.html_escape(result)
+        else
+          raise Curly::InvalidReference, "invalid reference `{{#{reference}}}'"
+        end
+      })
+    end
+
+    def extract_references(template)
+      template.scan(REFERENCE_REGEX).flatten
+    end
+
   end
 end
 
