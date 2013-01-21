@@ -25,6 +25,8 @@ or [Handlebars](http://handlebarsjs.com/), Curly is different in some key ways:
 Examples
 --------
 
+Here is a simple Curly template -- it will be looked up by Rails automatically.
+
 ```html
 <!-- app/views/posts/show.html.curly -->
 <h1>{{title}}<h1>
@@ -37,6 +39,10 @@ Examples
   {{comments}}
 </div>
 ```
+
+When rendering the template, a presenter is automatically instantiated with the
+variables assigned in the controller or the `render` call. The presenter declares
+the variables it expects with `presents`, which takes a list of variables names.
 
 ```ruby
 # app/presenters/posts/show_presenter.rb
