@@ -25,14 +25,16 @@ module Curly
     private
 
     def compile_reference(reference)
-      %(\#{
+      (<<-RUBY).strip
+      \#{
         if presenter.method_available?(:#{reference})
           result = presenter.#{reference} {|*args| yield(*args) }
           ERB::Util.html_escape(result)
         else
           raise Curly::InvalidReference, "invalid reference `{{#{reference}}}'"
         end
-      })
+      }
+      RUBY
     end
   end
 end
