@@ -22,6 +22,17 @@ or [Handlebars](http://handlebarsjs.com/), Curly is different in some key ways:
   object methods that are in turn used by the template.
 
 
+Install
+-------
+
+Installing Curly is as simple as running `gem install curly-templates`. If you're
+using Bundler to manage your dependencies, add this to your Gemfile
+
+```ruby
+gem 'curly-templates', '~> 0.1.0', require: 'curly'
+```
+
+
 Examples
 --------
 
