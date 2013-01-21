@@ -33,7 +33,9 @@ Examples
 
 {{comment_form}}
 
-{{comments}}
+<div class="comments">
+  {{comments}}
+</div>
 ```
 
 ```ruby
@@ -54,14 +56,14 @@ class Posts::ShowPresenter < Curly::Presenter
   end
 
   def comments
-    content_tag :div, class: "comments" do
-      render 'comment', collection: @post.comments
-    end
+    render 'comment', collection: @post.comments
   end
 
   def comment_form
     if @post.comments_allowed?
       render 'comment_form', post: @post
+    else
+      content_tag(:p, "Comments are disabled for this post")
     end
   end
 end
