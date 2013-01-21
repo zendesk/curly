@@ -57,7 +57,11 @@ module Curly
     end
 
     def method_available?(method)
-      respond_to?(method)
+      self.class.available_methods.include?(method)
+    end
+
+    def self.available_methods
+      public_instance_methods - Curly::Presenter.public_instance_methods
     end
 
     private

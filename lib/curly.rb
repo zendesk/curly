@@ -42,7 +42,7 @@ module Curly
 
   def self.valid?(template, presenter_class)
     references = extract_references(template)
-    methods = presenter_class.public_instance_methods.map(&:to_s)
+    methods = presenter_class.available_methods.map(&:to_s)
     references & methods == references
   end
 

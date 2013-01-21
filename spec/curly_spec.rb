@@ -17,8 +17,16 @@ describe Curly do
         "#{yield :foo}, please?"
       end
 
+      def unicorns
+        "UNICORN"
+      end
+
       def method_available?(method)
-        respond_to?(method)
+        [:foo, :high_yield, :yield_value, :dirty].include?(method)
+      end
+
+      def self.available_methods
+        public_instance_methods
       end
 
       private
@@ -59,19 +67,21 @@ describe Curly do
   end
 
   describe ".valid?" do
-    it "validates a template with a subset of the Curly components" do
-      valid_template = "Hello"
-      Curly.valid?(valid_template, presenter_class).should be_true
+    it "returns true if only available methods are referenced" do
+      validate("Hello, {{foo}}!").should == true
     end
 
-    it "validates a template with all of the Curly components" do
-      valid_template = "Hello {{foo}} world!"
-      Curly.valid?(valid_template, presenter_class).should be_true
+    it "returns false if a missing method is referenced" do
+      validate("Hello, {{i_am_missing}}").should == false
     end
 
-    it "doesn't validate a template with non-existing Curly components" do
-      invalid_template = "Hello {{foo}} world! What's {{bar}} up?"
-      Curly.valid?(invalid_template, presenter_class).should be_false
+    it "returns false if an unavailable method is referenced" do
+      presenter_class.stub(:available_methods) { [:foo] }
+      validate("Hello, {{inspect}}").should == false
+    end
+
+    def validate(template)
+      Curly.valid?(template, presenter_class)
     end
   end
 
