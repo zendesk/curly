@@ -17,6 +17,10 @@ describe Curly do
         "#{yield :foo}, please?"
       end
 
+      def method_available?(method)
+        respond_to?(method)
+      end
+
       private
 
       def method_missing(*args)

@@ -41,7 +41,8 @@ module Curly
       :cache_duration,
       :presented_names,
       :presented_names=,
-      :presented_names?
+      :presented_names?,
+      :method_available?
     ]
 
     # Initializes the presenter with the given context and options.
@@ -62,6 +63,10 @@ module Curly
 
     def cache_duration
       nil
+    end
+
+    def method_available?(method)
+      respond_to?(method)
     end
 
     def self.available_components

@@ -50,7 +50,7 @@ module Curly
 
   def self.compile_reference(reference)
     %(\#{
-      if presenter.respond_to?(:#{reference})
+      if presenter.method_available?(:#{reference})
         result = presenter.#{reference} {|*args| yield(*args) }
         ERB::Util.html_escape(result)
       else
