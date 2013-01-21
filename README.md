@@ -37,3 +37,11 @@ class Posts::ShowPresenter < Curly::Presenter
   end
 end
 ```
+
+
+Copyright and License
+---------------------
+
+Copyright (c) 2013 Daniel Schierbeck (@dasch), Zendesk Inc.
+
+Licensed under the [Apache License Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
