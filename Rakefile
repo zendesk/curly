@@ -1,6 +1,9 @@
 require 'rubygems'
+require 'bundler'
 require 'rake'
 require 'date'
+
+Bundler.setup
 
 #############################################################################
 #
@@ -9,7 +12,11 @@ require 'date'
 #############################################################################
 
 def name
-  @name ||= Dir['*.gemspec'].first.split('.').first
+  "curly"
+end
+
+def gem_name
+  "#{name}-templates"
 end
 
 def version
@@ -22,15 +29,16 @@ def date
 end
 
 def gemspec_file
-  "#{name}.gemspec"
+  "#{gem_name}.gemspec"
 end
 
 def gem_file
-  "#{name}-#{version}.gem"
+  "#{gem_name}-#{version}.gem"
 end
 
-def replace_header(head, header_name)
-  head.sub!(/(\.#{header_name}\s*= ').*'/) { "#{$1}#{send(header_name)}'"}
+def replace_header(head, header_name, value = nil)
+  value ||= send(header_name)
+  head.sub!(/(\.#{header_name}\s*= ').*'/) { "#{$1}#{value}'"}
 end
 
 #############################################################################
@@ -39,22 +47,10 @@ end
 #
 #############################################################################
 
-task :default => :test
+task :default => :spec
 
-require 'rake/testtask'
-Rake::TestTask.new(:test) do |test|
-  test.libs << 'lib' << 'test'
-  test.pattern = 'test/**/test_*.rb'
-  test.verbose = true
-end
-
-desc "Generate RCov test coverage and open in your browser"
-task :coverage do
-  require 'rcov'
-  sh "rm -fr coverage"
-  sh "rcov test/test_*.rb"
-  sh "open coverage/index.html"
-end
+require 'rspec/core/rake_task'
+RSpec::Core::RakeTask.new(:spec)
 
 require 'rdoc/task'
 Rake::RDocTask.new do |rdoc|
@@ -93,7 +89,7 @@ task :release => :build do
   sh "git tag v#{version}"
   sh "git push origin master"
   sh "git push origin v#{version}"
-  sh "gem push pkg/#{name}-#{version}.gem"
+  sh "gem push pkg/#{gem_name}-#{version}.gem"
 end
 
 desc "Build #{gem_file} into the pkg directory"
@@ -110,7 +106,7 @@ task :gemspec => :validate do
   head, manifest, tail = spec.split("  # = MANIFEST =\n")
 
   # replace name version and date
-  replace_header(head, :name)
+  replace_header(head, :name, gem_name)
   replace_header(head, :version)
   replace_header(head, :date)
 
