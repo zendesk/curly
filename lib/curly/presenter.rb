@@ -36,15 +36,6 @@ module Curly
   #   presenter.author #=> "Jackie Chan"
   #
   class Presenter
-    RESERVED_METHODS = [
-      :cache_key,
-      :cache_duration,
-      :presented_names,
-      :presented_names=,
-      :presented_names?,
-      :method_available?
-    ]
-
     # Initializes the presenter with the given context and options.
     #
     # context - An ActionView::Base context.
@@ -67,11 +58,6 @@ module Curly
 
     def method_available?(method)
       respond_to?(method)
-    end
-
-    def self.available_components
-      excluded_methods = Object.public_instance_methods + RESERVED_METHODS
-      public_instance_methods - excluded_methods
     end
 
     private
