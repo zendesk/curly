@@ -63,3 +63,5 @@ module Curly
     template.scan(REFERENCE_REGEX).flatten
   end
 end
+
+require 'curly/railtie' if defined?(Rails)

@@ -49,5 +49,3 @@ class Curly::TemplateHandler
     RUBY
   end
 end
-
-ActionView::Template.register_template_handler :curly, Curly::TemplateHandler
