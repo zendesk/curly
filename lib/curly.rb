@@ -1,3 +1,5 @@
+require 'curly/compiler'
+
 # Curly is a simple view system. Each view consists of two parts, a
 # template and a presenter. The template is a simple string that can contain
 # references in the format `{{refname}}`, e.g.
@@ -28,18 +30,9 @@
 module Curly
   VERSION = "0.1.0"
 
-  REFERENCE_REGEX = %r(\{\{(\w+)\}\})
-
-  class InvalidReference < StandardError
-  end
-
   class << self
-
     def compile(template)
-      source = template.inspect
-      source.gsub!(REFERENCE_REGEX) { compile_reference($1) }
-
-      source
+      Compiler.compile(template)
     end
 
     def valid?(template, presenter_class)
@@ -50,21 +43,9 @@ module Curly
 
     private
 
-    def compile_reference(reference)
-      %(\#{
-        if presenter.method_available?(:#{reference})
-          result = presenter.#{reference} {|*args| yield(*args) }
-          ERB::Util.html_escape(result)
-        else
-          raise Curly::InvalidReference, "invalid reference `{{#{reference}}}'"
-        end
-      })
-    end
-
     def extract_references(template)
-      template.scan(REFERENCE_REGEX).flatten
+      template.scan(Compiler::REFERENCE_REGEX).flatten
     end
-
   end
 end
 
