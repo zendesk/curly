@@ -17,7 +17,6 @@ Gem::Specification.new do |s|
   s.require_paths = %w[lib]
 
   s.rdoc_options = ["--charset=UTF-8"]
-  s.extra_rdoc_files = %w[README]
 
   s.add_dependency("actionpack", "~> 3.2.11")
 
