@@ -32,6 +32,7 @@ Gem::Specification.new do |s|
     curly-templates.gemspec
     lib/curly.rb
     lib/curly/presenter.rb
+    lib/curly/railtie.rb
     lib/curly/template_handler.rb
     spec/curly_spec.rb
     spec/presenter_spec.rb
