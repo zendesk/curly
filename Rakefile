@@ -57,6 +57,12 @@ task :console do
   sh "irb -rubygems -r ./lib/#{name}.rb"
 end
 
+require 'yard'
+require 'yard-tomdoc'
+require 'yard/rake/yardoc_task'
+
+YARD::Rake::YardocTask.new
+
 #############################################################################
 #
 # Packaging tasks
