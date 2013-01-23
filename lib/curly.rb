@@ -35,6 +35,11 @@ module Curly
 
   class << self
 
+    # Compiles a Curly template to Ruby code.
+    #
+    # template - The template String that should be compiled.
+    #
+    # Returns a String containing the Ruby code.
     def compile(template)
       source = template.inspect
       source.gsub!(REFERENCE_REGEX) { compile_reference($1) }
@@ -42,6 +47,13 @@ module Curly
       source
     end
 
+    # Whether the Curly template is valid. This includes whether all
+    # references are available on the presenter class.
+    #
+    # template        - The template String that should be validated.
+    # presenter_class - The presenter Class.
+    #
+    # Returns true if the template is valid, false otherwise.
     def valid?(template, presenter_class)
       references = extract_references(template)
       methods = presenter_class.available_methods.map(&:to_s)
