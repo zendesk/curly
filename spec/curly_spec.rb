@@ -38,7 +38,6 @@ describe Curly do
   end
 
   let(:presenter) { presenter_class.new }
-  let(:context) { double("context", presenter: presenter) }
 
   it "compiles Curly templates to Ruby code" do
     evaluate("{{foo}}").should == "FOO"
@@ -85,8 +84,16 @@ describe Curly do
     end
   end
 
-  def evaluate(template)
+  def evaluate(template, &block)
     code = Curly.compile(template)
-    context.instance_eval(code)
+    context = double("context", presenter: presenter)
+
+    context.instance_eval(<<-RUBY)
+      def self.render
+        #{code}
+      end
+    RUBY
+
+    context.render(&block)
   end
 end
