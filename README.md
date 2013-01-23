@@ -33,6 +33,60 @@ gem 'curly-templates', '~> 0.1.0'
 ```
 
 
+How to use Curly
+----------------
+
+In order to use Curly for a view or partial, use the suffix `.curly` instead of
+`.erb`, e.g. `app/views/posts/_comment.html.curly`. Curly will look for a
+corresponding presenter class named `Posts::CommentPresenter`. By convention,
+these are placed in `app/presenters/`, so in this case the presenter would
+reside in `app/presenters/posts/comment_presenter.rb`. Note that presenters
+for partials are not prepended with an underscore.
+
+Add some HTML to the partial template along with some Curly variables:
+
+```html
+<!-- app/views/posts/_comment.html.curly -->
+<div class="comment">
+  <p>
+    {{author_link}} posted {{time_ago}} ago.
+  </p>
+
+  {{body}}
+</div>
+```
+
+The presenter will be responsible for filling in the variables. Add the necessary
+Ruby code to the presenter:
+
+```ruby
+# app/presenters/posts/comment_presenter.rb
+class Posts::CommentPresenter < Curly::Presenter
+  presents :comment
+
+  def body
+    BlueCloth.new(@comment.body).to_html
+  end
+
+  def author_link
+    link_to(@comment.author.name, @comment.author, rel: "author")
+  end
+
+  def time_ago
+    time_ago_in_words(@comment.created_at)
+  end
+end
+```
+
+The partial can now be rendered like any other, e.g. by calling
+
+```ruby
+render 'comment', comment: comment
+render comment
+render collection: post.comments
+```
+
+
 Examples
 --------
 
