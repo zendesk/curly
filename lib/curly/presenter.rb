@@ -51,9 +51,9 @@ module Curly
 
     # The key that should be used to cache the view.
     #
-    # Unless #cache_key returns nil, the result of rendering the template that
-    # the presenter supports will be cached. The return value will be part of
-    # the final cache key, along with a digest of the template itself.
+    # Unless `#cache_key` returns nil, the result of rendering the template
+    # that the presenter supports will be cached. The return value will be
+    # part of the final cache key, along with a digest of the template itself.
     #
     # Any object can be used as a cache key, so long as it
     #
@@ -68,7 +68,7 @@ module Curly
     end
 
     # The duration that the view should be cached for. Only relevant if
-    # #cache_key returns a non nil value.
+    # `#cache_key` returns a non nil value.
     #
     # If nil, the view will not have an expiration time set.
     #
@@ -89,7 +89,7 @@ module Curly
     # Templates can reference "variables", which are simply methods defined on
     # the presenter. By default, only public instance methods can be
     # referenced, and any method defined on Curly::Presenter itself cannot be
-    # referenced. This means that methods such as #cache_key and #inspect are
+    # referenced. This means that methods such as `#cache_key` and #inspect are
     # not available. This is done for safety purposes.
     #
     # This policy can be changed by overriding this method in your presenters.
