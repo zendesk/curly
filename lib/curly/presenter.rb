@@ -12,7 +12,7 @@ module Curly
   #
   # A presenter is always instantiated with a context to which it delegates
   # unknown messages, usually an instance of ActionView::Base provided by
-  # Rails. See Curly::Handler for a typical use.
+  # Rails. See Curly::TemplateHandler for a typical use.
   #
   # Examples
   #
