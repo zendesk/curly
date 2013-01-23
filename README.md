@@ -29,7 +29,7 @@ Installing Curly is as simple as running `gem install curly-templates`. If you'r
 using Bundler to manage your dependencies, add this to your Gemfile
 
 ```ruby
-gem 'curly-templates', '~> 0.1.0', require: 'curly'
+gem 'curly-templates', '~> 0.1.0'
 ```
 
 
