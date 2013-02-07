@@ -1,6 +1,4 @@
 require 'spec_helper'
-require 'active_support/all'
-require 'curly/presenter'
 
 describe Curly::Presenter do
   class CircusPresenter < Curly::Presenter

@@ -80,4 +80,6 @@ module Curly
   end
 end
 
+require 'curly/presenter'
+require 'curly/template_handler'
 require 'curly/railtie' if defined?(Rails)

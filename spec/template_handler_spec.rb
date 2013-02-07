@@ -1,7 +1,4 @@
 require 'spec_helper'
-require 'active_support/core_ext/string/output_safety'
-require 'active_support/core_ext/hash'
-require 'curly/template_handler'
 
 describe Curly::TemplateHandler do
   let :presenter_class do
