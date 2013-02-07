@@ -11,8 +11,8 @@ Gem::Specification.new do |s|
   s.description = "A view layer for your Rails apps that separates structure and logic."
 
   s.authors  = ["Daniel Schierbeck"]
-  s.email    = 'dasch@zendesk.com'
-  s.homepage = 'http://github.com/zendesk/curly-templates'
+  s.email    = 'daniel.schierbeck@gmail.com.com'
+  s.homepage = 'https://github.com/dasch/curly'
 
   s.require_paths = %w[lib]
 
