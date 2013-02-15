@@ -182,6 +182,12 @@ end
 ```
 
 
+Thanks
+------
+
+Thanks to [Zendesk](http://zendesk.com/) for sponsoring the work on Curly.
+
+
 Copyright and License
 ---------------------
 
