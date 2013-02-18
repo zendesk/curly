@@ -148,7 +148,7 @@ Because of the way logic is contained in presenters, caching entire views or par
 becomes exceedingly straightforward. Simply define a `#cache_key` method that returns
 a non-nil object, and the return value will be used to cache the template.
 
-Whereas in ERB your would include the `cache` call in the template itself:
+Whereas in ERB you would include the `cache` call in the template itself:
 
 ```erb
 <% cache([@post, signed_in?]) do %>
