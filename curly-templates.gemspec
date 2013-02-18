@@ -9,6 +9,7 @@ Gem::Specification.new do |s|
 
   s.summary     = "Free your views!"
   s.description = "A view layer for your Rails apps that separates structure and logic."
+  s.license     = "apache2"
 
   s.authors  = ["Daniel Schierbeck"]
   s.email    = 'daniel.schierbeck@gmail.com'
