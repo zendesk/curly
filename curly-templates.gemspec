@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
 
   s.authors  = ["Daniel Schierbeck"]
   s.email    = 'daniel.schierbeck@gmail.com'
-  s.homepage = 'https://github.com/dasch/curly'
+  s.homepage = 'https://github.com/zendesk/curly'
 
   s.require_paths = %w[lib]
 
