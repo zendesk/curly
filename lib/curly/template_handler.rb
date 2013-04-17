@@ -18,6 +18,10 @@ class Curly::TemplateHandler
     "#{path}_presenter".camelize
   end
 
+  def self.presenter_for_path(path)
+    presenter_name_for_path(path).constantize
+  end
+
   # Handles a Curly template, compiling it to Ruby code. The code will be
   # evaluated in the context of an ActionView::Base instance, having access
   # to a number of variables.
@@ -52,11 +56,17 @@ class Curly::TemplateHandler
 
       template_digest = #{template_digest.inspect}
 
+      if #{presenter_class}.respond_to?(:cache_key)
+        presenter_key = #{presenter_class}.cache_key
+      else
+        presenter_key = nil
+      end
+
       options = {
         expires_in: presenter.cache_duration
       }
 
-      cache([template_digest, key], options) do
+      cache([template_digest, key, presenter_key].compact, options) do
         safe_concat(view_function.call)
       end
 

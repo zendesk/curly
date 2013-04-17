@@ -133,6 +133,20 @@ describe Curly::TemplateHandler do
       output.should == "FOOBAR"
     end
 
+    it "adds the presenter class' cache key to the instance's cache key" do
+      # Make sure caching is enabled
+      context.assigns[:cache_key] = "x"
+
+      presenter_class.stub(:cache_key) { "foo" }
+
+      output.should == "BAR"
+
+      presenter_class.stub(:cache_key) { "bar" }
+
+      context.stub(:bar) { "FOOBAR" }
+      output.should == "FOOBAR"
+    end
+
     it "expires the cache keys after #cache_duration" do
       context.assigns[:cache_key] = "x"
       context.assigns[:cache_duration] = 42
