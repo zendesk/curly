@@ -109,6 +109,28 @@ module Curly
       public_instance_methods - Curly::Presenter.public_instance_methods
     end
 
+    def self.dependencies
+      @dependencies ||= Set.new
+    end
+
+    def self.depends_on(*deps)
+      dependencies.merge(deps)
+    end
+
+    def self.version(version = nil)
+      @version = version if version.present?
+      @version || 0
+    end
+
+    def self.cache_key
+      dependency_cache_keys = dependencies.map do |path|
+        presenter = Curly::TemplateHandler.presenter_for_path(path)
+        presenter.cache_key
+      end
+
+      [name, version, dependency_cache_keys].flatten.join("/")
+    end
+
     private
 
     class_attribute :presented_names
