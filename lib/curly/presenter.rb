@@ -102,70 +102,79 @@ module Curly
       self.class.available_methods.include?(method)
     end
 
-    # A list of methods available to templates rendered with the presenter.
-    #
-    # Returns an Array of Symbol method names.
-    def self.available_methods
-      public_instance_methods - Curly::Presenter.public_instance_methods
-    end
+    class << self
 
-    # The set of view paths that the presenter depends on.
-    #
-    # Example
-    #
-    #   class Posts::ShowPresenter < Curly::Presenter
-    #     version 2
-    #     depends_on 'posts/comment', 'posts/comment_form'
-    #   end
-    #
-    #   Posts::ShowPresenter.dependencies
-    #   #=> ['posts/comment', 'posts/comment_form']
-    #
-    # Returns a Set of String view paths.
-    def self.dependencies
-      @dependencies ||= Set.new
-    end
-
-    # Indicate that the presenter depends a list of other views.
-    #
-    # deps - A list of String view paths that the presenter depends on.
-    #
-    # Returns nothing.
-    def self.depends_on(*deps)
-      dependencies.merge(deps)
-    end
-
-    # Get or set the version of the presenter.
-    #
-    # version - The Integer version that should be set. If nil, no version
-    #           is set.
-    #
-    # Returns the current Integer version of the presenter.
-    def self.version(version = nil)
-      @version = version if version.present?
-      @version || 0
-    end
-
-    # The cache key for the presenter class. Includes all dependencies as well.
-    #
-    # Returns a String cache key.
-    def self.cache_key
-      dependency_cache_keys = dependencies.map do |path|
-        presenter = Curly::TemplateHandler.presenter_for_path(path)
-        presenter.cache_key
+      # A list of methods available to templates rendered with the presenter.
+      #
+      # Returns an Array of Symbol method names.
+      def available_methods
+        public_instance_methods - Curly::Presenter.public_instance_methods
       end
 
-      [name, version, dependency_cache_keys].flatten.join("/")
+      # The set of view paths that the presenter depends on.
+      #
+      # Example
+      #
+      #   class Posts::ShowPresenter < Curly::Presenter
+      #     version 2
+      #     depends_on 'posts/comment', 'posts/comment_form'
+      #   end
+      #
+      #   Posts::ShowPresenter.dependencies
+      #   #=> ['posts/comment', 'posts/comment_form']
+      #
+      # Returns a Set of String view paths.
+      def dependencies
+        @dependencies ||= Set.new
+      end
+
+      # Indicate that the presenter depends a list of other views.
+      #
+      # deps - A list of String view paths that the presenter depends on.
+      #
+      # Returns nothing.
+      def depends_on(*deps)
+        dependencies.merge(deps)
+      end
+
+      # Get or set the version of the presenter.
+      #
+      # version - The Integer version that should be set. If nil, no version
+      #           is set.
+      #
+      # Returns the current Integer version of the presenter.
+      def version(version = nil)
+        @version = version if version.present?
+        @version || 0
+      end
+
+      # The cache key for the presenter class. Includes all dependencies as well.
+      #
+      # Returns a String cache key.
+      def cache_key
+        @cache_key ||= compute_cache_key
+      end
+
+      private
+
+      def compute_cache_key
+        dependency_cache_keys = dependencies.map do |path|
+          presenter = Curly::TemplateHandler.presenter_for_path(path)
+          presenter.cache_key
+        end
+
+        [name, version, dependency_cache_keys].flatten.join("/")
+      end
+
+      def presents(*args)
+        self.presented_names += args
+      end
     end
 
     private
 
     class_attribute :presented_names
     self.presented_names = [].freeze
-
-    def self.presents(*args)
-      self.presented_names += args
-    end
 
     # Delegates private method calls to the current view context.
     #
