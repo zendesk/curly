@@ -18,6 +18,10 @@ class Curly::TemplateHandler
     "#{path}_presenter".camelize
   end
 
+  def self.presenter_for_path(path)
+    presenter_name_for_path(path).constantize
+  end
+
   # Handles a Curly template, compiling it to Ruby code. The code will be
   # evaluated in the context of an ActionView::Base instance, having access
   # to a number of variables.
