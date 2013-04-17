@@ -55,13 +55,18 @@ class Curly::TemplateHandler
       @output_buffer = ActiveSupport::SafeBuffer.new
 
       template_digest = #{template_digest.inspect}
-      presenter_class_key = #{presenter_class}.cache_key
+
+      if #{presenter_class}.respond_to?(:cache_key)
+        presenter_key = #{presenter_class}.cache_key
+      else
+        presenter_key = nil
+      end
 
       options = {
         expires_in: presenter.cache_duration
       }
 
-      cache([template_digest, key, presenter_class_key], options) do
+      cache([template_digest, key, presenter_key].compact, options) do
         safe_concat(view_function.call)
       end
 
