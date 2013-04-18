@@ -28,7 +28,7 @@
 module Curly
   VERSION = "0.3.1"
 
-  REFERENCE_REGEX = %r(\{\{(\w+)\}\})
+  REFERENCE_REGEX = %r(\{\{([\w\.]+)\}\})
 
   class InvalidReference < StandardError
   end
@@ -63,13 +63,20 @@ module Curly
     private
 
     def compile_reference(reference)
+      method, argument = reference.split(".", 2)
+
       %(\#{
-        if presenter.method_available?(:#{reference})
-          result = presenter.#{reference} {|*args| yield(*args) }
-          ERB::Util.html_escape(result)
-        else
+        unless presenter.method_available?(:#{method})
           raise Curly::InvalidReference, "invalid reference `{{#{reference}}}'"
         end
+
+        if presenter.method(:#{method}).arity == 1
+          result = presenter.#{method}(#{argument.inspect}) {|*args| yield(*args) }
+        else
+          result = presenter.#{method} {|*args| yield(*args) }
+        end
+
+        ERB::Util.html_escape(result)
       })
     end
 
