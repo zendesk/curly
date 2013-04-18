@@ -144,9 +144,22 @@ end
 Caching
 -------
 
+Caching is handled at two levels in Curly – statically and dynamically. Static caching
+concerns changes to your code and templates introduced by deploys. If you do not wish
+to clear your entire cache every time you deploy, you need a way to indicate that some
+view, helper, or other piece of logic has changed.
+
+Dynamic caching concerns changes that happen on the fly, usually made by your users in
+the running system. You wish to cache a view or a partial and have it expire whenever
+some data is updated – usually whenever a specific record is changed.
+
+
+### Dynamic Caching
+
 Because of the way logic is contained in presenters, caching entire views or partials
-becomes exceedingly straightforward. Simply define a `#cache_key` method that returns
-a non-nil object, and the return value will be used to cache the template.
+by the data they present becomes exceedingly straightforward. Simply define a
+`#cache_key` method that returns a non-nil object, and the return value will be used to
+cache the template.
 
 Whereas in ERB you would include the `cache` call in the template itself:
 
@@ -180,6 +193,57 @@ class Posts::ShowPresenter < Curly::Presenter
   end
 end
 ```
+
+
+### Static Caching
+
+Static caching will only be enabled for presenters that define a non-nil `#cache_key`
+method (see "Dynamic Caching.")
+
+In order to make a deploy expire the cache for a specific view, set the version of the
+view to something new, usually by incrementing by one:
+
+```ruby
+class Posts::ShowPresenter < Curly::Presenter
+  version 3
+
+  def cache_key
+    # Some objects
+  end
+end
+```
+
+This will change the cache keys for all instances of that view, effectively expiring
+the old cache entries.
+
+This works well for views, or for partials that are rendered in views that themselves
+are not cached. If the partial is nested within a view that _is_ cached, however, the
+outer cache will not be expired. The solution is to register that the inner partial
+is a dependency of the outer one such that Curly can automatically deduce that the
+outer partial cache should be expired:
+
+```ruby
+class Posts::ShowPresenter < Curly::Presenter
+  version 3
+  depends_on 'posts/comment'
+
+  def cache_key
+    # Some objects
+  end
+end
+
+class Posts::CommentPresenter < Curly::Presenter
+  version 4
+  depends_on 'posts/comment'
+
+  def cache_key
+    # Some objects
+  end
+end
+```
+
+Now, if the version of `Posts::CommentPresenter` is bumped, the cache keys for both
+presenters would change. You can register any number of view paths with `depends_on`.
 
 
 Thanks
