@@ -4,24 +4,6 @@ require 'curly'
 
 class Curly::TemplateHandler
 
-  # The name of the presenter class for a given view path.
-  #
-  # path - The String path of a view.
-  #
-  # Examples
-  #
-  #   Curly::TemplateHandler.presenter_name_for_path("foo/bar")
-  #   #=> "Foo::BarPresenter"
-  #
-  # Returns the String name of the matching presenter class.
-  def self.presenter_name_for_path(path)
-    "#{path}_presenter".camelize
-  end
-
-  def self.presenter_for_path(path)
-    presenter_name_for_path(path).constantize
-  end
-
   # Handles a Curly template, compiling it to Ruby code. The code will be
   # evaluated in the context of an ActionView::Base instance, having access
   # to a number of variables.
@@ -30,7 +12,8 @@ class Curly::TemplateHandler
   #
   # Returns a String containing the Ruby code representing the template.
   def self.call(template)
-    presenter_class = presenter_name_for_path(template.virtual_path)
+    path = template.virtual_path
+    presenter_class = Curly::Presenter.presenter_name_for_path(path)
 
     source = Curly.compile(template.source)
     template_digest = Digest::MD5.hexdigest(template.source)

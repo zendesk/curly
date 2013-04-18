@@ -104,6 +104,24 @@ module Curly
 
     class << self
 
+      # The name of the presenter class for a given view path.
+      #
+      # path - The String path of a view.
+      #
+      # Examples
+      #
+      #   Curly::TemplateHandler.presenter_name_for_path("foo/bar")
+      #   #=> "Foo::BarPresenter"
+      #
+      # Returns the String name of the matching presenter class.
+      def presenter_name_for_path(path)
+        "#{path}_presenter".camelize
+      end
+
+      def presenter_for_path(path)
+        presenter_name_for_path(path).constantize
+      end
+
       # A list of methods available to templates rendered with the presenter.
       #
       # Returns an Array of Symbol method names.
@@ -159,7 +177,7 @@ module Curly
 
       def compute_cache_key
         dependency_cache_keys = dependencies.map do |path|
-          presenter = Curly::TemplateHandler.presenter_for_path(path)
+          presenter = presenter_for_path(path)
           presenter.cache_key
         end
 

@@ -25,6 +25,15 @@ describe Curly::Presenter do
     presenter.clown.should == "Bubbles"
   end
 
+  describe ".presenter_for_path" do
+    it "returns the presenter class for the given path" do
+      presenter = double("presenter")
+      stub_const("Foo::BarPresenter", presenter)
+
+      Curly::Presenter.presenter_for_path("foo/bar").should == presenter
+    end
+  end
+
   describe ".version" do
     it "sets the version of the presenter" do
       presenter1 = Class.new(Curly::Presenter) do
