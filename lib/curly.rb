@@ -26,7 +26,7 @@
 # See Curly::Presenter for more information on presenters.
 #
 module Curly
-  VERSION = "0.3.1"
+  VERSION = "0.4.0"
 
   REFERENCE_REGEX = %r(\{\{([\w\.]+)\}\})
 
