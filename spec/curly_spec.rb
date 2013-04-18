@@ -20,8 +20,12 @@ describe Curly do
         "UNICORN"
       end
 
+      def parameterized(value)
+        value
+      end
+
       def method_available?(method)
-        [:foo, :high_yield, :yield_value, :dirty].include?(method)
+        [:foo, :parameterized, :high_yield, :yield_value, :dirty].include?(method)
       end
 
       def self.available_methods
@@ -40,6 +44,14 @@ describe Curly do
 
   it "compiles Curly templates to Ruby code" do
     evaluate("{{foo}}").should == "FOO"
+  end
+
+  it "passes on an optional reference parameter to the presenter method" do
+    evaluate("{{parameterized.foo.bar}}").should == "foo.bar"
+  end
+
+  it "passes an empty string to methods that take a parameter when none is provided" do
+    evaluate("{{parameterized}}").should == ""
   end
 
   it "makes sure only public methods are called on the presenter object" do
