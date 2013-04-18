@@ -119,7 +119,7 @@ module Curly
       end
 
       def presenter_for_path(path)
-        presenter_name_for_path(path).constantize
+        presenter_name_for_path(path).constantize rescue nil
       end
 
       # A list of methods available to templates rendered with the presenter.
@@ -177,8 +177,11 @@ module Curly
 
       def compute_cache_key
         dependency_cache_keys = dependencies.map do |path|
-          presenter = presenter_for_path(path)
-          presenter.cache_key
+          if presenter = presenter_for_path(path)
+            presenter.cache_key
+          else
+            path
+          end
         end
 
         [name, version, dependency_cache_keys].flatten.join("/")

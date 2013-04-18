@@ -32,6 +32,10 @@ describe Curly::Presenter do
 
       Curly::Presenter.presenter_for_path("foo/bar").should == presenter
     end
+
+    it "returns nil if there is no presenter for the given path" do
+      Curly::Presenter.presenter_for_path("foo/bar").should be_nil
+    end
   end
 
   describe ".version" do
@@ -77,6 +81,18 @@ describe Curly::Presenter do
 
       cache_key = Foo::BarPresenter.cache_key
       cache_key.should == "Foo::BarPresenter/42/Foo::BumPresenter/1337"
+    end
+
+    it "uses the view path of a dependency if there is no presenter for it" do
+      presenter = Class.new(Curly::Presenter) do
+        version 42
+        depends_on 'foo/bum'
+      end
+
+      stub_const("Foo::BarPresenter", presenter)
+
+      cache_key = Foo::BarPresenter.cache_key
+      cache_key.should == "Foo::BarPresenter/42/foo/bum"
     end
   end
 end
