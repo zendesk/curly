@@ -245,6 +245,10 @@ end
 Now, if the version of `Posts::CommentPresenter` is bumped, the cache keys for both
 presenters would change. You can register any number of view paths with `depends_on`.
 
+If you use [Cache Digests](https://github.com/rails/cache_digests), Curly will
+automatically provide a list of dependencies. This will allow you to deploy changes
+to your templates and have the relevant caches automatically expire.
+
 
 Thanks
 ------
