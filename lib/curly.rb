@@ -40,9 +40,9 @@ module Curly
     # template - The template String that should be compiled.
     #
     # Returns a String containing the Ruby code.
-    def compile(template)
+    def compile(template, presenter_class)
       source = template.inspect
-      source.gsub!(REFERENCE_REGEX) { compile_reference($1) }
+      source.gsub!(REFERENCE_REGEX) { compile_reference($1, presenter_class) }
 
       source
     end
@@ -62,14 +62,14 @@ module Curly
 
     private
 
-    def compile_reference(reference)
+    def compile_reference(reference, presenter_class)
       method, argument = reference.split(".", 2)
 
-      %(\#{
-        unless presenter.method_available?(:#{method})
-          raise Curly::InvalidReference, "invalid reference `{{#{reference}}}'"
-        end
+      unless presenter_class.method_available?(method.to_sym)
+        raise Curly::InvalidReference, "invalid reference `{{#{reference}}}'"
+      end
 
+      %(\#{
         if presenter.method(:#{method}).arity == 1
           result = presenter.#{method}(#{argument.inspect}) {|*args| yield(*args) }
         else

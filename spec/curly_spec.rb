@@ -24,7 +24,7 @@ describe Curly do
         value
       end
 
-      def method_available?(method)
+      def self.method_available?(method)
         [:foo, :parameterized, :high_yield, :yield_value, :dirty].include?(method)
       end
 
@@ -96,7 +96,7 @@ describe Curly do
   end
 
   def evaluate(template, &block)
-    code = Curly.compile(template)
+    code = Curly.compile(template, presenter_class)
     context = double("context", presenter: presenter)
 
     context.instance_eval(<<-RUBY)
