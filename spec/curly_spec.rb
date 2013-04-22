@@ -20,6 +20,10 @@ describe Curly do
         "UNICORN"
       end
 
+      def dirty
+        nil
+      end
+
       def parameterized(value)
         value
       end

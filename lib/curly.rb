@@ -69,13 +69,19 @@ module Curly
         raise Curly::InvalidReference, "invalid reference `{{#{reference}}}'"
       end
 
-      %(\#{
-        if presenter.method(:#{method}).arity == 1
-          result = presenter.#{method}(#{argument.inspect}) {|*args| yield(*args) }
-        else
-          result = presenter.#{method} {|*args| yield(*args) }
-        end
+      if presenter_class.instance_method(method).arity == 1
+        # The method accepts a single argument -- pass it in.
+        code = <<-RUBY
+          presenter.#{method}(#{argument.inspect}) {|*args| yield(*args) }
+        RUBY
+      else
+        code = <<-RUBY
+          presenter.#{method} {|*args| yield(*args) }
+        RUBY
+      end
 
+      %(\#{
+        result = #{code}
         ERB::Util.html_escape(result)
       })
     end
