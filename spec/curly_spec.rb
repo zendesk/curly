@@ -20,11 +20,15 @@ describe Curly do
         "UNICORN"
       end
 
+      def dirty
+        nil
+      end
+
       def parameterized(value)
         value
       end
 
-      def method_available?(method)
+      def self.method_available?(method)
         [:foo, :parameterized, :high_yield, :yield_value, :dirty].include?(method)
       end
 
@@ -56,6 +60,15 @@ describe Curly do
 
   it "makes sure only public methods are called on the presenter object" do
     expect { evaluate("{{bar}}") }.to raise_exception(Curly::InvalidReference)
+  end
+
+  it "includes the invalid reference when failing to compile" do
+    begin
+      evaluate("{{bar}}")
+      fail
+    rescue Curly::InvalidReference => e
+      e.reference.should == :bar
+    end
   end
 
   it "propagates yields to the caller" do
@@ -96,7 +109,7 @@ describe Curly do
   end
 
   def evaluate(template, &block)
-    code = Curly.compile(template)
+    code = Curly.compile(template, presenter_class)
     context = double("context", presenter: presenter)
 
     context.instance_eval(<<-RUBY)
