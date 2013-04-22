@@ -31,6 +31,15 @@ module Curly
   REFERENCE_REGEX = %r(\{\{([\w\.]+)\}\})
 
   class InvalidReference < StandardError
+    attr_reader :reference
+
+    def initialize(reference)
+      @reference = reference
+    end
+
+    def message
+      "invalid reference `{{#{reference}}}'"
+    end
   end
 
   class << self
@@ -40,9 +49,9 @@ module Curly
     # template - The template String that should be compiled.
     #
     # Returns a String containing the Ruby code.
-    def compile(template)
+    def compile(template, presenter_class)
       source = template.inspect
-      source.gsub!(REFERENCE_REGEX) { compile_reference($1) }
+      source.gsub!(REFERENCE_REGEX) { compile_reference($1, presenter_class) }
 
       source
     end
@@ -62,20 +71,26 @@ module Curly
 
     private
 
-    def compile_reference(reference)
+    def compile_reference(reference, presenter_class)
       method, argument = reference.split(".", 2)
 
+      unless presenter_class.method_available?(method.to_sym)
+        raise Curly::InvalidReference.new(method.to_sym)
+      end
+
+      if presenter_class.instance_method(method).arity == 1
+        # The method accepts a single argument -- pass it in.
+        code = <<-RUBY
+          presenter.#{method}(#{argument.inspect}) {|*args| yield(*args) }
+        RUBY
+      else
+        code = <<-RUBY
+          presenter.#{method} {|*args| yield(*args) }
+        RUBY
+      end
+
       %(\#{
-        unless presenter.method_available?(:#{method})
-          raise Curly::InvalidReference, "invalid reference `{{#{reference}}}'"
-        end
-
-        if presenter.method(:#{method}).arity == 1
-          result = presenter.#{method}(#{argument.inspect}) {|*args| yield(*args) }
-        else
-          result = presenter.#{method} {|*args| yield(*args) }
-        end
-
+        result = #{code}
         ERB::Util.html_escape(result)
       })
     end

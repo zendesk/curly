@@ -84,24 +84,6 @@ module Curly
       nil
     end
 
-    # Whether a method is available to templates rendered with the presenter.
-    #
-    # Templates can reference "variables", which are simply methods defined on
-    # the presenter. By default, only public instance methods can be
-    # referenced, and any method defined on Curly::Presenter itself cannot be
-    # referenced. This means that methods such as `#cache_key` and #inspect are
-    # not available. This is done for safety purposes.
-    #
-    # This policy can be changed by overriding this method in your presenters.
-    #
-    # method - The Symbol name of the method.
-    #
-    # Returns true if the method can be referenced by a template,
-    #   false otherwise.
-    def method_available?(method)
-      self.class.available_methods.include?(method)
-    end
-
     class << self
 
       # The name of the presenter class for a given view path.
@@ -120,6 +102,24 @@ module Curly
 
       def presenter_for_path(path)
         presenter_name_for_path(path).constantize rescue nil
+      end
+
+      # Whether a method is available to templates rendered with the presenter.
+      #
+      # Templates can reference "variables", which are simply methods defined on
+      # the presenter. By default, only public instance methods can be
+      # referenced, and any method defined on Curly::Presenter itself cannot be
+      # referenced. This means that methods such as `#cache_key` and #inspect are
+      # not available. This is done for safety purposes.
+      #
+      # This policy can be changed by overriding this method in your presenters.
+      #
+      # method - The Symbol name of the method.
+      #
+      # Returns true if the method can be referenced by a template,
+      #   false otherwise.
+      def method_available?(method)
+        available_methods.include?(method)
       end
 
       # A list of methods available to templates rendered with the presenter.
