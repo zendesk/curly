@@ -62,6 +62,15 @@ describe Curly do
     expect { evaluate("{{bar}}") }.to raise_exception(Curly::InvalidReference)
   end
 
+  it "includes the invalid reference when failing to compile" do
+    begin
+      evaluate("{{bar}}")
+      fail
+    rescue Curly::InvalidReference => e
+      e.reference.should == :bar
+    end
+  end
+
   it "propagates yields to the caller" do
     evaluate("{{high_yield}}") { "$$$" }.should == "$$$, motherfucker!"
   end

@@ -31,6 +31,15 @@ module Curly
   REFERENCE_REGEX = %r(\{\{([\w\.]+)\}\})
 
   class InvalidReference < StandardError
+    attr_reader :reference
+
+    def initialize(reference)
+      @reference = reference
+    end
+
+    def message
+      "invalid reference `{{#{reference}}}'"
+    end
   end
 
   class << self
@@ -66,7 +75,7 @@ module Curly
       method, argument = reference.split(".", 2)
 
       unless presenter_class.method_available?(method.to_sym)
-        raise Curly::InvalidReference, "invalid reference `{{#{reference}}}'"
+        raise Curly::InvalidReference.new(method.to_sym)
       end
 
       if presenter_class.instance_method(method).arity == 1
