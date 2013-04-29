@@ -36,6 +36,15 @@ describe Curly::Presenter do
     it "returns nil if there is no presenter for the given path" do
       Curly::Presenter.presenter_for_path("foo/bar").should be_nil
     end
+
+    it "does not swallow exceptions" do
+      error = NameError.new("omg!", :baz)
+      String.any_instance.stub(:constantize).and_raise(error)
+
+      expect do
+        Curly::Presenter.presenter_for_path("foo/bar")
+      end.to raise_error(NameError)
+    end
   end
 
   describe ".version" do

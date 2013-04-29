@@ -100,8 +100,29 @@ module Curly
         "#{path}_presenter".camelize
       end
 
+      # Returns the presenter class for the given path.
+      #
+      # path - The String path of a template.
+      #
+      # Returns the Class or nil if the constant cannot be found.
       def presenter_for_path(path)
-        presenter_name_for_path(path).constantize rescue nil
+        name = presenter_name_for_path(path)
+
+        begin
+          name.constantize
+        rescue NameError => e
+          missing_name = e.name.to_s
+
+          # Since we only want to return nil when the constant matching the
+          # path could not be found, we need to do same hacky matching. If
+          # the constant's name is Foo::BarPresenter and Foo does not exist,
+          # we consider that a match. If Foo exists but Foo::BarPresenter does
+          # not, NameError#name will return :BarPresenter, so we need to match
+          # that as well.
+          unless name.start_with?(missing_name) || name.end_with?(missing_name)
+            raise # The NameError was due to something else, re-raise.
+          end
+        end
       end
 
       # Whether a method is available to templates rendered with the presenter.
