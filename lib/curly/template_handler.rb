@@ -21,14 +21,14 @@ class Curly::TemplateHandler
     private
 
     def compile(template)
+      # Template is empty, so there's no need to initialize a presenter.
+      return %("") if template.source.empty?
+
       path = template.virtual_path
       presenter_class = Curly::Presenter.presenter_for_path(path)
 
       source = Curly.compile(template.source, presenter_class)
       template_digest = Digest::MD5.hexdigest(template.source)
-
-      # Template is empty, so there's no need to initialize a presenter.
-      return %("") if template.source.empty?
 
       <<-RUBY
       if local_assigns.empty?
