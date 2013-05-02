@@ -91,7 +91,7 @@ module Curly
         RUBY
       end
 
-      %(\#{ERB::Util.html_escape(#{code.strip})})
+      '#{ERB::Util.html_escape(%s)}' % code.strip
     end
 
   end
