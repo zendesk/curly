@@ -3,60 +3,75 @@ require 'action_view'
 require 'curly'
 
 class Curly::TemplateHandler
+  class << self
 
-  # Handles a Curly template, compiling it to Ruby code. The code will be
-  # evaluated in the context of an ActionView::Base instance, having access
-  # to a number of variables.
-  #
-  # template - The ActionView::Template template that should be compiled.
-  #
-  # Returns a String containing the Ruby code representing the template.
-  def self.call(template)
-    path = template.virtual_path
-    presenter_class = Curly::Presenter.presenter_for_path(path)
-
-    source = Curly.compile(template.source, presenter_class)
-    template_digest = Digest::MD5.hexdigest(template.source)
-
-    # Template is empty, so there's no need to initialize a presenter.
-    return %("") if template.source.empty?
-
-    <<-RUBY
-    if local_assigns.empty?
-      options = assigns
-    else
-      options = local_assigns
+    # Handles a Curly template, compiling it to Ruby code. The code will be
+    # evaluated in the context of an ActionView::Base instance, having access
+    # to a number of variables.
+    #
+    # template - The ActionView::Template template that should be compiled.
+    #
+    # Returns a String containing the Ruby code representing the template.
+    def call(template)
+      instrument(template) do
+        compile(template)
+      end
     end
 
-    presenter = #{presenter_class}.new(self, options.with_indifferent_access)
+    private
 
-    view_function = lambda do
-      #{source}
-    end
+    def compile(template)
+      path = template.virtual_path
+      presenter_class = Curly::Presenter.presenter_for_path(path)
 
-    if key = presenter.cache_key
-      @output_buffer = ActiveSupport::SafeBuffer.new
+      source = Curly.compile(template.source, presenter_class)
+      template_digest = Digest::MD5.hexdigest(template.source)
 
-      template_digest = #{template_digest.inspect}
+      # Template is empty, so there's no need to initialize a presenter.
+      return %("") if template.source.empty?
 
-      if #{presenter_class}.respond_to?(:cache_key)
-        presenter_key = #{presenter_class}.cache_key
+      <<-RUBY
+      if local_assigns.empty?
+        options = assigns
       else
-        presenter_key = nil
+        options = local_assigns
       end
 
-      options = {
-        expires_in: presenter.cache_duration
-      }
+      presenter = #{presenter_class}.new(self, options.with_indifferent_access)
 
-      cache([template_digest, key, presenter_key].compact, options) do
-        safe_concat(view_function.call)
+      view_function = lambda do
+        #{source}
       end
 
-      @output_buffer
-    else
-      view_function.call.html_safe
+      if key = presenter.cache_key
+        @output_buffer = ActiveSupport::SafeBuffer.new
+
+        template_digest = #{template_digest.inspect}
+
+        if #{presenter_class}.respond_to?(:cache_key)
+          presenter_key = #{presenter_class}.cache_key
+        else
+          presenter_key = nil
+        end
+
+        options = {
+          expires_in: presenter.cache_duration
+        }
+
+        cache([template_digest, key, presenter_key].compact, options) do
+          safe_concat(view_function.call)
+        end
+
+        @output_buffer
+      else
+        view_function.call.html_safe
+      end
+      RUBY
     end
-    RUBY
+
+    def instrument(template, &block)
+      payload = { path: template.virtual_path }
+      ActiveSupport::Notifications.instrument("compile.curly", payload, &block)
+    end
   end
 end
