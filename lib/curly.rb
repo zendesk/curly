@@ -91,10 +91,7 @@ module Curly
         RUBY
       end
 
-      %(\#{
-        result = #{code}
-        ERB::Util.html_escape(result)
-      })
+      %(\#{ERB::Util.html_escape(#{code.strip})})
     end
 
   end
