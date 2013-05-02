@@ -64,9 +64,11 @@ module Curly
     #
     # Returns true if the template is valid, false otherwise.
     def valid?(template, presenter_class)
-      references = extract_references(template)
-      methods = presenter_class.available_methods.map(&:to_s)
-      references & methods == references
+      compile(template, presenter_class)
+
+      true
+    rescue InvalidReference
+      false
     end
 
     private
@@ -93,10 +95,6 @@ module Curly
         result = #{code}
         ERB::Util.html_escape(result)
       })
-    end
-
-    def extract_references(template)
-      template.scan(REFERENCE_REGEX).flatten
     end
 
   end
