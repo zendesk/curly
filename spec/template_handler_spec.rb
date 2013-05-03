@@ -123,16 +123,6 @@ describe Curly::TemplateHandler do
       output.should == "BAZ"
     end
 
-    it "adds a digest of the template source to the cache key" do
-      context.assigns[:cache_key] = "x"
-
-      template.stub(:source) { "{{bar}}" }
-      output.should == "BAR"
-
-      template.stub(:source) { "FOO{{bar}}" }
-      output.should == "FOOBAR"
-    end
-
     it "adds the presenter class' cache key to the instance's cache key" do
       # Make sure caching is enabled
       context.assigns[:cache_key] = "x"

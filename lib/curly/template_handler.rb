@@ -28,7 +28,6 @@ class Curly::TemplateHandler
       presenter_class = Curly::Presenter.presenter_for_path(path)
 
       source = Curly.compile(template.source, presenter_class)
-      template_digest = Digest::MD5.hexdigest(template.source)
 
       <<-RUBY
       if local_assigns.empty?
@@ -46,8 +45,6 @@ class Curly::TemplateHandler
       if key = presenter.cache_key
         @output_buffer = ActiveSupport::SafeBuffer.new
 
-        template_digest = #{template_digest.inspect}
-
         if #{presenter_class}.respond_to?(:cache_key)
           presenter_key = #{presenter_class}.cache_key
         else
@@ -58,7 +55,7 @@ class Curly::TemplateHandler
           expires_in: presenter.cache_duration
         }
 
-        cache([template_digest, key, presenter_key].compact, options) do
+        cache([key, presenter_key].compact, options) do
           safe_concat(view_function.call)
         end
 
