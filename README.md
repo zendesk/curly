@@ -87,6 +87,13 @@ render collection: post.comments
 ```
 
 
+Is it ready to use in production?
+---------------------------------
+
+Yes! While still a young project, it's being used in a rather large Rails app
+at Zendesk, where it performs admirably.
+
+
 Examples
 --------
 
