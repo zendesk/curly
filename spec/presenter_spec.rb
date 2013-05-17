@@ -10,7 +10,8 @@ describe Curly::Presenter do
     include MonkeyComponents
 
     presents :midget, :clown
-    attr_reader :midget, :clown
+    presents :line_dancer, optional: true
+    attr_reader :midget, :clown, :line_dancer
   end
 
   it "sets the presented parameters as instance variables" do
@@ -23,6 +24,25 @@ describe Curly::Presenter do
 
     presenter.midget.should == "Meek Harolson"
     presenter.clown.should == "Bubbles"
+  end
+
+  it "allows specifying optional parameters" do
+    context = double("context")
+
+    presenter = CircusPresenter.new(context,
+      midget: "Meek Harolson",
+      clown: "Bubbles"
+    )
+
+    presenter.line_dancer.should be_nil
+
+    presenter = CircusPresenter.new(context,
+      midget: "Meek Harolson",
+      clown: "Bubbles",
+      line_dancer: "Miss Universe"
+    )
+
+    presenter.line_dancer.should == "Miss Universe"
   end
 
   describe ".presenter_for_path" do

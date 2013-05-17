@@ -44,8 +44,15 @@ module Curly
     #
     def initialize(context, options = {})
       @_context = context
+
       self.class.presented_names.each do |name|
-        instance_variable_set("@#{name}", options.fetch(name))
+        value = options.fetch(name)
+        instance_variable_set("@#{name}", value)
+      end
+
+      self.class.optional_presented_names.each do |name|
+        value = options.fetch(name, nil)
+        instance_variable_set("@#{name}", value)
       end
     end
 
@@ -209,7 +216,13 @@ module Curly
       end
 
       def presents(*args)
-        self.presented_names += args
+        options = args.extract_options!
+
+        if options[:optional]
+          self.optional_presented_names += args
+        else
+          self.presented_names += args
+        end
       end
     end
 
@@ -217,6 +230,9 @@ module Curly
 
     class_attribute :presented_names
     self.presented_names = [].freeze
+
+    class_attribute :optional_presented_names
+    self.optional_presented_names = [].freeze
 
     # Delegates private method calls to the current view context.
     #
