@@ -7,4 +7,5 @@ platform :ruby do
   gem 'yard-tomdoc'
   gem 'redcarpet'
   gem 'github-markup'
+  gem 'coveralls', require: false
 end
