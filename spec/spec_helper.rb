@@ -1,6 +1,8 @@
 require 'active_support/all'
-require 'coveralls'
 
-Coveralls.wear!
+if ENV['ci']
+  require 'coveralls'
+  Coveralls.wear!
+end
 
 require 'curly'
