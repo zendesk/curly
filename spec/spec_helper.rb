@@ -1,6 +1,6 @@
 require 'active_support/all'
 
-if ENV['ci']
+if ENV['CI']
   require 'coveralls'
   Coveralls.wear!
 end
