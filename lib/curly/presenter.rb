@@ -45,7 +45,13 @@ module Curly
     def initialize(context, options = {})
       @_context = context
       self.class.presented_names.each do |name|
-        instance_variable_set("@#{name}", options.fetch(name))
+        value = options.fetch(name) do
+          default_values.fetch(name) do
+            raise ArgumentError.new("required parameter `#{name}` missing")
+          end
+        end
+
+        instance_variable_set("@#{name}", value)
       end
     end
 
@@ -209,14 +215,26 @@ module Curly
       end
 
       def presents(*args)
+        options = args.extract_options!
+
         self.presented_names += args
+
+        if options.key?(:default)
+          default_values = args.each_with_object(Hash.new) do |arg, hash|
+            hash[arg] = options.fetch(:default)
+          end
+
+          self.default_values = self.default_values.merge(default_values)
+        end
       end
     end
 
     private
 
-    class_attribute :presented_names
+    class_attribute :presented_names, :default_values
+
     self.presented_names = [].freeze
+    self.default_values = {}.freeze
 
     # Delegates private method calls to the current view context.
     #

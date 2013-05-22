@@ -9,8 +9,14 @@ describe Curly::Presenter do
 
     include MonkeyComponents
 
-    presents :midget, :clown
-    attr_reader :midget, :clown
+    presents :midget, :clown, default: nil
+    presents :elephant, default: "Dumbo"
+
+    attr_reader :midget, :clown, :elephant
+  end
+
+  class FrenchCircusPresenter < CircusPresenter
+    presents :elephant, default: "Babar"
   end
 
   it "sets the presented parameters as instance variables" do
@@ -23,6 +29,18 @@ describe Curly::Presenter do
 
     presenter.midget.should == "Meek Harolson"
     presenter.clown.should == "Bubbles"
+  end
+
+  it "allows specifying default values for parameters" do
+    context = double("context")
+
+    # Make sure subclasses can change default values.
+    french_presenter = FrenchCircusPresenter.new(context)
+    french_presenter.elephant.should == "Babar"
+
+    # The subclass shouldn't change the superclass' defaults, though.
+    presenter = CircusPresenter.new(context)
+    presenter.elephant.should == "Dumbo"
   end
 
   describe ".presenter_for_path" do
