@@ -212,7 +212,7 @@ end
 
 ### Examples
 
-Here is a simple Curly template -- it will be looked up by Rails automatically.
+Here is a simple Curly template – it will be looked up by Rails automatically.
 
 ```html
 <!-- app/views/posts/show.html.curly -->
