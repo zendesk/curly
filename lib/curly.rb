@@ -26,7 +26,7 @@
 # See Curly::Presenter for more information on presenters.
 #
 module Curly
-  VERSION = "0.7.0"
+  VERSION = "0.8.0"
 
   # Compiles a Curly template to Ruby code.
   #
