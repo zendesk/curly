@@ -22,6 +22,14 @@ or [Handlebars](http://handlebarsjs.com/), Curly is different in some key ways:
   object methods that are in turn used by the template.
 
 
+
+### Is it ready to use in production?
+
+Yes! While still a young project, it's being used in a rather large Rails app
+at Zendesk, where it performs admirably.
+
+
+
 ### Table of Contents
 
 1. [Installing](#installing)
@@ -93,13 +101,6 @@ render 'comment', comment: comment
 render comment
 render collection: post.comments
 ```
-
-
-Is it ready to use in production?
----------------------------------
-
-Yes! While still a young project, it's being used in a rather large Rails app
-at Zendesk, where it performs admirably.
 
 
 Examples
