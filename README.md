@@ -34,8 +34,9 @@ at Zendesk, where it performs admirably.
 
 1. [Installing](#installing)
 2. [How to use Curly](#how-to-use-curly)
-3. [Examples](#examples)
-4. [Caching](#caching)
+3. [Presenters](#presenters)
+4. [Examples](#examples)
+5. [Caching](#caching)
 
 
 Installing
@@ -100,6 +101,111 @@ The partial can now be rendered like any other, e.g. by calling
 render 'comment', comment: comment
 render comment
 render collection: post.comments
+```
+
+
+Presenters
+----------
+
+Presenters are classes that inherit from `Curly::Presenter` – they're usually placed in
+`app/presenters/`, but you can put them anywhere you'd like. The name of the presenter
+classes match the virtual path of the view they're part of, so if your controller is
+rendering `posts/show`, the `Posts::ShowPresenter` class will be used. Note that Curly
+is only used to render a view if a template can be found – in this case, at
+`app/views/posts/show.html.curly`.
+
+Presenters can declare a list of accepted parameters using the `presents` method:
+
+```ruby
+class Posts::ShowPresenter < Curly::Presenter
+  presents :post
+end
+```
+
+A parameter can have a default value:
+
+```ruby
+class Posts::ShowPresenter < Curly::Presenter
+  presents :post
+  presents :comment, default: nil
+end
+```
+
+Any public method defined on the presenter is made available to the template:
+
+```ruby
+class Posts::ShowPresenter < Curly::Presenter
+  presents :post
+  
+  def title
+    @post.title
+  end
+  
+  def author_link
+    # You can call any Rails helper from within a presenter instance:
+    link_to author.name, profile_path(author), rel: "author"
+  end
+  
+  private
+  
+  # Private methods are not available to the template, so they're safe to
+  # use.
+  def author
+    @post.author
+  end
+end
+```
+
+Presenter methods can even take an argument. Say your Curly template has the content
+`{{t.welcome_message}}`, where `welcome_message` is an I18n key. The following presenter
+method would make the lookup work:
+
+```ruby
+def t(key)
+  translate(key)
+end
+```
+
+That way, simple ``functions'' can be added to the Curly language. Make sure these do not
+have any side effects, though, as an important part of Curly is the idempotence of the
+templates.
+
+
+### Layouts and Content Blocks
+
+Both layouts and content blocks (see [`content_for`](http://api.rubyonrails.org/classes/ActionView/Helpers/CaptureHelper.html#method-i-content_for))
+use `yield` to signal that content can be inserted. Curly works just like ERB, so calling
+`yield` with no arguments will make the view usable as a layout, while passing a Symbol
+will make it try to read a content block with the given name:
+
+```ruby
+# Given you have the following Curly template in app/views/layouts/application.html.curly
+#
+#   <html>
+#     <head>
+#       <title>{{title}}</title>
+#     </head>
+#     <body>
+#       <div id="sidebar">{{sidebar}}</div>
+#       {{body}}
+#     </body>
+#   </html>
+#
+class ApplicationLayout < Curly::Presenter
+  def title
+    "You can use methods just like in any other presenter!"
+  end
+  
+  def sidebar
+    # A view can call `content_for(:sidebar) { "some HTML here" }`
+    yield :sidebar
+  end
+  
+  def body
+    # The view will be rendered and inserted here:
+    yield
+  end
+end
 ```
 
 
