@@ -35,8 +35,9 @@ at Zendesk, where it performs admirably.
 1. [Installing](#installing)
 2. [How to use Curly](#how-to-use-curly)
 3. [Presenters](#presenters)
-4. [Examples](#examples)
-5. [Caching](#caching)
+    1. [Layouts and Content Blocks](#layouts-and-content-blocks)
+    1. [Examples](#examples)
+4. [Caching](#caching)
 
 
 Installing
@@ -209,8 +210,7 @@ end
 ```
 
 
-Examples
---------
+### Examples
 
 Here is a simple Curly template -- it will be looked up by Rails automatically.
 
