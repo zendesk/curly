@@ -22,6 +22,14 @@ or [Handlebars](http://handlebarsjs.com/), Curly is different in some key ways:
   object methods that are in turn used by the template.
 
 
+### Table of Contents
+
+1. [Installing](#installing)
+2. [How to use Curly](#how-to-use-curly)
+3. [Examples](#examples)
+4. [Caching](#caching)
+
+
 Installing
 ----------
 
