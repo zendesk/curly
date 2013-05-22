@@ -320,7 +320,7 @@ end
 ### Static Caching
 
 Static caching will only be enabled for presenters that define a non-nil `#cache_key`
-method (see "Dynamic Caching.")
+method (see [Dynamic Caching.](#dynamic-caching))
 
 In order to make a deploy expire the cache for a specific view, set the version of the
 view to something new, usually by incrementing by one:
