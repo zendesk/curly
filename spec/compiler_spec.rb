@@ -94,6 +94,18 @@ describe Curly::Compiler do
       presenter.stub(:dirty) { "<p>dirty</p>".html_safe }
       evaluate("{{dirty}}").should == "<p>dirty</p>"
     end
+
+    it "removes comments from the output" do
+      evaluate("HELO{{! I'm a comment, yo }}WORLD").should == "HELOWORLD"
+    end
+
+    it "removes comment lines from the output" do
+      evaluate(<<-CURLY.strip_heredoc).should == "HELO\nWORLD\n"
+        HELO
+          {{! I'm a comment }}
+        WORLD
+      CURLY
+    end
   end
 
   describe ".valid?" do

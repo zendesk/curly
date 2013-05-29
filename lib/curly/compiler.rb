@@ -3,6 +3,8 @@ require 'curly/invalid_reference'
 module Curly
   class Compiler
     REFERENCE_REGEX = %r(\{\{([\w\.]+)\}\})
+    COMMENT_REGEX = %r(\{\{\!\s*(.*)\s*\}\})
+    COMMENT_LINE_REGEX = %r(^\s*#{COMMENT_REGEX}\s*\n)
 
     class << self
 
@@ -16,10 +18,12 @@ module Curly
           raise ArgumentError, "presenter class cannot be nil"
         end
 
-        source = template.inspect
+        source = template.dup
         source.gsub!(REFERENCE_REGEX) { compile_reference($1, presenter_class) }
+        source.gsub!(COMMENT_LINE_REGEX) { compile_comment_line($1) }
+        source.gsub!(COMMENT_REGEX) { compile_comment($1) }
 
-        source
+        '%%(%s)' % source
       end
 
       # Whether the Curly template is valid. This includes whether all
@@ -58,6 +62,14 @@ module Curly
         end
 
         '#{ERB::Util.html_escape(%s)}' % code.strip
+      end
+
+      def compile_comment_line(comment)
+        "" # Replace the content with an empty string.
+      end
+
+      def compile_comment(comment)
+        "" # Replace the content with an empty string.
       end
     end
   end
