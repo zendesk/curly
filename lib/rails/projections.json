@@ -1,0 +1,16 @@
+{
+  "app/presenters/*_presenter.rb": {
+    "affinity": "controller",
+    "command": "presenter",
+    "test": "spec/presenters/%s_presenter_spec.rb",
+    "related": "app/views/%s.html.curly",
+    "template": "class %SPresenter < Curly::Presenter\nend",
+    "keywords": "presents depends_on version"
+  },
+
+  "app/views/*.html.curly": {
+    "affinity": "controller",
+    "test": "spec/views/%s_spec.rb",
+    "related": "app/presenters/%s_presenter.rb"
+  }
+}
