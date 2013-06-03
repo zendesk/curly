@@ -42,6 +42,10 @@ class Curly::TemplateHandler
         #{source}
       end
 
+      presenter.content_for_values.each do |key, value|
+        content_for(key, value)
+      end
+
       if key = presenter.cache_key
         @output_buffer = ActiveSupport::SafeBuffer.new
 
