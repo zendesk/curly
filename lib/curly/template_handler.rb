@@ -42,6 +42,8 @@ class Curly::TemplateHandler
         #{source}
       end
 
+      presenter.setup!
+
       if key = presenter.cache_key
         @output_buffer = ActiveSupport::SafeBuffer.new
 

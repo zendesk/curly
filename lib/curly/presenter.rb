@@ -55,6 +55,27 @@ module Curly
       end
     end
 
+    # Sets up the view.
+    #
+    # Override this method in your presenter in order to do setup before the
+    # template is rendered. One use case is to call `content_for` in order
+    # to inject content into other templates, e.g. a layout.
+    #
+    # Example
+    #
+    #   class Posts::ShowPresenter < Curly::Presenter
+    #     presents :post
+    #
+    #     def setup!
+    #       content_for :page_title, @post.title
+    #     end
+    #   end
+    #
+    # Returns nothing.
+    def setup!
+      # Does nothing.
+    end
+
     # The key that should be used to cache the view.
     #
     # Unless `#cache_key` returns nil, the result of rendering the template
