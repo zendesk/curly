@@ -17,6 +17,10 @@ describe Curly::TemplateHandler do
         @context.bar
       end
 
+      def content_for_values
+        { dinglebats: "wombah!" }
+      end
+
       def cache_key
         @cache_key
       end
@@ -45,6 +49,12 @@ describe Curly::TemplateHandler do
 
       def advance_clock(duration)
         @clock += duration
+      end
+
+      def content_for(key, value = nil)
+        @contents ||= {}
+        @contents[key] = value if value.present?
+        @contents[key]
       end
 
       def cache(key, options = {})
@@ -152,6 +162,11 @@ describe Curly::TemplateHandler do
       # Now it has! Huzzah!
       context.advance_clock(1)
       output.should == "FOO"
+    end
+
+    it "sets all content variables using #content_for" do
+      output
+      context.content_for(:dinglebats).should == "wombah!"
     end
   end
 

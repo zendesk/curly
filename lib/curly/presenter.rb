@@ -90,6 +90,16 @@ module Curly
       nil
     end
 
+    def content_for_values
+      content_keys = methods.map do |method|
+        method[/^content_for_(\w+)\!$/, 1]
+      end.compact
+
+      content_keys.inject(Hash.new) do |hash, key|
+        hash.merge(key.to_sym => send("content_for_#{key}!"))
+      end
+    end
+
     class << self
 
       # The name of the presenter class for a given view path.

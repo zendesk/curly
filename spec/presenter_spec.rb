@@ -13,6 +13,10 @@ describe Curly::Presenter do
     presents :elephant, default: "Dumbo"
 
     attr_reader :midget, :clown, :elephant
+
+    def content_for_circus_name!
+      "Circus Arli"
+    end
   end
 
   class FrenchCircusPresenter < CircusPresenter
@@ -41,6 +45,15 @@ describe Curly::Presenter do
     # The subclass shouldn't change the superclass' defaults, though.
     presenter = CircusPresenter.new(context)
     presenter.elephant.should == "Dumbo"
+  end
+
+  describe "#content_for_values" do
+    it "returns a hash of the content_for key-value pairs" do
+      context = double("context")
+      presenter = CircusPresenter.new(context)
+
+      presenter.content_for_values.should == { circus_name: "Circus Arli" }
+    end
   end
 
   describe ".presenter_for_path" do
