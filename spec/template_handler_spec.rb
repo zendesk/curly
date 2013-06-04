@@ -9,6 +9,10 @@ describe Curly::TemplateHandler do
         @cache_duration = options.fetch(:cache_duration, nil)
       end
 
+      def setup!
+        @context.content_for(:foo, "bar")
+      end
+
       def foo
         "FOO"
       end
@@ -45,6 +49,12 @@ describe Curly::TemplateHandler do
 
       def advance_clock(duration)
         @clock += duration
+      end
+
+      def content_for(key, value = nil)
+        @contents ||= {}
+        @contents[key] = value if value.present?
+        @contents[key]
       end
 
       def cache(key, options = {})
@@ -96,6 +106,12 @@ describe Curly::TemplateHandler do
   it "marks its output as HTML safe" do
     template.stub(:source) { "{{foo}}" }
     output.should be_html_safe
+  end
+
+  it "calls the #setup! method before rendering the view" do
+    template.stub(:source) { "{{foo}}" }
+    output
+    context.content_for(:foo).should == "bar"
   end
 
   context "caching" do
