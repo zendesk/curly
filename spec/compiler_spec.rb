@@ -58,6 +58,12 @@ describe Curly::Compiler do
       evaluate("{{parameterized}}").should == ""
     end
 
+    it "raises ArgumentError if the presenter class is nil" do
+      expect do
+        Curly::Compiler.compile("foo", nil)
+      end.to raise_exception(ArgumentError)
+    end
+
     it "makes sure only public methods are called on the presenter object" do
       expect { evaluate("{{bar}}") }.to raise_exception(Curly::InvalidReference)
     end

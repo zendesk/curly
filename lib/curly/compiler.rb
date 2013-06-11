@@ -12,6 +12,10 @@ module Curly
       #
       # Returns a String containing the Ruby code.
       def compile(template, presenter_class)
+        if presenter_class.nil?
+          raise ArgumentError, "presenter class cannot be nil"
+        end
+
         source = template.inspect
         source.gsub!(REFERENCE_REGEX) { compile_reference($1, presenter_class) }
 
