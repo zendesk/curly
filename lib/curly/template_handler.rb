@@ -1,6 +1,7 @@
 require 'active_support'
 require 'action_view'
 require 'curly'
+require 'curly/compilation_error'
 
 class Curly::TemplateHandler
   class << self
@@ -26,6 +27,8 @@ class Curly::TemplateHandler
 
       path = template.virtual_path
       presenter_class = Curly::Presenter.presenter_for_path(path)
+
+      raise Curly::CompilationError.new(path) if presenter_class.nil?
 
       source = Curly.compile(template.source, presenter_class)
 
