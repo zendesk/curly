@@ -191,7 +191,11 @@ module Curly
       #
       # Returns a Set of String view paths.
       def dependencies
+        # The base presenter doesn't have any dependencies.
+        return Set.new if self == Curly::Presenter
+
         @dependencies ||= Set.new
+        @dependencies.union(superclass.dependencies)
       end
 
       # Indicate that the presenter depends a list of other views.
@@ -199,8 +203,9 @@ module Curly
       # deps - A list of String view paths that the presenter depends on.
       #
       # Returns nothing.
-      def depends_on(*deps)
-        dependencies.merge(deps)
+      def depends_on(*dependencies)
+        @dependencies ||= Set.new
+        @dependencies.merge(dependencies)
       end
 
       # Get or set the version of the presenter.
