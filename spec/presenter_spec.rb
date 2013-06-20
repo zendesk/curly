@@ -142,4 +142,18 @@ describe Curly::Presenter do
       cache_key.should == "Foo::BarPresenter/42/foo/bum"
     end
   end
+
+  describe ".dependencies" do
+    it "returns the dependencies defined for the presenter" do
+      presenter = Class.new(Curly::Presenter) { depends_on 'foo' }
+      presenter.dependencies.to_a.should == ['foo']
+    end
+
+    it "includes the dependencies defined for parent classes" do
+      Curly::Presenter.dependencies
+      parent = Class.new(Curly::Presenter) { depends_on 'foo' }
+      presenter = Class.new(parent) { depends_on 'bar' }
+      presenter.dependencies.to_a.should =~ ['foo', 'bar']
+    end
+  end
 end
