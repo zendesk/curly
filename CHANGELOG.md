@@ -1,5 +1,7 @@
 ### Unreleased
 
+### Curly 0.9.1 (June 20, 2013)
+
 * Better error handling. If a presenter class cannot be found, we not raise a
   more descriptive exception.
 
