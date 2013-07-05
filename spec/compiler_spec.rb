@@ -85,6 +85,10 @@ describe Curly::Compiler do
       evaluate("{{yield_value}}") {|v| v.upcase }.should == "FOO, please?"
     end
 
+    it "properly handles quotes in the template" do
+      evaluate('"').should == '"'
+    end
+
     it "escapes non HTML safe strings returned from the presenter" do
       presenter.stub(:dirty) { "<p>dirty</p>" }
       evaluate("{{dirty}}").should == "&lt;p&gt;dirty&lt;/p&gt;"
@@ -93,6 +97,18 @@ describe Curly::Compiler do
     it "does not escape HTML safe strings returned from the presenter" do
       presenter.stub(:dirty) { "<p>dirty</p>".html_safe }
       evaluate("{{dirty}}").should == "<p>dirty</p>"
+    end
+
+    it "removes comments from the output" do
+      evaluate("HELO{{! I'm a comment, yo }}WORLD").should == "HELOWORLD"
+    end
+
+    it "removes comment lines from the output" do
+      evaluate(<<-CURLY.strip_heredoc).should == "HELO\nWORLD\n"
+        HELO
+          {{! I'm a comment }}
+        WORLD
+      CURLY
     end
   end
 
