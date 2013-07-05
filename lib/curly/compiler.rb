@@ -19,11 +19,15 @@ module Curly
         end
 
         source = template.dup
+
+        # Escape double quotes.
+        source.gsub!('"', '\"')
+
         source.gsub!(REFERENCE_REGEX) { compile_reference($1, presenter_class) }
         source.gsub!(COMMENT_LINE_REGEX) { compile_comment_line($1) }
         source.gsub!(COMMENT_REGEX) { compile_comment($1) }
 
-        '%%(%s)' % source
+        '"%s"' % source
       end
 
       # Whether the Curly template is valid. This includes whether all
