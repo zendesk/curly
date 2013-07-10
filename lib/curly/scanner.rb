@@ -69,6 +69,7 @@ module Curly
     #   can be found at the current position.
     def scan_comment_line
       if value = @scanner.scan(COMMENT_LINE_REGEX)
+        # Returns the comment excluding the "{{!}}"
         [:comment_line, value[3..-4]]
       end
     end
@@ -79,6 +80,7 @@ module Curly
     #   be found at the current position.
     def scan_comment
       if value = @scanner.scan(COMMENT_REGEX)
+        # Returns the comment excluding the "{{!}}"
         [:comment, value[3..-3]]
       end
     end
