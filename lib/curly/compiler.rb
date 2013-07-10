@@ -2,10 +2,17 @@ require 'curly/scanner'
 require 'curly/invalid_reference'
 
 module Curly
+
+  # Compiles Curly templates into executable Ruby code.
+  #
+  # A template must be accompanied by a presenter class. This class defines the
+  # references that are valid within the template.
+  #
   class Compiler
     # Compiles a Curly template to Ruby code.
     #
-    # template - The template String that should be compiled.
+    # template        - The template String that should be compiled.
+    # presenter_class - The presenter Class.
     #
     # Returns a String containing the Ruby code.
     def self.compile(template, presenter_class)
