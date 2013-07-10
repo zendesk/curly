@@ -89,6 +89,10 @@ describe Curly::Compiler do
       evaluate('"').should == '"'
     end
 
+    it "escapes Ruby code in the template" do
+      evaluate('#{raise "foo"}').should == '#{raise "foo"}'
+    end
+
     it "escapes non HTML safe strings returned from the presenter" do
       presenter.stub(:dirty) { "<p>dirty</p>" }
       evaluate("{{dirty}}").should == "&lt;p&gt;dirty&lt;/p&gt;"
@@ -106,8 +110,18 @@ describe Curly::Compiler do
     it "removes comment lines from the output" do
       evaluate(<<-CURLY.strip_heredoc).should == "HELO\nWORLD\n"
         HELO
-          {{! I'm a comment }}
+        {{! I'm a comment }}
         WORLD
+      CURLY
+    end
+
+    it "correctly parses mixed text and references" do
+      evaluate(<<-CURLY.strip_heredoc).should == "A\nFOO\nB\nFOO\nC\n"
+        A
+        {{foo}}
+        B
+        {{foo}}
+        C
       CURLY
     end
   end
