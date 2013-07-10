@@ -9,6 +9,12 @@ describe Curly::Scanner, ".scan" do
     ]
   end
 
+  it "scans parameterized references" do
+    scan("{{foo.bar}}").should == [
+      [:reference, "foo.bar"]
+    ]
+  end
+
   it "scans comments in the source" do
     scan("foo {{!bar}} baz").should == [
       [:text, "foo "],
@@ -22,6 +28,18 @@ describe Curly::Scanner, ".scan" do
       [:text, "foo\n"],
       [:comment_line, "bar"],
       [:text, "baz"]
+    ]
+  end
+
+  it "treats quotes as text" do
+    scan('"').should == [
+      [:text, '"']
+    ]
+  end
+
+  it "treats Ruby interpolation as text" do
+    scan('#{foo}').should == [
+      [:text, '#{foo}']
     ]
   end
 
