@@ -23,51 +23,46 @@ module Curly
     private
 
     def scan_token
-      if reference = scan_reference
-        [:reference, reference]
-      elsif comment = scan_comment_line
-        [:comment_line, comment]
-      elsif comment = scan_comment
-        [:comment, comment]
-      elsif text = scan_text
-        [:text, text]
-      else
-        text = scan_remainder
-        [:text, text]
-      end
+      scan_reference ||
+        scan_comment_line ||
+        scan_comment ||
+        scan_text ||
+        scan_remainder
     end
 
     def scan_reference
-      if reference = @scanner.scan(REFERENCE_REGEX)
+      if value = @scanner.scan(REFERENCE_REGEX)
         # Return the text excluding the "{{}}"
-        reference[2..-3]
+        [:reference, value[2..-3]]
       end
     end
 
     def scan_comment_line
-      if comment = @scanner.scan(COMMENT_LINE_REGEX)
-        comment[3..-4]
+      if value = @scanner.scan(COMMENT_LINE_REGEX)
+        [:comment_line, value[3..-4]]
       end
     end
 
     def scan_comment
-      if comment = @scanner.scan(COMMENT_REGEX)
-        comment[3..-3]
+      if value = @scanner.scan(COMMENT_REGEX)
+        [:comment, value[3..-3]]
       end
     end
 
     def scan_text
-      if text = @scanner.scan_until(/\{\{/m)
+      if value = @scanner.scan_until(/\{\{/m)
         # Rewind the scanner until before the "{{"
         @scanner.pos -= 2
 
         # Return the text up until "{{"
-        text[0..-3]
+        [:text, value[0..-3]]
       end
     end
 
     def scan_remainder
-      @scanner.scan(/.+/m)
+      if value = @scanner.scan(/.+/m)
+        [:text, value]
+      end
     end
   end
 end
