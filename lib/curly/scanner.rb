@@ -6,12 +6,35 @@ module Curly
     COMMENT_REGEX = %r(\{\{\!\s*(.*)\s*\}\})
     COMMENT_LINE_REGEX = %r(\s*#{COMMENT_REGEX}\s*\n)
 
+    def self.scan(source)
+      new(source).scan
+    end
+
     def initialize(source)
       @scanner = StringScanner.new(source)
     end
 
-    def eos?
-      @scanner.eos?
+    def scan
+      tokens = []
+      tokens << scan_token until @scanner.eos?
+      tokens
+    end
+
+    private
+
+    def scan_token
+      if reference = scan_reference
+        [:reference, reference]
+      elsif comment = scan_comment_line
+        [:comment_line, comment]
+      elsif comment = scan_comment
+        [:comment, comment]
+      elsif text = scan_text
+        [:text, text]
+      else
+        text = scan_remainder
+        [:text, text]
+      end
     end
 
     def scan_reference
@@ -22,11 +45,15 @@ module Curly
     end
 
     def scan_comment_line
-      @scanner.scan(COMMENT_LINE_REGEX)
+      if comment = @scanner.scan(COMMENT_LINE_REGEX)
+        comment[3..-4]
+      end
     end
 
     def scan_comment
-      @scanner.scan(COMMENT_REGEX)
+      if comment = @scanner.scan(COMMENT_REGEX)
+        comment[3..-3]
+      end
     end
 
     def scan_text

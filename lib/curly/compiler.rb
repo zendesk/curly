@@ -38,30 +38,16 @@ module Curly
         raise ArgumentError, "presenter class cannot be nil"
       end
 
-      scanner = Scanner.new(template)
-      result = []
+      tokens = Scanner.scan(template)
 
-      result << scan_token(scanner) until scanner.eos?
+      parts = tokens.map do |type, value|
+        send("compile_#{type}", value)
+      end
 
-      result.join(" + ")
+      parts.join(" + ")
     end
 
     private
-
-    def scan_token(scanner)
-      if reference = scanner.scan_reference
-        compile_reference(reference)
-      elsif comment = scanner.scan_comment_line
-        compile_comment_line(comment)
-      elsif comment = scanner.scan_comment
-        compile_comment(comment)
-      elsif text = scanner.scan_text
-        compile_text(text)
-      else
-        text = scanner.scan_remainder
-        compile_text(text)
-      end
-    end
 
     def compile_reference(reference)
       method, argument = reference.split(".", 2)
