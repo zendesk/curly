@@ -1,12 +1,8 @@
-require 'strscan'
+require 'curly/scanner'
 require 'curly/invalid_reference'
 
 module Curly
   class Compiler
-    REFERENCE_REGEX = %r(\{\{([\w\.]+)\}\})
-    COMMENT_REGEX = %r(\{\{\!\s*(.*)\s*\}\})
-    COMMENT_LINE_REGEX = %r(\s*#{COMMENT_REGEX}\s*\n)
-
     # Compiles a Curly template to Ruby code.
     #
     # template - The template String that should be compiled.
@@ -42,7 +38,7 @@ module Curly
         raise ArgumentError, "presenter class cannot be nil"
       end
 
-      scanner = StringScanner.new(template)
+      scanner = Scanner.new(template)
       result = []
 
       result << scan_token(scanner) until scanner.eos?
@@ -53,47 +49,18 @@ module Curly
     private
 
     def scan_token(scanner)
-      if reference = scan_reference(scanner)
+      if reference = scanner.scan_reference
         compile_reference(reference)
-      elsif comment = scan_comment_line(scanner)
+      elsif comment = scanner.scan_comment_line
         compile_comment_line(comment)
-      elsif comment = scan_comment(scanner)
+      elsif comment = scanner.scan_comment
         compile_comment(comment)
-      elsif text = scan_text(scanner)
+      elsif text = scanner.scan_text
         compile_text(text)
       else
-        text = scan_remainder(scanner)
+        text = scanner.scan_remainder
         compile_text(text)
       end
-    end
-
-    def scan_reference(scanner)
-      if reference = scanner.scan(REFERENCE_REGEX)
-        # Return the text excluding the "{{}}"
-        reference[2..-3]
-      end
-    end
-
-    def scan_comment_line(scanner)
-      scanner.scan(COMMENT_LINE_REGEX)
-    end
-
-    def scan_comment(scanner)
-      scanner.scan(COMMENT_REGEX)
-    end
-
-    def scan_text(scanner)
-      if text = scanner.scan_until(/\{\{/m)
-        # Rewind the scanner until before the "{{"
-        scanner.pos -= 2
-
-        # Return the text up until "{{"
-        text[0..-3]
-      end
-    end
-
-    def scan_remainder(scanner)
-      scanner.scan(/.+/m)
     end
 
     def compile_reference(reference)
