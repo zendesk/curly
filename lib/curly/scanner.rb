@@ -57,7 +57,7 @@ module Curly
     #   be found at the current position.
     def scan_reference
       if value = @scanner.scan(REFERENCE_REGEX)
-        # Return the text excluding the "{{}}"
+        # Return the reference name excluding "{{" and "}}".
         [:reference, value[2..-3]]
       end
     end
@@ -69,7 +69,7 @@ module Curly
     #   can be found at the current position.
     def scan_comment_line
       if value = @scanner.scan(COMMENT_LINE_REGEX)
-        # Returns the comment excluding the "{{!}}"
+        # Returns the comment excluding "{{!" and "}}".
         [:comment_line, value[3..-4]]
       end
     end
@@ -80,7 +80,7 @@ module Curly
     #   be found at the current position.
     def scan_comment
       if value = @scanner.scan(COMMENT_REGEX)
-        # Returns the comment excluding the "{{!}}"
+        # Returns the comment excluding "{{!" and "}}".
         [:comment, value[3..-3]]
       end
     end
@@ -94,7 +94,7 @@ module Curly
         # Rewind the scanner until before the "{{"
         @scanner.pos -= 2
 
-        # Return the text up until "{{"
+        # Return the text up until "{{".
         [:text, value[0..-3]]
       end
     end
