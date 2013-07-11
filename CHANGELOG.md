@@ -1,5 +1,12 @@
 ### Unreleased
 
+### Curly 0.10.2 (July 11, 2013)
+
+* Fix a bug that caused non-string presenter method return values to be
+  discarded.
+
+  *Daniel Schierbeck*
+
 ### Curly 0.10.1 (July 11, 2013)
 
 * Fix a bug in the compiler that caused some templates to be erroneously HTML
