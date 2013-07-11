@@ -1,5 +1,15 @@
 ### Unreleased
 
+### Curly 0.10.0 (July 11, 2013)
+
+* Allow comments in Curly templates using the `{{! ... }}` syntax:
+
+  ```
+  {{! This is a comment }}
+  ```
+
+  *Daniel Schierbeck*
+
 ### Curly 0.9.1 (June 20, 2013)
 
 * Better error handling. If a presenter class cannot be found, we not raise a
