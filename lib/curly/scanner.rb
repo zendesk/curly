@@ -8,8 +8,8 @@ module Curly
   # until the end of the template is reached.
   #
   class Scanner
-    REFERENCE_REGEX = %r(\{\{([\w\.]+)\}\})
-    COMMENT_REGEX = %r(\{\{\!\s*(.*)\s*\}\})
+    REFERENCE_REGEX = %r(\{\{[\w\.]+\}\})
+    COMMENT_REGEX = %r(\{\{!.*\}\})
     COMMENT_LINE_REGEX = %r(\s*#{COMMENT_REGEX}\s*\n)
 
     # Scans a Curly template for tokens.
