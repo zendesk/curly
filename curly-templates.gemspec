@@ -4,7 +4,7 @@ Gem::Specification.new do |s|
   s.rubygems_version = '1.3.5'
 
   s.name              = 'curly-templates'
-  s.version           = '0.10.0'
+  s.version           = '0.10.1'
   s.date              = '2013-07-11'
 
   s.summary     = "Free your views!"

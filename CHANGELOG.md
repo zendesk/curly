@@ -1,5 +1,12 @@
 ### Unreleased
 
+### Curly 0.10.1 (July 11, 2013)
+
+* Fix a bug in the compiler that caused some templates to be erroneously HTML
+  escaped.
+
+  *Daniel Schierbeck*
+
 ### Curly 0.10.0 (July 11, 2013)
 
 * Allow comments in Curly templates using the `{{! ... }}` syntax:
