@@ -51,7 +51,11 @@ module Curly
         send("compile_#{type}", value)
       end
 
-      parts.join(" << ")
+      <<-RUBY
+        buffer = ActiveSupport::SafeBuffer.new
+        #{parts.join("\n")}
+        buffer
+      RUBY
     end
 
     private
@@ -74,19 +78,19 @@ module Curly
         RUBY
       end
 
-      'ERB::Util.html_escape(%s)' % code.strip
+      'buffer.concat(%s)' % code.strip
     end
 
     def compile_text(text)
-      text.inspect
+      'buffer.safe_concat(%s)' % text.inspect
     end
 
     def compile_comment_line(comment)
-      "''" # Replace the content with an empty string.
+      "" # Replace the content with an empty string.
     end
 
     def compile_comment(comment)
-      "''" # Replace the content with an empty string.
+      "" # Replace the content with an empty string.
     end
   end
 end

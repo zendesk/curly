@@ -95,6 +95,10 @@ describe Curly::Compiler do
       evaluate("{{dirty}}").should == "<p>dirty</p>"
     end
 
+    it "does not escape HTML in the template itself" do
+      evaluate("<div>").should == "<div>"
+    end
+
     it "removes comments from the output" do
       evaluate("HELO{{! I'm a comment, yo }}WORLD").should == "HELOWORLD"
     end
