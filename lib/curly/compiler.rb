@@ -78,7 +78,7 @@ module Curly
         RUBY
       end
 
-      'buffer.concat(%s)' % code.strip
+      'buffer.concat(%s.to_s)' % code.strip
     end
 
     def compile_text(text)

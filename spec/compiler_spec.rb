@@ -99,6 +99,11 @@ describe Curly::Compiler do
       evaluate("<div>").should == "<div>"
     end
 
+    it "treats all values returned from the presenter as strings" do
+      presenter.stub(:foo) { 42 }
+      evaluate("{{foo}}").should == "42"
+    end
+
     it "removes comments from the output" do
       evaluate("HELO{{! I'm a comment, yo }}WORLD").should == "HELOWORLD"
     end
