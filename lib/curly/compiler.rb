@@ -1,80 +1,92 @@
+require 'curly/scanner'
 require 'curly/invalid_reference'
 
 module Curly
+
+  # Compiles Curly templates into executable Ruby code.
+  #
+  # A template must be accompanied by a presenter class. This class defines the
+  # references that are valid within the template.
+  #
   class Compiler
-    REFERENCE_REGEX = %r(\{\{([\w\.]+)\}\})
-    COMMENT_REGEX = %r(\{\{\!\s*(.*)\s*\}\})
-    COMMENT_LINE_REGEX = %r(^\s*#{COMMENT_REGEX}\s*\n)
+    # Compiles a Curly template to Ruby code.
+    #
+    # template        - The template String that should be compiled.
+    # presenter_class - The presenter Class.
+    #
+    # Returns a String containing the Ruby code.
+    def self.compile(template, presenter_class)
+      new(template, presenter_class).compile
+    end
 
-    class << self
+    # Whether the Curly template is valid. This includes whether all
+    # references are available on the presenter class.
+    #
+    # template        - The template String that should be validated.
+    # presenter_class - The presenter Class.
+    #
+    # Returns true if the template is valid, false otherwise.
+    def self.valid?(template, presenter_class)
+      compile(template, presenter_class)
 
-      # Compiles a Curly template to Ruby code.
-      #
-      # template - The template String that should be compiled.
-      #
-      # Returns a String containing the Ruby code.
-      def compile(template, presenter_class)
-        if presenter_class.nil?
-          raise ArgumentError, "presenter class cannot be nil"
-        end
+      true
+    rescue InvalidReference
+      false
+    end
 
-        source = template.dup
+    attr_reader :template, :presenter_class
 
-        # Escape double quotes.
-        source.gsub!('"', '\"')
+    def initialize(template, presenter_class)
+      @template, @presenter_class = template, presenter_class
+    end
 
-        source.gsub!(REFERENCE_REGEX) { compile_reference($1, presenter_class) }
-        source.gsub!(COMMENT_LINE_REGEX) { compile_comment_line($1) }
-        source.gsub!(COMMENT_REGEX) { compile_comment($1) }
-
-        '"%s"' % source
+    def compile
+      if presenter_class.nil?
+        raise ArgumentError, "presenter class cannot be nil"
       end
 
-      # Whether the Curly template is valid. This includes whether all
-      # references are available on the presenter class.
-      #
-      # template        - The template String that should be validated.
-      # presenter_class - The presenter Class.
-      #
-      # Returns true if the template is valid, false otherwise.
-      def valid?(template, presenter_class)
-        compile(template, presenter_class)
+      tokens = Scanner.scan(template)
 
-        true
-      rescue InvalidReference
-        false
+      parts = tokens.map do |type, value|
+        send("compile_#{type}", value)
       end
 
-      private
+      parts.join(" << ")
+    end
 
-      def compile_reference(reference, presenter_class)
-        method, argument = reference.split(".", 2)
+    private
 
-        unless presenter_class.method_available?(method.to_sym)
-          raise Curly::InvalidReference.new(method.to_sym)
-        end
+    def compile_reference(reference)
+      method, argument = reference.split(".", 2)
 
-        if presenter_class.instance_method(method).arity == 1
-          # The method accepts a single argument -- pass it in.
-          code = <<-RUBY
-            presenter.#{method}(#{argument.inspect}) {|*args| yield(*args) }
-          RUBY
-        else
-          code = <<-RUBY
-            presenter.#{method} {|*args| yield(*args) }
-          RUBY
-        end
-
-        '#{ERB::Util.html_escape(%s)}' % code.strip
+      unless presenter_class.method_available?(method.to_sym)
+        raise Curly::InvalidReference.new(method.to_sym)
       end
 
-      def compile_comment_line(comment)
-        "" # Replace the content with an empty string.
+      if presenter_class.instance_method(method).arity == 1
+        # The method accepts a single argument -- pass it in.
+        code = <<-RUBY
+          presenter.#{method}(#{argument.inspect}) {|*args| yield(*args) }
+        RUBY
+      else
+        code = <<-RUBY
+          presenter.#{method} {|*args| yield(*args) }
+        RUBY
       end
 
-      def compile_comment(comment)
-        "" # Replace the content with an empty string.
-      end
+      'ERB::Util.html_escape(%s)' % code.strip
+    end
+
+    def compile_text(text)
+      text.inspect
+    end
+
+    def compile_comment_line(comment)
+      "''" # Replace the content with an empty string.
+    end
+
+    def compile_comment(comment)
+      "''" # Replace the content with an empty string.
     end
   end
 end
