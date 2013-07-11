@@ -90,7 +90,7 @@ module Curly
     # Returns an Array representing the token, or nil if no text token can
     #   be found at the current position.
     def scan_text
-      if value = @scanner.scan_until(/\{\{/m)
+      if value = @scanner.scan_until(/\{\{/)
         # Rewind the scanner until before the "{{"
         @scanner.pos -= 2
 
