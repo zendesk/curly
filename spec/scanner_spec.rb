@@ -31,6 +31,12 @@ describe Curly::Scanner, ".scan" do
     ]
   end
 
+  it "scans to the end of the source" do
+    scan("foo\n").should == [
+      [:text, "foo\n"]
+    ]
+  end
+
   it "treats quotes as text" do
     scan('"').should == [
       [:text, '"']
