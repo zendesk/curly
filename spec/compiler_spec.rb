@@ -106,6 +106,10 @@ describe Curly::Compiler do
         WORLD
       CURLY
     end
+
+    it "does not execute arbitrary Ruby code" do
+      evaluate('#{foo}').should == '#{foo}'
+    end
   end
 
   describe ".valid?" do
