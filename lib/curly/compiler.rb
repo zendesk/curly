@@ -51,7 +51,7 @@ module Curly
         send("compile_#{type}", value)
       end
 
-      parts.join(" + ")
+      parts.join(" << ")
     end
 
     private
