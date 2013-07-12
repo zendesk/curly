@@ -23,6 +23,12 @@ describe Curly::Scanner, ".scan" do
     ]
   end
 
+  it "allows newlines in comments" do
+    scan("{{!\nfoo\n}}").should == [
+      [:comment, "\nfoo\n"]
+    ]
+  end
+
   it "scans to the end of the source" do
     scan("foo\n").should == [
       [:text, "foo\n"]

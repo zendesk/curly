@@ -9,7 +9,7 @@ module Curly
   #
   class Scanner
     REFERENCE_REGEX = %r(\{\{[\w\.]+\}\})
-    COMMENT_REGEX = %r(\{\{!.*\}\})
+    COMMENT_REGEX = %r(\{\{!.*\}\})m
 
     # Scans a Curly template for tokens.
     #
