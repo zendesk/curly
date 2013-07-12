@@ -49,14 +49,6 @@ describe Curly::Scanner, ".scan" do
     ]
   end
 
-  it "scans multi-line comments" do
-    scan("foo\n{{!\nbar\n}}\nbaz").should == [
-      [:text, "foo\n"],
-      [:comment_line, "bar"],
-      [:text, "baz"]
-    ]
-  end
-
   it "scans to the end of the source" do
     scan("foo\n").should == [
       [:text, "foo\n"]
