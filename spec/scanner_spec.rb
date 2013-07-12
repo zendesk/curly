@@ -41,6 +41,26 @@ describe Curly::Scanner, ".scan" do
     ]
   end
 
+  it "allows escaping Curly quotes" do
+    scan('foo {{{ bar').should == [
+      [:text, "foo "],
+      [:text, "{{"],
+      [:text, " bar"]
+    ]
+
+    scan('foo }} bar').should == [
+      [:text, "foo }} bar"]
+    ]
+
+    scan('foo {{{ lala! }}} bar').should == [
+      [:text, "foo "],
+      [:text, "{{"],
+      [:text, " lala! "],
+      [:text, "}}"],
+      [:text, " bar"],
+    ]
+  end
+
   it "treats quotes as text" do
     scan('"').should == [
       [:text, '"']
