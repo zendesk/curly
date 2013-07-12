@@ -1,6 +1,19 @@
 require 'strscan'
 
 module Curly
+  class SyntaxError < StandardError
+    def initialize(position, source)
+      @position, @source = position, source
+    end
+
+    def message
+      start = [@position - 8, 0].max
+      stop = [@position + 8, @source.length].min
+      snippet = @source[start..stop].strip
+      "invalid syntax near `#{snippet}` in template:\n\n#{@source}\n"
+    end
+  end
+
   # Scans Curly templates for tokens.
   #
   # The Scanner goes through the template piece by piece, extracting tokens
@@ -48,7 +61,7 @@ module Curly
 
     def scan_curly
       if @scanner.scan(CURLY_START)
-        scan_reference_or_comment
+        scan_reference_or_comment or syntax_error!
       end
     end
 
@@ -100,6 +113,10 @@ module Curly
       if value = @scanner.scan_until(CURLY_END)     
         value[0..-3]
       end
+    end
+
+    def syntax_error!
+      raise SyntaxError.new(@scanner.pos, @scanner.string)
     end
   end
 end
