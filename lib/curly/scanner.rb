@@ -1,15 +1,15 @@
 require 'strscan'
 
 module Curly
-
   # Scans Curly templates for tokens.
   #
   # The Scanner goes through the template piece by piece, extracting tokens
   # until the end of the template is reached.
   #
   class Scanner
-    REFERENCE_REGEX = %r(\{\{[\w\.]+\}\})
-    COMMENT_REGEX = %r(\{\{!.*\}\})m
+    CURLY_START = /\{\{/
+    CURLY_END = /\}\}/
+    COMMENT_MARKER = /!/
 
     # Scans a Curly template for tokens.
     #
@@ -43,45 +43,41 @@ module Curly
     # Returns a two-element Array, the first element being the Symbol type of
     #   the token and the second being the String value.
     def scan_token
-      scan_reference ||
-        scan_comment ||
-        scan_text ||
-        scan_remainder
+      scan_curly || scan_text
     end
 
-    # Scans a reference token, if a reference is the next token in the template.
-    #
-    # Returns an Array representing the token, or nil if no reference token can
-    #   be found at the current position.
-    def scan_reference
-      if value = @scanner.scan(REFERENCE_REGEX)
-        # Return the reference name excluding "{{" and "}}".
-        [:reference, value[2..-3]]
+    def scan_curly
+      if @scanner.scan(CURLY_START)
+        scan_reference_or_comment
       end
     end
 
-    # Scans a comment token, if a comment is the next token in the template.
-    #
-    # Returns an Array representing the token, or nil if no comment token can
-    #   be found at the current position.
+    def scan_reference_or_comment
+      if @scanner.scan(COMMENT_MARKER)
+        scan_comment
+      else
+        scan_reference
+      end
+    end
+
     def scan_comment
-      if value = @scanner.scan(COMMENT_REGEX)
-        # Returns the comment excluding "{{!" and "}}".
-        [:comment, value[3..-3]]
+      if value = scan_until_end_of_curly
+        [:comment, value]
       end
     end
 
-    # Scans a text token, if a text is the next token in the template.
-    #
-    # Returns an Array representing the token, or nil if no text token can
-    #   be found at the current position.
-    def scan_text
-      if value = @scanner.scan_until(/\{\{/)
-        # Rewind the scanner until before the "{{"
-        @scanner.pos -= 2
+    def scan_reference
+      if value = scan_until_end_of_curly
+        [:reference, value]
+      end
+    end
 
-        # Return the text up until "{{".
-        [:text, value[0..-3]]
+    def scan_text
+      if value = scan_until_start_of_curly
+        @scanner.pos -= 2
+        [:text, value]
+      else
+        scan_remainder
       end
     end
 
@@ -91,6 +87,18 @@ module Curly
     def scan_remainder
       if value = @scanner.scan(/.+/m)
         [:text, value]
+      end
+    end
+
+    def scan_until_start_of_curly
+      if value = @scanner.scan_until(CURLY_START)
+        value[0..-3]
+      end
+    end
+
+    def scan_until_end_of_curly
+      if value = @scanner.scan_until(CURLY_END)     
+        value[0..-3]
       end
     end
   end
