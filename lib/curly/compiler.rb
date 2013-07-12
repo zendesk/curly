@@ -85,10 +85,6 @@ module Curly
       'buffer.safe_concat(%s)' % text.inspect
     end
 
-    def compile_comment_line(comment)
-      "" # Replace the content with an empty string.
-    end
-
     def compile_comment(comment)
       "" # Replace the content with an empty string.
     end
