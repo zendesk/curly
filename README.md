@@ -105,6 +105,11 @@ render collection: post.comments
 ```
 
 
+### Escaping Curly syntax
+
+If you need to have `{{` rendered, you should use `{{{` in your Curly template.
+
+
 Presenters
 ----------
 

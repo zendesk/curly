@@ -11,6 +11,9 @@ module Curly
   class Scanner
     CURLY_START = /\{\{/
     CURLY_END = /\}\}/
+
+    ESCAPED_CURLY_START = /\{\{\{/
+
     COMMENT_MARKER = /!/
 
     # Scans a Curly template for tokens.
@@ -45,7 +48,13 @@ module Curly
     # Returns a two-element Array, the first element being the Symbol type of
     #   the token and the second being the String value.
     def scan_token
-      scan_curly || scan_text
+      scan_escaped_curly || scan_curly || scan_text
+    end
+
+    def scan_escaped_curly
+      if @scanner.scan(ESCAPED_CURLY_START)
+        [:text, "{{"]
+      end
     end
 
     def scan_curly
@@ -99,7 +108,7 @@ module Curly
     end
 
     def scan_until_end_of_curly
-      if value = @scanner.scan_until(CURLY_END)     
+      if value = @scanner.scan_until(CURLY_END)
         value[0..-3]
       end
     end
