@@ -1,5 +1,13 @@
 ### Unreleased
 
+* Make Curly raise an exception when a reference or comment is not closed.
+
+  *Daniel Schierbeck*
+
+* Fix a bug that caused an infinite loop when there was whitespace in a reference.
+
+  *Daniel Schierbeck*
+
 ### Curly 0.10.2 (July 11, 2013)
 
 * Fix a bug that caused non-string presenter method return values to be
