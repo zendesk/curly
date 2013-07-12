@@ -2,10 +2,11 @@ require 'spec_helper'
 
 describe Curly::Scanner, ".scan" do
   it "returns the tokens in the source" do
-    scan("foo {{bar}} baz").should == [
+    scan("foo {{bar}} baz {{qux}}").should == [
       [:text, "foo "],
       [:reference, "bar"],
-      [:text, " baz"]
+      [:text, " baz "],
+      [:reference, "qux"]
     ]
   end
 
