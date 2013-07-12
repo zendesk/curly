@@ -2,10 +2,11 @@ require 'spec_helper'
 
 describe Curly::Scanner, ".scan" do
   it "returns the tokens in the source" do
-    scan("foo {{bar}} baz").should == [
+    scan("foo {{bar}} baz {{qux}}").should == [
       [:text, "foo "],
       [:reference, "bar"],
-      [:text, " baz"]
+      [:text, " baz "],
+      [:reference, "qux"]
     ]
   end
 
@@ -21,6 +22,14 @@ describe Curly::Scanner, ".scan" do
     ]
   end
 
+  it "allows references with newline" do
+    scan("foo {{bar\nbar}} baz").should == [
+      [:text, "foo "],
+      [:reference, "bar\nbar"],
+      [:text, " baz"]
+    ]
+  end
+
   it "scans comments in the source" do
     scan("foo {{!bar}} baz").should == [
       [:text, "foo "],
@@ -32,6 +41,14 @@ describe Curly::Scanner, ".scan" do
   it "allows newlines in comments" do
     scan("{{!\nfoo\n}}").should == [
       [:comment, "\nfoo\n"]
+    ]
+  end
+
+  it "scans comments with leading and trailing spaces" do
+    scan("foo\n  {{!bar}}  \nbaz").should == [
+      [:text, "foo\n  "],
+      [:comment, "bar"],
+      [:text, "  \nbaz"]
     ]
   end
 
