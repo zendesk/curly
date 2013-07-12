@@ -21,9 +21,11 @@ describe Curly::Scanner, ".scan" do
     ]
   end
 
-  it "ignores multi-line references" do
+  it "allows references with newline" do
     scan("foo {{bar\nbar}} baz").should == [
-      [:text, "foo {{bar\nbar}} baz"]
+      [:text, "foo "],
+      [:reference, "bar\nbar"],
+      [:text, " baz"]
     ]
   end
 
@@ -41,11 +43,11 @@ describe Curly::Scanner, ".scan" do
     ]
   end
 
-  it "scans comment lines with leading and trailing spaces" do
+  it "scans comments with leading and trailing spaces" do
     scan("foo\n  {{!bar}}  \nbaz").should == [
-      [:text, "foo\n"],
-      [:comment_line, "bar"],
-      [:text, "baz"]
+      [:text, "foo\n  "],
+      [:comment, "bar"],
+      [:text, "  \nbaz"]
     ]
   end
 
