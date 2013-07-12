@@ -108,14 +108,6 @@ describe Curly::Compiler do
       evaluate("HELO{{! I'm a comment, yo }}WORLD").should == "HELOWORLD"
     end
 
-    it "removes comment lines from the output" do
-      evaluate(<<-CURLY.strip_heredoc).should == "HELO\nWORLD\n"
-        HELO
-        {{! I'm a comment }}
-        WORLD
-      CURLY
-    end
-
     it "does not execute arbitrary Ruby code" do
       evaluate('#{foo}').should == '#{foo}'
     end

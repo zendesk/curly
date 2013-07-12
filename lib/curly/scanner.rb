@@ -10,7 +10,6 @@ module Curly
   class Scanner
     REFERENCE_REGEX = %r(\{\{[\w\.]+\}\})
     COMMENT_REGEX = %r(\{\{!.*\}\})
-    COMMENT_LINE_REGEX = %r(\s*#{COMMENT_REGEX}\s*\n)
 
     # Scans a Curly template for tokens.
     #
@@ -45,7 +44,6 @@ module Curly
     #   the token and the second being the String value.
     def scan_token
       scan_reference ||
-        scan_comment_line ||
         scan_comment ||
         scan_text ||
         scan_remainder
@@ -59,18 +57,6 @@ module Curly
       if value = @scanner.scan(REFERENCE_REGEX)
         # Return the reference name excluding "{{" and "}}".
         [:reference, value[2..-3]]
-      end
-    end
-
-    # Scans a comment line token, if a comment line is the next token in the
-    # template.
-    #
-    # Returns an Array representing the token, or nil if no comment line token
-    #   can be found at the current position.
-    def scan_comment_line
-      if value = @scanner.scan(COMMENT_LINE_REGEX)
-        # Returns the comment excluding "{{!" and "}}".
-        [:comment_line, value[3..-4]]
       end
     end
 
