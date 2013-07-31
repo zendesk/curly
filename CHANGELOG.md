@@ -1,5 +1,7 @@
 ### Unreleased
 
+### Curly 0.11.0 (July 31, 2013)
+
 * Make Curly raise an exception when a reference or comment is not closed.
 
   *Daniel Schierbeck*
