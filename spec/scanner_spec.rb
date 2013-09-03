@@ -52,12 +52,10 @@ describe Curly::Scanner, ".scan" do
       [:text, "foo }} bar"]
     ]
 
-    scan('foo {{{ lala! }}} bar').should == [
+    scan('foo {{{ lala! }} bar').should == [
       [:text, "foo "],
       [:text, "{{"],
-      [:text, " lala! "],
-      [:text, "}}"],
-      [:text, " bar"],
+      [:text, " lala! }} bar"]
     ]
   end
 
