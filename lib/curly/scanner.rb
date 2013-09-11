@@ -13,7 +13,6 @@ module Curly
     CURLY_END = /\}\}/
 
     ESCAPED_CURLY_START = /\{\{\{/
-    ESCAPED_CURLY_END = /\}\}\}/
 
     COMMENT_MARKER = /!/
 
@@ -55,8 +54,6 @@ module Curly
     def scan_escaped_curly
       if @scanner.scan(ESCAPED_CURLY_START)
         [:text, "{{"]
-      elsif @scanner.scan(ESCAPED_CURLY_END)
-        [:text, "}}"]
       end
     end
 
@@ -111,7 +108,7 @@ module Curly
     end
 
     def scan_until_end_of_curly
-      if value = @scanner.scan_until(CURLY_END)     
+      if value = @scanner.scan_until(CURLY_END)
         value[0..-3]
       end
     end
