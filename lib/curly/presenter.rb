@@ -111,6 +111,24 @@ module Curly
       nil
     end
 
+    # The duration that the cache is allowed to serve stale content to clients
+    # while a fresh entry for the cache is being computed. Only relevant if
+    # `#cache_duration` returns a non nil value.
+    #
+    # If nil, the cache will not serve stale content.
+    #
+    # Examples
+    #
+    #   def race_condition_ttl
+    #     1.minute
+    #   end
+    #
+    # Returns the Fixnum duration the cache will serve stale content, in
+    #   seconds, or nil if no duration should be set.
+    def race_condition_ttl
+      nil
+    end
+
     class << self
 
       # The name of the presenter class for a given view path.

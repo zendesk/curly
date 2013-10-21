@@ -303,8 +303,8 @@ class Posts::ShowPresenter < Curly::Presenter
 end
 ```
 
-Likewise, you can add a `#cache_duration` method if you wish to automatically expire
-the fragment cache:
+Likewise, you can add `#cache_duration` and `#race_condition_ttl` methods if you wish
+to automatically expire the fragment cache:
 
 ```ruby
 class Posts::ShowPresenter < Curly::Presenter
@@ -312,6 +312,10 @@ class Posts::ShowPresenter < Curly::Presenter
 
   def cache_duration
     30.minutes
+  end
+
+  def race_condition_ttl
+    2.minutes
   end
 end
 ```
