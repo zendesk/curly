@@ -57,6 +57,7 @@ class Curly::TemplateHandler
         end
 
         options = {
+          race_condition_ttl: presenter.race_condition_ttl,
           expires_in: presenter.cache_duration
         }
 
