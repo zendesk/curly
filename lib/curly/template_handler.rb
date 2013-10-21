@@ -47,9 +47,9 @@ class Curly::TemplateHandler
 
       presenter.setup!
 
-      if key = presenter.cache_key
-        @output_buffer = ActiveSupport::SafeBuffer.new
+      @output_buffer = output_buffer || ActiveSupport::SafeBuffer.new
 
+      if key = presenter.cache_key
         if #{presenter_class}.respond_to?(:cache_key)
           presenter_key = #{presenter_class}.cache_key
         else
@@ -63,11 +63,11 @@ class Curly::TemplateHandler
         cache([key, presenter_key].compact, options) do
           safe_concat(view_function.call)
         end
-
-        @output_buffer
       else
-        view_function.call.html_safe
+        safe_concat(view_function.call)
       end
+
+      @output_buffer
       RUBY
     end
 
