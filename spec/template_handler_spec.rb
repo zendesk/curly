@@ -47,6 +47,10 @@ describe Curly::TemplateHandler do
         @clock = 0
       end
 
+      def reset!
+        @output_buffer = ActiveSupport::SafeBuffer.new
+      end
+
       def advance_clock(duration)
         @clock += duration
       end
@@ -179,6 +183,7 @@ describe Curly::TemplateHandler do
 
   def output
     code = Curly::TemplateHandler.call(template)
+    context.reset!
     context.instance_eval(code)
   end
 end
