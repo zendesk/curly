@@ -19,6 +19,26 @@ class Curly::TemplateHandler
       end
     end
 
+    def cache_if_key_is_not_nil(context, presenter)
+      if key = presenter.cache_key
+        if presenter.class.respond_to?(:cache_key)
+          presenter_key = presenter.class.cache_key
+        else
+          presenter_key = nil
+        end
+
+        options = {
+          expires_in: presenter.cache_duration
+        }
+
+        context.cache([key, presenter_key].compact, options) do
+          yield
+        end
+      else
+        yield
+      end
+    end
+
     private
 
     def compile(template)
@@ -40,31 +60,13 @@ class Curly::TemplateHandler
       end
 
       presenter = #{presenter_class}.new(self, options.with_indifferent_access)
-
-      view_function = lambda do
-        #{source}
-      end
-
       presenter.setup!
 
       @output_buffer = output_buffer || ActiveSupport::SafeBuffer.new
 
-      if key = presenter.cache_key
-        if #{presenter_class}.respond_to?(:cache_key)
-          presenter_key = #{presenter_class}.cache_key
-        else
-          presenter_key = nil
-        end
-
-        options = {
-          expires_in: presenter.cache_duration
-        }
-
-        cache([key, presenter_key].compact, options) do
-          safe_concat(view_function.call)
-        end
-      else
-        safe_concat(view_function.call)
+      Curly::TemplateHandler.cache_if_key_is_not_nil(self, presenter) do
+        result = #{source}
+        safe_concat(result)
       end
 
       @output_buffer
