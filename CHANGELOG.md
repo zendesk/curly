@@ -1,5 +1,7 @@
 ### Unreleased
 
+### Curly 0.12.0 (December 3, 2013)
+
 * Allow Curly to output Curly syntax by using the `{{{ ... }}` syntax:
 
   ```
