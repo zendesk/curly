@@ -1,5 +1,6 @@
 require 'curly/scanner'
 require 'curly/invalid_reference'
+require 'curly/invalid_block_error'
 
 module Curly
 
@@ -30,7 +31,7 @@ module Curly
       compile(template, presenter_class)
 
       true
-    rescue InvalidReference
+    rescue InvalidReference, InvalidBlockError
       false
     end
 
@@ -47,8 +48,14 @@ module Curly
 
       tokens = Scanner.scan(template)
 
+      @blocks = []
+
       parts = tokens.map do |type, value|
         send("compile_#{type}", value)
+      end
+
+      if @blocks.any?
+        raise IncompleteBlockError.new(@blocks.pop)
       end
 
       <<-RUBY
@@ -59,6 +66,61 @@ module Curly
     end
 
     private
+
+    def compile_block_start(reference)
+      m = reference.match(/\A(.+?)(?:\.(.+))?\?\z/)
+      method, argument = "#{m[1]}?", m[2]
+
+      @blocks.push reference
+
+      unless presenter_class.method_available?(method.to_sym)
+        raise Curly::InvalidReference.new(method.to_sym)
+      end
+
+      if presenter_class.instance_method(method).arity == 1
+        <<-RUBY
+          if presenter.#{method}(#{argument.inspect})
+        RUBY
+      else
+        <<-RUBY
+          if presenter.#{method}
+        RUBY
+      end
+    end
+
+    def compile_inverse_block_start(reference)
+      m = reference.match(/\A(.+?)(?:\.(.+))?\?\z/)
+      method, argument = "#{m[1]}?", m[2]
+
+      @blocks.push reference
+
+      unless presenter_class.method_available?(method.to_sym)
+        raise Curly::InvalidReference.new(method.to_sym)
+      end
+
+      if presenter_class.instance_method(method).arity == 1
+        <<-RUBY
+          unless presenter.#{method}(#{argument.inspect})
+        RUBY
+      else
+        <<-RUBY
+          unless presenter.#{method}
+        RUBY
+      end
+    end
+
+    def compile_block_end(reference)
+      method, _ = reference.split(".", 2)
+      last_block = @blocks.pop
+
+      unless last_block == reference
+        raise Curly::IncorrectEndingError.new(reference, last_block)
+      end
+
+      <<-RUBY
+        end
+      RUBY
+    end
 
     def compile_reference(reference)
       method, argument = reference.split(".", 2)

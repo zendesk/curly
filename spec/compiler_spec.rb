@@ -15,6 +15,10 @@ describe Curly::Compiler do
         "#{yield :foo}, please?"
       end
 
+      def hello?(value)
+        value == "world"
+      end
+
       def unicorns
         "UNICORN"
       end
@@ -23,12 +27,21 @@ describe Curly::Compiler do
         nil
       end
 
+      def false?
+        false
+      end
+
+      def true?
+        true
+      end
+
       def parameterized(value)
         value
       end
 
       def self.method_available?(method)
-        [:foo, :parameterized, :high_yield, :yield_value, :dirty].include?(method)
+        [:foo, :parameterized, :high_yield, :yield_value, :dirty,
+          :false?, :true?, :hello?].include?(method)
       end
 
       def self.available_methods
@@ -108,6 +121,44 @@ describe Curly::Compiler do
       evaluate("HELO{{! I'm a comment, yo }}WORLD").should == "HELOWORLD"
     end
 
+    it "removes text in false blocks" do
+      evaluate("test{{#false?}}bar{{/false?}}").should == "test"
+    end
+
+    it "keeps text in true blocks" do
+      evaluate("test{{#true?}}bar{{/true?}}").should == "testbar"
+    end
+
+    it "removes text in inverse true blocks" do
+      evaluate("test{{^true?}}bar{{/true?}}").should == "test"
+    end
+
+    it "keeps kext in inverse false blocks" do
+      evaluate("test{{^false?}}bar{{/false?}}").should == "testbar"
+    end
+
+    it "passes an argument to blocks" do
+      evaluate("{{#hello.world?}}foo{{/hello.world?}}{{#hello.foo?}}bar{{/hello.foo?}}").should == "foo"
+    end
+
+    it "gives an error on mismatching blocks" do
+      expect do
+        evaluate("test{{#false?}}bar{{/true?}}")
+      end.to raise_exception(Curly::IncorrectEndingError)
+    end
+
+    it "gives an error on incomplete blocks" do
+      expect do
+        evaluate("test{{#false?}}bar")
+      end.to raise_exception(Curly::IncompleteBlockError)
+    end
+
+    it "gives an error on mismatching block ends" do
+      expect do
+        evaluate("{{#true?}}test{{#false?}}bar{{/true?}}{{/false?}}")
+      end.to raise_exception(Curly::IncorrectEndingError)
+    end
+
     it "does not execute arbitrary Ruby code" do
       evaluate('#{foo}').should == '#{foo}'
     end
@@ -125,6 +176,14 @@ describe Curly::Compiler do
     it "returns false if an unavailable method is referenced" do
       presenter_class.stub(:available_methods) { [:foo] }
       validate("Hello, {{inspect}}").should == false
+    end
+
+    it "returns true with a block" do
+      validate("Hello {{#true?}}world{{/true?}}").should == true
+    end
+
+    it "returns false with an incomplete block" do
+      validate("Hello {{#true?}}world").should == false
     end
 
     def validate(template)

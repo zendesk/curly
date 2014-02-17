@@ -15,6 +15,10 @@ module Curly
     ESCAPED_CURLY_START = /\{\{\{/
 
     COMMENT_MARKER = /!/
+    BLOCK_MARKER = /#/
+    INVERSE_BLOCK_MARKER = /\^/
+    END_BLOCK_MARKER = /\//
+
 
     # Scans a Curly template for tokens.
     #
@@ -59,13 +63,19 @@ module Curly
 
     def scan_curly
       if @scanner.scan(CURLY_START)
-        scan_reference_or_comment or syntax_error!
+        scan_tag or syntax_error!
       end
     end
 
-    def scan_reference_or_comment
+    def scan_tag
       if @scanner.scan(COMMENT_MARKER)
         scan_comment
+      elsif @scanner.scan(BLOCK_MARKER)
+        scan_block_start
+      elsif @scanner.scan(INVERSE_BLOCK_MARKER)
+        scan_inverse_block_start
+      elsif @scanner.scan(END_BLOCK_MARKER)
+        scan_block_end
       else
         scan_reference
       end
@@ -74,6 +84,24 @@ module Curly
     def scan_comment
       if value = scan_until_end_of_curly
         [:comment, value]
+      end
+    end
+
+    def scan_block_start
+      if value = scan_until_end_of_curly
+        [:block_start, value]
+      end
+    end
+
+    def scan_inverse_block_start
+      if value = scan_until_end_of_curly
+        [:inverse_block_start, value]
+      end
+    end
+
+    def scan_block_end
+      if value = scan_until_end_of_curly
+        [:block_end, value]
       end
     end
 

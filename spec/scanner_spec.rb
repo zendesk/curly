@@ -59,6 +59,24 @@ describe Curly::Scanner, ".scan" do
     ]
   end
 
+  it "scans block tags" do
+    scan('foo {{#bar}} hello {{/bar}}').should == [
+      [:text, "foo "],
+      [:block_start, "bar"],
+      [:text, " hello "],
+      [:block_end, "bar"]
+    ]
+  end
+
+  it "scans inverse block tags" do
+    scan('foo {{^bar}} hello {{/bar}}').should == [
+      [:text, "foo "],
+      [:inverse_block_start, "bar"],
+      [:text, " hello "],
+      [:block_end, "bar"]
+    ]
+  end
+
   it "treats quotes as text" do
     scan('"').should == [
       [:text, '"']
