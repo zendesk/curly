@@ -71,27 +71,14 @@ module Curly
     private
 
     def compile_block_start(reference)
-      m = reference.match(/\A(.+?)(?:\.(.+))?\?\z/)
-      method, argument = "#{m[1]}?", m[2]
-
-      @blocks.push reference
-
-      unless presenter_class.method_available?(method.to_sym)
-        raise Curly::InvalidReference.new(method.to_sym)
-      end
-
-      if presenter_class.instance_method(method).arity == 1
-        <<-RUBY
-          if presenter.#{method}(#{argument.inspect})
-        RUBY
-      else
-        <<-RUBY
-          if presenter.#{method}
-        RUBY
-      end
+      compile_conditional_block "if", reference
     end
 
     def compile_inverse_block_start(reference)
+      compile_conditional_block "unless", reference
+    end
+
+    def compile_conditional_block(keyword, reference)
       m = reference.match(/\A(.+?)(?:\.(.+))?\?\z/)
       method, argument = "#{m[1]}?", m[2]
 
@@ -103,11 +90,11 @@ module Curly
 
       if presenter_class.instance_method(method).arity == 1
         <<-RUBY
-          unless presenter.#{method}(#{argument.inspect})
+          #{keyword} presenter.#{method}(#{argument.inspect})
         RUBY
       else
         <<-RUBY
-          unless presenter.#{method}
+          #{keyword} presenter.#{method}
         RUBY
       end
     end
