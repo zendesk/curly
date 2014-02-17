@@ -19,28 +19,38 @@ describe Curly::Presenter do
     presents :elephant, default: "Babar"
   end
 
-  it "sets the presented parameters as instance variables" do
-    context = double("context")
-
-    presenter = CircusPresenter.new(context,
-      midget: "Meek Harolson",
-      clown: "Bubbles"
-    )
-
-    presenter.midget.should == "Meek Harolson"
-    presenter.clown.should == "Bubbles"
+  class FancyCircusPresenter < CircusPresenter
+    presents :champagne
   end
 
-  it "allows specifying default values for parameters" do
-    context = double("context")
+  describe "#initialize" do
+    let(:context) { double("context") }
 
-    # Make sure subclasses can change default values.
-    french_presenter = FrenchCircusPresenter.new(context)
-    french_presenter.elephant.should == "Babar"
+    it "sets the presented parameters as instance variables" do
+      presenter = CircusPresenter.new(context,
+        midget: "Meek Harolson",
+        clown: "Bubbles"
+      )
 
-    # The subclass shouldn't change the superclass' defaults, though.
-    presenter = CircusPresenter.new(context)
-    presenter.elephant.should == "Dumbo"
+      presenter.midget.should == "Meek Harolson"
+      presenter.clown.should == "Bubbles"
+    end
+
+    it "raises an exception if a required parameter is not specified" do
+      expect {
+        FancyCircusPresenter.new(context, {})
+      }.to raise_exception(ArgumentError, "required parameter `champagne` missing")
+    end
+
+    it "allows specifying default values for parameters" do
+      # Make sure subclasses can change default values.
+      french_presenter = FrenchCircusPresenter.new(context)
+      french_presenter.elephant.should == "Babar"
+
+      # The subclass shouldn't change the superclass' defaults, though.
+      presenter = CircusPresenter.new(context)
+      presenter.elephant.should == "Dumbo"
+    end
   end
 
   describe ".presenter_for_path" do
