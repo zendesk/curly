@@ -1,5 +1,5 @@
 module Curly
-  class InvalidReference < StandardError
+  class InvalidReference < Error
     attr_reader :reference
 
     def initialize(reference)
