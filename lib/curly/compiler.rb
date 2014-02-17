@@ -110,7 +110,6 @@ module Curly
     end
 
     def compile_block_end(reference)
-      method, _ = reference.split(".", 2)
       last_block = @blocks.pop
 
       unless last_block == reference
