@@ -1,5 +1,7 @@
+require 'curly/error'
+
 module Curly
-  class CompilationError < StandardError
+  class CompilationError < Error
     attr_reader :path
 
     def initialize(path)

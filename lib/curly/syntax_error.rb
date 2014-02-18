@@ -1,5 +1,7 @@
+require 'curly/error'
+
 module Curly
-  class SyntaxError < StandardError
+  class SyntaxError < Error
     def initialize(position, source)
       @position, @source = position, source
     end
