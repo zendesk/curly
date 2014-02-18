@@ -18,6 +18,11 @@ module Curly
     # template        - The template String that should be compiled.
     # presenter_class - The presenter Class.
     #
+    # Raises InvalidReference if the template contains a reference that is not
+    #   allowed.
+    # Raises IncorrectEndingError if a conditional block is not ended in the
+    #   correct order - the most recent block must be ended first.
+    # Raises IncompleteBlockError if a block is not completed.
     # Returns a String containing the Ruby code.
     def self.compile(template, presenter_class)
       new(template, presenter_class).compile
