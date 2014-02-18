@@ -138,7 +138,13 @@ end
 
 ### Escaping Curly syntax
 
-If you need to have `{{` rendered, you should use `{{{` in your Curly template.
+In order to have `{{` appear verbatim in the rendered HTML, use the triple Curly escape syntax:
+
+```
+This is {{{escaped}}.
+```
+
+You don't need to escape the closing `}}`.
 
 
 Presenters
