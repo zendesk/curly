@@ -4,8 +4,8 @@ Gem::Specification.new do |s|
   s.rubygems_version = '1.3.5'
 
   s.name              = 'curly-templates'
-  s.version           = '0.12.0'
-  s.date              = '2013-12-03'
+  s.version           = '1.0.0rc1'
+  s.date              = '2014-02-18'
 
   s.summary     = "Free your views!"
   s.description = "A view layer for your Rails apps that separates structure and logic."
@@ -29,6 +29,7 @@ Gem::Specification.new do |s|
   # = MANIFEST =
   s.files = %w[
     CHANGELOG.md
+    CONTRIBUTING.md
     Gemfile
     README.md
     Rakefile
@@ -38,6 +39,10 @@ Gem::Specification.new do |s|
     lib/curly/compilation_error.rb
     lib/curly/compiler.rb
     lib/curly/dependency_tracker.rb
+    lib/curly/error.rb
+    lib/curly/incomplete_block_error.rb
+    lib/curly/incorrect_ending_error.rb
+    lib/curly/invalid_block_error.rb
     lib/curly/invalid_reference.rb
     lib/curly/presenter.rb
     lib/curly/railtie.rb
