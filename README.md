@@ -34,9 +34,11 @@ at Zendesk, where it performs admirably.
 
 1. [Installing](#installing)
 2. [How to use Curly](#how-to-use-curly)
+    1. [Conditional blocks](#conditional-blocks)
+    2. [Escaping Curly syntax](#escaping-curly-syntax)
 3. [Presenters](#presenters)
     1. [Layouts and Content Blocks](#layouts-and-content-blocks)
-    1. [Examples](#examples)
+    2. [Examples](#examples)
 4. [Caching](#caching)
 
 
@@ -71,6 +73,10 @@ Add some HTML to the partial template along with some Curly variables:
   </p>
 
   {{body}}
+
+  {{#author?}}
+    <a href="{{delete_url}}">delete comment</a>
+  {{/author?}}
 </div>
 ```
 
@@ -93,6 +99,10 @@ class Posts::CommentPresenter < Curly::Presenter
   def time_ago
     time_ago_in_words(@comment.created_at)
   end
+  
+  def author?
+    @comment.author == current_user
+  end
 end
 ```
 
@@ -102,6 +112,27 @@ The partial can now be rendered like any other, e.g. by calling
 render 'comment', comment: comment
 render comment
 render collection: post.comments
+```
+
+
+### Conditional blocks
+
+If there is some content you only want rendered under specific circumstances, you can
+use _conditional blocks_. The `{{#admin?}}...{{/admin?}}` syntax will only render the
+content of the block if the `admin?` method on the presenter returns true, while the
+`{{^admin?}}...{{/admin?}}` syntax will only render the content if it returns false.
+
+Both forms can be parameterized by a single argument: `{{#locale.en?}}...{{/locale.en?}}`
+will only render the block if the `locale?` method on the presenter returns true given the
+argument `"en"`. Here's how to implement that method in the presenter:
+
+```ruby
+class SomePresenter < Curly::Presenter
+  # Allows rendering content only if the locale matches a specified identifier.
+  def locale?(identifier)
+    current_locale == identifier
+  end
+end
 ```
 
 
