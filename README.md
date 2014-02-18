@@ -75,7 +75,7 @@ Add some HTML to the partial template along with some Curly variables:
   {{body}}
 
   {{#author?}}
-    <a href="{{delete_url}}">delete comment</a>
+    <p>{{deletion_link}}</p>
   {{/author?}}
 </div>
 ```
@@ -93,7 +93,11 @@ class Posts::CommentPresenter < Curly::Presenter
   end
 
   def author_link
-    link_to(@comment.author.name, @comment.author, rel: "author")
+    link_to @comment.author.name, @comment.author, rel: "author"
+  end
+  
+  def deletion_link
+    link_to "Delete", @comment, method: :delete
   end
 
   def time_ago
