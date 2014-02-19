@@ -424,6 +424,13 @@ Thanks
 Thanks to [Zendesk](http://zendesk.com/) for sponsoring the work on Curly.
 
 
+### Contributors
+
+- Daniel Schierbeck ([@dasch](https://github.com/dasch))
+- Benjamin Quorning ([@bquorning](https://github.com/bquorning))
+- Jeremy Rodi ([@redjazz96](https://github.com/redjazz96))
+
+
 Build Status
 ------------
 
