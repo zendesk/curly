@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>Curly by zendesk</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>Curly</h1>
+        <h2>The Curly template language allows separating your logic from the structure of your HTML templates.</h2>
+        <a href="https://github.com/zendesk/curly" class="button"><small>View project on</small>GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h1>
+<a name="curly" class="anchor" href="#curly"><span class="octicon octicon-link"></span></a>Curly</h1>
+
+<p>Free your views!</p>
+
+<p>Curly is a template language that completely separates structure and logic.
+Instead of interspersing your HTML with snippets of Ruby, all logic is moved
+to a presenter class, with only simple placeholders in the HTML.</p>
+
+<p>While the basic concepts are very similar to <a href="http://mustache.github.com/">Mustache</a>
+or <a href="http://handlebarsjs.com/">Handlebars</a>, Curly is different in some key ways:</p>
+
+<ul>
+<li>Instead of the template controlling the variable scope and looping through
+data, all logic is left to the presenter object. This means that untrusted
+templates can safely be executed, making Curly a possible alternative to
+languages like <a href="http://liquidmarkup.org/">Liquid</a>.</li>
+<li>Instead of implementing its own template resolution mechanism, Curly hooks
+directly into Rails, leveraging the existing resolvers.</li>
+<li>Because of the way it integrates with Rails, it is very easy to use partial
+Curly templates to split out logic from a presenter. With Mustache, at least,
+when integrating with Rails, it is common to return Hash objects from view
+object methods that are in turn used by the template.</li>
+</ul><h3>
+<a name="is-it-ready-to-use-in-production" class="anchor" href="#is-it-ready-to-use-in-production"><span class="octicon octicon-link"></span></a>Is it ready to use in production?</h3>
+
+<p>Yes! While still a young project, it's being used in a rather large Rails app
+at Zendesk, where it performs admirably.</p>
+
+<h3>
+<a name="table-of-contents" class="anchor" href="#table-of-contents"><span class="octicon octicon-link"></span></a>Table of Contents</h3>
+
+<ol>
+<li><a href="#installing">Installing</a></li>
+<li>
+<a href="#how-to-use-curly">How to use Curly</a>
+
+<ol>
+<li><a href="#conditional-blocks">Conditional blocks</a></li>
+<li><a href="#escaping-curly-syntax">Escaping Curly syntax</a></li>
+</ol>
+</li>
+<li>
+<a href="#presenters">Presenters</a>
+
+<ol>
+<li><a href="#layouts-and-content-blocks">Layouts and Content Blocks</a></li>
+<li><a href="#examples">Examples</a></li>
+</ol>
+</li>
+<li><a href="#caching">Caching</a></li>
+</ol><h2>
+<a name="installing" class="anchor" href="#installing"><span class="octicon octicon-link"></span></a>Installing</h2>
+
+<p>Installing Curly is as simple as running <code>gem install curly-templates</code>. If you're
+using Bundler to manage your dependencies, add this to your Gemfile</p>
+
+<div class="highlight highlight-ruby"><pre><span class="n">gem</span> <span class="s1">'curly-templates'</span>
+</pre></div>
+
+<h2>
+<a name="how-to-use-curly" class="anchor" href="#how-to-use-curly"><span class="octicon octicon-link"></span></a>How to use Curly</h2>
+
+<p>In order to use Curly for a view or partial, use the suffix <code>.curly</code> instead of
+<code>.erb</code>, e.g. <code>app/views/posts/_comment.html.curly</code>. Curly will look for a
+corresponding presenter class named <code>Posts::CommentPresenter</code>. By convention,
+these are placed in <code>app/presenters/</code>, so in this case the presenter would
+reside in <code>app/presenters/posts/comment_presenter.rb</code>. Note that presenters
+for partials are not prepended with an underscore.</p>
+
+<p>Add some HTML to the partial template along with some Curly variables:</p>
+
+<div class="highlight highlight-html"><pre><span class="c">&lt;!-- app/views/posts/_comment.html.curly --&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"comment"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;p&gt;</span>
+    {{author_link}} posted {{time_ago}} ago.
+  <span class="nt">&lt;/p&gt;</span>
+
+  {{body}}
+
+  {{#author?}}
+    <span class="nt">&lt;p&gt;</span>{{deletion_link}}<span class="nt">&lt;/p&gt;</span>
+  {{/author?}}
+<span class="nt">&lt;/div&gt;</span>
+</pre></div>
+
+<p>The presenter will be responsible for filling in the variables. Add the necessary
+Ruby code to the presenter:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="c1"># app/presenters/posts/comment_presenter.rb</span>
+<span class="k">class</span> <span class="nc">Posts</span><span class="o">::</span><span class="no">CommentPresenter</span> <span class="o">&lt;</span> <span class="no">Curly</span><span class="o">::</span><span class="no">Presenter</span>
+  <span class="n">presents</span> <span class="ss">:comment</span>
+
+  <span class="k">def</span> <span class="nf">body</span>
+    <span class="no">BlueCloth</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="vi">@comment</span><span class="o">.</span><span class="n">body</span><span class="p">)</span><span class="o">.</span><span class="n">to_html</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">author_link</span>
+    <span class="n">link_to</span> <span class="vi">@comment</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="vi">@comment</span><span class="o">.</span><span class="n">author</span><span class="p">,</span> <span class="ss">rel</span><span class="p">:</span> <span class="s2">"author"</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">deletion_link</span>
+    <span class="n">link_to</span> <span class="s2">"Delete"</span><span class="p">,</span> <span class="vi">@comment</span><span class="p">,</span> <span class="nb">method</span><span class="p">:</span> <span class="ss">:delete</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">time_ago</span>
+    <span class="n">time_ago_in_words</span><span class="p">(</span><span class="vi">@comment</span><span class="o">.</span><span class="n">created_at</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">author?</span>
+    <span class="vi">@comment</span><span class="o">.</span><span class="n">author</span> <span class="o">==</span> <span class="n">current_user</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+
+<p>The partial can now be rendered like any other, e.g. by calling</p>
+
+<div class="highlight highlight-ruby"><pre><span class="n">render</span> <span class="s1">'comment'</span><span class="p">,</span> <span class="ss">comment</span><span class="p">:</span> <span class="n">comment</span>
+<span class="n">render</span> <span class="n">comment</span>
+<span class="n">render</span> <span class="ss">collection</span><span class="p">:</span> <span class="n">post</span><span class="o">.</span><span class="n">comments</span>
+</pre></div>
+
+<h3>
+<a name="conditional-blocks" class="anchor" href="#conditional-blocks"><span class="octicon octicon-link"></span></a>Conditional blocks</h3>
+
+<p>If there is some content you only want rendered under specific circumstances, you can
+use <em>conditional blocks</em>. The <code>{{#admin?}}...{{/admin?}}</code> syntax will only render the
+content of the block if the <code>admin?</code> method on the presenter returns true, while the
+<code>{{^admin?}}...{{/admin?}}</code> syntax will only render the content if it returns false.</p>
+
+<p>Both forms can be parameterized by a single argument: <code>{{#locale.en?}}...{{/locale.en?}}</code>
+will only render the block if the <code>locale?</code> method on the presenter returns true given the
+argument <code>"en"</code>. Here's how to implement that method in the presenter:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="k">class</span> <span class="nc">SomePresenter</span> <span class="o">&lt;</span> <span class="no">Curly</span><span class="o">::</span><span class="no">Presenter</span>
+  <span class="c1"># Allows rendering content only if the locale matches a specified identifier.</span>
+  <span class="k">def</span> <span class="nf">locale?</span><span class="p">(</span><span class="n">identifier</span><span class="p">)</span>
+    <span class="n">current_locale</span> <span class="o">==</span> <span class="n">identifier</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+
+<h3>
+<a name="escaping-curly-syntax" class="anchor" href="#escaping-curly-syntax"><span class="octicon octicon-link"></span></a>Escaping Curly syntax</h3>
+
+<p>In order to have <code>{{</code> appear verbatim in the rendered HTML, use the triple Curly escape syntax:</p>
+
+<pre><code>This is {{{escaped}}.
+</code></pre>
+
+<p>You don't need to escape the closing <code>}}</code>.</p>
+
+<h2>
+<a name="presenters" class="anchor" href="#presenters"><span class="octicon octicon-link"></span></a>Presenters</h2>
+
+<p>Presenters are classes that inherit from <code>Curly::Presenter</code> – they're usually placed in
+<code>app/presenters/</code>, but you can put them anywhere you'd like. The name of the presenter
+classes match the virtual path of the view they're part of, so if your controller is
+rendering <code>posts/show</code>, the <code>Posts::ShowPresenter</code> class will be used. Note that Curly
+is only used to render a view if a template can be found – in this case, at
+<code>app/views/posts/show.html.curly</code>.</p>
+
+<p>Presenters can declare a list of accepted parameters using the <code>presents</code> method:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="k">class</span> <span class="nc">Posts</span><span class="o">::</span><span class="no">ShowPresenter</span> <span class="o">&lt;</span> <span class="no">Curly</span><span class="o">::</span><span class="no">Presenter</span>
+  <span class="n">presents</span> <span class="ss">:post</span>
+<span class="k">end</span>
+</pre></div>
+
+<p>A parameter can have a default value:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="k">class</span> <span class="nc">Posts</span><span class="o">::</span><span class="no">ShowPresenter</span> <span class="o">&lt;</span> <span class="no">Curly</span><span class="o">::</span><span class="no">Presenter</span>
+  <span class="n">presents</span> <span class="ss">:post</span>
+  <span class="n">presents</span> <span class="ss">:comment</span><span class="p">,</span> <span class="ss">default</span><span class="p">:</span> <span class="kp">nil</span>
+<span class="k">end</span>
+</pre></div>
+
+<p>Any public method defined on the presenter is made available to the template:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="k">class</span> <span class="nc">Posts</span><span class="o">::</span><span class="no">ShowPresenter</span> <span class="o">&lt;</span> <span class="no">Curly</span><span class="o">::</span><span class="no">Presenter</span>
+  <span class="n">presents</span> <span class="ss">:post</span>
+
+  <span class="k">def</span> <span class="nf">title</span>
+    <span class="vi">@post</span><span class="o">.</span><span class="n">title</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">author_link</span>
+    <span class="c1"># You can call any Rails helper from within a presenter instance:</span>
+    <span class="n">link_to</span> <span class="n">author</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">profile_path</span><span class="p">(</span><span class="n">author</span><span class="p">),</span> <span class="ss">rel</span><span class="p">:</span> <span class="s2">"author"</span>
+  <span class="k">end</span>
+
+  <span class="kp">private</span>
+
+  <span class="c1"># Private methods are not available to the template, so they're safe to</span>
+  <span class="c1"># use.</span>
+  <span class="k">def</span> <span class="nf">author</span>
+    <span class="vi">@post</span><span class="o">.</span><span class="n">author</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+
+<p>Presenter methods can even take an argument. Say your Curly template has the content
+<code>{{t.welcome_message}}</code>, where <code>welcome_message</code> is an I18n key. The following presenter
+method would make the lookup work:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="k">def</span> <span class="nf">t</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+  <span class="n">translate</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+<span class="k">end</span>
+</pre></div>
+
+<p>That way, simple ``functions'' can be added to the Curly language. Make sure these do not
+have any side effects, though, as an important part of Curly is the idempotence of the
+templates.</p>
+
+<h3>
+<a name="layouts-and-content-blocks" class="anchor" href="#layouts-and-content-blocks"><span class="octicon octicon-link"></span></a>Layouts and Content Blocks</h3>
+
+<p>Both layouts and content blocks (see <a href="http://api.rubyonrails.org/classes/ActionView/Helpers/CaptureHelper.html#method-i-content_for"><code>content_for</code></a>)
+use <code>yield</code> to signal that content can be inserted. Curly works just like ERB, so calling
+<code>yield</code> with no arguments will make the view usable as a layout, while passing a Symbol
+will make it try to read a content block with the given name:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="c1"># Given you have the following Curly template in app/views/layouts/application.html.curly</span>
+<span class="c1">#</span>
+<span class="c1">#   &lt;html&gt;</span>
+<span class="c1">#     &lt;head&gt;</span>
+<span class="c1">#       &lt;title&gt;{{title}}&lt;/title&gt;</span>
+<span class="c1">#     &lt;/head&gt;</span>
+<span class="c1">#     &lt;body&gt;</span>
+<span class="c1">#       &lt;div id="sidebar"&gt;{{sidebar}}&lt;/div&gt;</span>
+<span class="c1">#       {{body}}</span>
+<span class="c1">#     &lt;/body&gt;</span>
+<span class="c1">#   &lt;/html&gt;</span>
+<span class="c1">#</span>
+<span class="k">class</span> <span class="nc">ApplicationLayout</span> <span class="o">&lt;</span> <span class="no">Curly</span><span class="o">::</span><span class="no">Presenter</span>
+  <span class="k">def</span> <span class="nf">title</span>
+    <span class="s2">"You can use methods just like in any other presenter!"</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">sidebar</span>
+    <span class="c1"># A view can call `content_for(:sidebar) { "some HTML here" }`</span>
+    <span class="k">yield</span> <span class="ss">:sidebar</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">body</span>
+    <span class="c1"># The view will be rendered and inserted here:</span>
+    <span class="k">yield</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+
+<h3>
+<a name="examples" class="anchor" href="#examples"><span class="octicon octicon-link"></span></a>Examples</h3>
+
+<p>Here is a simple Curly template – it will be looked up by Rails automatically.</p>
+
+<div class="highlight highlight-html"><pre><span class="c">&lt;!-- app/views/posts/show.html.curly --&gt;</span>
+<span class="nt">&lt;h1&gt;</span>{{title}}<span class="nt">&lt;h1&gt;</span>
+<span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"author"</span><span class="nt">&gt;</span>{{author}}<span class="nt">&lt;/p&gt;</span>
+<span class="nt">&lt;p&gt;</span>{{description}}<span class="nt">&lt;/p&gt;</span>
+
+{{comment_form}}
+
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"comments"</span><span class="nt">&gt;</span>
+  {{comments}}
+<span class="nt">&lt;/div&gt;</span>
+</pre></div>
+
+<p>When rendering the template, a presenter is automatically instantiated with the
+variables assigned in the controller or the <code>render</code> call. The presenter declares
+the variables it expects with <code>presents</code>, which takes a list of variables names.</p>
+
+<div class="highlight highlight-ruby"><pre><span class="c1"># app/presenters/posts/show_presenter.rb</span>
+<span class="k">class</span> <span class="nc">Posts</span><span class="o">::</span><span class="no">ShowPresenter</span> <span class="o">&lt;</span> <span class="no">Curly</span><span class="o">::</span><span class="no">Presenter</span>
+  <span class="n">presents</span> <span class="ss">:post</span>
+
+  <span class="k">def</span> <span class="nf">title</span>
+    <span class="vi">@post</span><span class="o">.</span><span class="n">title</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">author</span>
+    <span class="n">link_to</span><span class="p">(</span><span class="vi">@post</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="vi">@post</span><span class="o">.</span><span class="n">author</span><span class="p">,</span> <span class="ss">rel</span><span class="p">:</span> <span class="s2">"author"</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">description</span>
+    <span class="no">Markdown</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="vi">@post</span><span class="o">.</span><span class="n">description</span><span class="p">)</span><span class="o">.</span><span class="n">to_html</span><span class="o">.</span><span class="n">html_safe</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">comments</span>
+    <span class="n">render</span> <span class="s1">'comment'</span><span class="p">,</span> <span class="ss">collection</span><span class="p">:</span> <span class="vi">@post</span><span class="o">.</span><span class="n">comments</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">comment_form</span>
+    <span class="k">if</span> <span class="vi">@post</span><span class="o">.</span><span class="n">comments_allowed?</span>
+      <span class="n">render</span> <span class="s1">'comment_form'</span><span class="p">,</span> <span class="ss">post</span><span class="p">:</span> <span class="vi">@post</span>
+    <span class="k">else</span>
+      <span class="n">content_tag</span><span class="p">(</span><span class="ss">:p</span><span class="p">,</span> <span class="s2">"Comments are disabled for this post"</span><span class="p">)</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+
+<h2>
+<a name="caching" class="anchor" href="#caching"><span class="octicon octicon-link"></span></a>Caching</h2>
+
+<p>Caching is handled at two levels in Curly – statically and dynamically. Static caching
+concerns changes to your code and templates introduced by deploys. If you do not wish
+to clear your entire cache every time you deploy, you need a way to indicate that some
+view, helper, or other piece of logic has changed.</p>
+
+<p>Dynamic caching concerns changes that happen on the fly, usually made by your users in
+the running system. You wish to cache a view or a partial and have it expire whenever
+some data is updated – usually whenever a specific record is changed.</p>
+
+<h3>
+<a name="dynamic-caching" class="anchor" href="#dynamic-caching"><span class="octicon octicon-link"></span></a>Dynamic Caching</h3>
+
+<p>Because of the way logic is contained in presenters, caching entire views or partials
+by the data they present becomes exceedingly straightforward. Simply define a
+<code>#cache_key</code> method that returns a non-nil object, and the return value will be used to
+cache the template.</p>
+
+<p>Whereas in ERB you would include the <code>cache</code> call in the template itself:</p>
+
+<div class="highlight highlight-erb"><pre><span class="cp">&lt;%</span> <span class="n">cache</span><span class="p">(</span><span class="o">[</span><span class="vi">@post</span><span class="p">,</span> <span class="n">signed_in?</span><span class="o">]</span><span class="p">)</span> <span class="k">do</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="x">  ...</span>
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span><span class="x"></span>
+</pre></div>
+
+<p>In Curly you would instead declare it in the presenter:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="k">class</span> <span class="nc">Posts</span><span class="o">::</span><span class="no">ShowPresenter</span> <span class="o">&lt;</span> <span class="no">Curly</span><span class="o">::</span><span class="no">Presenter</span>
+  <span class="n">presents</span> <span class="ss">:post</span>
+
+  <span class="k">def</span> <span class="nf">cache_key</span>
+    <span class="o">[</span><span class="vi">@post</span><span class="p">,</span> <span class="n">signed_in?</span><span class="o">]</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+
+<p>Likewise, you can add a <code>#cache_duration</code> method if you wish to automatically expire
+the fragment cache:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="k">class</span> <span class="nc">Posts</span><span class="o">::</span><span class="no">ShowPresenter</span> <span class="o">&lt;</span> <span class="no">Curly</span><span class="o">::</span><span class="no">Presenter</span>
+  <span class="o">.</span><span class="n">.</span><span class="o">.</span>
+
+  <span class="k">def</span> <span class="nf">cache_duration</span>
+    <span class="mi">30</span><span class="o">.</span><span class="n">minutes</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+
+<h3>
+<a name="static-caching" class="anchor" href="#static-caching"><span class="octicon octicon-link"></span></a>Static Caching</h3>
+
+<p>Static caching will only be enabled for presenters that define a non-nil <code>#cache_key</code>
+method (see <a href="#dynamic-caching">Dynamic Caching.</a>)</p>
+
+<p>In order to make a deploy expire the cache for a specific view, set the version of the
+view to something new, usually by incrementing by one:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="k">class</span> <span class="nc">Posts</span><span class="o">::</span><span class="no">ShowPresenter</span> <span class="o">&lt;</span> <span class="no">Curly</span><span class="o">::</span><span class="no">Presenter</span>
+  <span class="n">version</span> <span class="mi">3</span>
+
+  <span class="k">def</span> <span class="nf">cache_key</span>
+    <span class="c1"># Some objects</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+
+<p>This will change the cache keys for all instances of that view, effectively expiring
+the old cache entries.</p>
+
+<p>This works well for views, or for partials that are rendered in views that themselves
+are not cached. If the partial is nested within a view that <em>is</em> cached, however, the
+outer cache will not be expired. The solution is to register that the inner partial
+is a dependency of the outer one such that Curly can automatically deduce that the
+outer partial cache should be expired:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="k">class</span> <span class="nc">Posts</span><span class="o">::</span><span class="no">ShowPresenter</span> <span class="o">&lt;</span> <span class="no">Curly</span><span class="o">::</span><span class="no">Presenter</span>
+  <span class="n">version</span> <span class="mi">3</span>
+  <span class="n">depends_on</span> <span class="s1">'posts/comment'</span>
+
+  <span class="k">def</span> <span class="nf">cache_key</span>
+    <span class="c1"># Some objects</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">Posts</span><span class="o">::</span><span class="no">CommentPresenter</span> <span class="o">&lt;</span> <span class="no">Curly</span><span class="o">::</span><span class="no">Presenter</span>
+  <span class="n">version</span> <span class="mi">4</span>
+  <span class="n">depends_on</span> <span class="s1">'posts/comment'</span>
+
+  <span class="k">def</span> <span class="nf">cache_key</span>
+    <span class="c1"># Some objects</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+
+<p>Now, if the version of <code>Posts::CommentPresenter</code> is bumped, the cache keys for both
+presenters would change. You can register any number of view paths with <code>depends_on</code>.</p>
+
+<p>If you use <a href="https://github.com/rails/cache_digests">Cache Digests</a>, Curly will
+automatically provide a list of dependencies. This will allow you to deploy changes
+to your templates and have the relevant caches automatically expire.</p>
+
+<h2>
+<a name="thanks" class="anchor" href="#thanks"><span class="octicon octicon-link"></span></a>Thanks</h2>
+
+<p>Thanks to <a href="http://zendesk.com/">Zendesk</a> for sponsoring the work on Curly.</p>
+
+<h3>
+<a name="contributors" class="anchor" href="#contributors"><span class="octicon octicon-link"></span></a>Contributors</h3>
+
+<ul>
+<li>Daniel Schierbeck (<a href="https://github.com/dasch">@dasch</a>)</li>
+<li>Benjamin Quorning (<a href="https://github.com/bquorning">@bquorning</a>)</li>
+<li>Jeremy Rodi (<a href="https://github.com/redjazz96">@redjazz96</a>)</li>
+</ul><h2>
+<a name="build-status" class="anchor" href="#build-status"><span class="octicon octicon-link"></span></a>Build Status</h2>
+
+<p><a href="https://travis-ci.org/zendesk/curly"><img src="https://travis-ci.org/zendesk/curly.png?branch=master" alt="Build Status"></a></p>
+
+<h2>
+<a name="copyright-and-license" class="anchor" href="#copyright-and-license"><span class="octicon octicon-link"></span></a>Copyright and License</h2>
+
+<p>Copyright (c) 2013 Daniel Schierbeck (<a href="https://github.com/dasch" class="user-mention">@dasch</a>), Zendesk Inc.</p>
+
+<p>Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License Version 2.0</a>.</p>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/zendesk/curly/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/zendesk/curly/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/zendesk/curly"></a> is maintained by <a href="https://github.com/zendesk">zendesk</a>.</p>
+
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+  
+  </body>
+</html>
