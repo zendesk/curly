@@ -1,7 +1,6 @@
 require 'curly/scanner'
 require 'curly/error'
 require 'curly/invalid_reference'
-require 'curly/invalid_block_error'
 require 'curly/incorrect_ending_error'
 require 'curly/incomplete_block_error'
 
