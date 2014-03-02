@@ -218,7 +218,8 @@ use `yield` to signal that content can be inserted. Curly works just like ERB, s
 will make it try to read a content block with the given name:
 
 ```ruby
-# Given you have the following Curly template in app/views/layouts/application.html.curly
+# Given you have the following Curly template in
+# app/views/layouts/application.html.curly
 #
 #   <html>
 #     <head>
