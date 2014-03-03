@@ -16,10 +16,8 @@ or [Handlebars](http://handlebarsjs.com/), Curly is different in some key ways:
   languages like [Liquid](http://liquidmarkup.org/).
 - Instead of implementing its own template resolution mechanism, Curly hooks
   directly into Rails, leveraging the existing resolvers.
-- Because of the way it integrates with Rails, it is very easy to use partial
-  Curly templates to split out logic from a presenter. With Mustache, at least,
-  when integrating with Rails, it is common to return Hash objects from view
-  object methods that are in turn used by the template.
+- Because of its close integration with Rails, with Curly you can easily set
+  up caching for your views and partials.
 
 
 ### Table of Contents
