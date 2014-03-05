@@ -8,7 +8,8 @@
   {{#admin?}}
     Hello!
   {{/admin?}}
-  
+  ```
+
   *Jeremy Rodi*
 
 ### Curly 0.12.0 (December 3, 2013)
