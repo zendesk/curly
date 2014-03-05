@@ -1,5 +1,16 @@
 ### Unreleased
 
+### Curly 1.0.0rc1 (February 18, 2014)
+
+* Add support for conditional blocks:
+
+  ```
+  {{#admin?}}
+    Hello!
+  {{/admin?}}
+  
+  *Jeremy Rodi*
+
 ### Curly 0.12.0 (December 3, 2013)
 
 * Allow Curly to output Curly syntax by using the `{{{ ... }}` syntax:
