@@ -80,11 +80,11 @@ module Curly
       @presenter_classes.last
     end
 
-    def compile_block_start(reference)
+    def compile_conditional_block_start(reference)
       compile_conditional_block "if", reference
     end
 
-    def compile_inverse_block_start(reference)
+    def compile_inverse_conditional_block_start(reference)
       compile_conditional_block "unless", reference
     end
 

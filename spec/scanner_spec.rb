@@ -62,7 +62,7 @@ describe Curly::Scanner, ".scan" do
   it "scans conditional block tags" do
     scan('foo {{#bar?}} hello {{/bar?}}').should == [
       [:text, "foo "],
-      [:block_start, "bar?"],
+      [:conditional_block_start, "bar?"],
       [:text, " hello "],
       [:conditional_block_end, "bar?"]
     ]
@@ -71,7 +71,7 @@ describe Curly::Scanner, ".scan" do
   it "scans inverse block tags" do
     scan('foo {{^bar?}} hello {{/bar?}}').should == [
       [:text, "foo "],
-      [:inverse_block_start, "bar?"],
+      [:inverse_conditional_block_start, "bar?"],
       [:text, " hello "],
       [:conditional_block_end, "bar?"]
     ]
