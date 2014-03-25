@@ -43,10 +43,11 @@ module Curly
       false
     end
 
-    attr_reader :template, :presenter_class
+    attr_reader :template
 
     def initialize(template, presenter_class)
-      @template, @presenter_class = template, presenter_class
+      @template = template
+      @presenter_classes = [presenter_class]
     end
 
     def compile
@@ -68,6 +69,7 @@ module Curly
 
       <<-RUBY
         buffer = ActiveSupport::SafeBuffer.new
+        presenters = []
         #{parts.join("\n")}
         buffer
       RUBY
@@ -75,33 +77,71 @@ module Curly
 
     private
 
-    def compile_block_start(reference)
+    def presenter_class
+      @presenter_classes.last
+    end
+
+    def compile_conditional_block_start(reference)
       compile_conditional_block "if", reference
     end
 
-    def compile_inverse_block_start(reference)
+    def compile_inverse_conditional_block_start(reference)
       compile_conditional_block "unless", reference
+    end
+
+    def compile_collection_block_start(reference)
+      unless presenter_class.method_available?(reference)
+        raise Curly::InvalidReference.new(reference)
+      end
+
+      as = reference.singularize
+      counter = "#{as}_counter"
+
+      begin
+        nested_presenter_name = "#{as.camelcase}Presenter"
+        item_presenter_class = presenter_class.const_get(nested_presenter_name)
+      rescue NameError
+        raise Curly::Error,
+          "cannot enumerate `#{reference}`, no matching presenter #{nested_presenter_name}"
+      end
+
+      @blocks.push(reference)
+      @presenter_classes.push(item_presenter_class)
+
+      <<-RUBY
+        presenters << presenter
+        items = Array(presenter.#{reference})
+        items.each_with_index do |item, index|
+          item_options = options.merge(:#{as} => item, :#{counter} => index + 1)
+          presenter = #{item_presenter_class}.new(self, item_options)
+      RUBY
     end
 
     def compile_conditional_block(keyword, reference)
       method_call = ReferenceCompiler.compile_conditional(presenter_class, reference)
 
-      @blocks.push reference
+      @blocks.push(reference)
 
       <<-RUBY
         #{keyword} #{method_call}
       RUBY
     end
 
-    def compile_block_end(reference)
-      last_block = @blocks.pop
-
-      unless last_block == reference
-        raise Curly::IncorrectEndingError.new(reference, last_block)
-      end
+    def compile_conditional_block_end(reference)
+      validate_block_end(reference)
 
       <<-RUBY
         end
+      RUBY
+    end
+
+    def compile_collection_block_end(reference)
+      @presenter_classes.pop
+      validate_block_end(reference)
+
+      <<-RUBY
+        end
+        presenter = presenters.pop
       RUBY
     end
 
@@ -118,6 +158,14 @@ module Curly
 
     def compile_comment(comment)
       "" # Replace the content with an empty string.
+    end
+
+    def validate_block_end(reference)
+      last_block = @blocks.pop
+
+      unless last_block == reference
+        raise Curly::IncorrectEndingError.new(reference, last_block)
+      end
     end
   end
 end

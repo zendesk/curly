@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Curly::Compiler do
+  include CompilationSupport
+
   let :presenter_class do
     Class.new do
       def foo
@@ -184,18 +186,5 @@ describe Curly::Compiler do
     def validate(template)
       Curly.valid?(template, presenter_class)
     end
-  end
-
-  def evaluate(template, &block)
-    code = Curly::Compiler.compile(template, presenter_class)
-    context = double("context", presenter: presenter)
-
-    context.instance_eval(<<-RUBY)
-      def self.render
-        #{code}
-      end
-    RUBY
-
-    context.render(&block)
   end
 end
