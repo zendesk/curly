@@ -42,10 +42,11 @@ module Curly
       false
     end
 
-    attr_reader :template, :presenter_class
+    attr_reader :template
 
     def initialize(template, presenter_class)
-      @template, @presenter_class = template, presenter_class
+      @template = template
+      @presenter_classes = [presenter_class]
     end
 
     def compile
@@ -74,6 +75,10 @@ module Curly
 
     private
 
+    def presenter_class
+      @presenter_classes.last
+    end
+
     def compile_block_start(reference)
       compile_conditional_block "if", reference
     end
@@ -82,11 +87,29 @@ module Curly
       compile_conditional_block "unless", reference
     end
 
+    def compile_collection_block_start(reference)
+      unless presenter_class.method_available?(reference.to_sym)
+        raise Curly::InvalidReference.new(reference.to_sym)
+      end
+
+      as = reference.singularize
+      item_presenter_class = presenter_class.const_get("#{as.camelcase}Presenter")
+
+      @blocks.push(reference)
+      @presenter_classes.push(item_presenter_class)
+
+      <<-RUBY
+        presenter.#{reference}.each do |item|
+          presenter = #{item_presenter_class}.new(self, :#{as} => item)
+      RUBY
+    end
+
     def compile_conditional_block(keyword, reference)
       m = reference.match(/\A(.+?)(?:\.(.+))?\?\z/)
       method, argument = "#{m[1]}?", m[2]
 
-      @blocks.push reference
+      @blocks.push(reference)
+      @presenter_classes.push(presenter_class)
 
       unless presenter_class.method_available?(method.to_sym)
         raise Curly::InvalidReference.new(method.to_sym)
@@ -104,6 +127,7 @@ module Curly
     end
 
     def compile_block_end(reference)
+      @presenter_classes.pop
       last_block = @blocks.pop
 
       unless last_block == reference

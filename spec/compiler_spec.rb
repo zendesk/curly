@@ -19,6 +19,10 @@ describe Curly::Compiler do
         value == "world"
       end
 
+      def items
+        %w(foo bar)
+      end
+
       def unicorns
         "UNICORN"
       end
@@ -41,7 +45,7 @@ describe Curly::Compiler do
 
       def self.method_available?(method)
         [:foo, :parameterized, :high_yield, :yield_value, :dirty,
-          :false?, :true?, :hello?].include?(method)
+          :false?, :true?, :hello?, :items].include?(method)
       end
 
       def self.available_methods
@@ -139,6 +143,27 @@ describe Curly::Compiler do
 
     it "passes an argument to blocks" do
       evaluate("{{#hello.world?}}foo{{/hello.world?}}{{#hello.foo?}}bar{{/hello.foo?}}").should == "foo"
+    end
+
+    it "compiles collection blocks" do
+      presenter_class = Class.new do
+        def initialize(context, locals)
+          @locals = locals
+        end
+
+        def name
+          @locals[:item]
+        end
+
+        def self.method_available?(*)
+          true
+        end
+      end
+
+      stub_const("ItemPresenter", presenter_class)
+
+      template = "<ul>{{#items}}<li>{{name}}</li>{{/items}}</ul>"
+      evaluate(template).should == "<ul><li>foo</li><li>bar</li></ul>"
     end
 
     it "gives an error on mismatching blocks" do

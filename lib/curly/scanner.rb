@@ -89,7 +89,11 @@ module Curly
 
     def scan_block_start
       if value = scan_until_end_of_curly
-        [:block_start, value]
+        if value.end_with?("?")
+          [:block_start, value]
+        else
+          [:collection_block_start, value]
+        end
       end
     end
 
