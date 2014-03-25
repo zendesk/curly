@@ -89,9 +89,7 @@ module Curly
     end
 
     def compile_collection_block_start(reference)
-      unless presenter_class.method_available?(reference.to_sym)
-        raise Curly::InvalidReference.new(reference.to_sym)
-      end
+      validate_reference(reference)
 
       as = reference.singularize
       item_presenter_class = presenter_class.const_get("#{as.camelcase}Presenter")
@@ -110,11 +108,9 @@ module Curly
       m = reference.match(/\A(.+?)(?:\.(.+))?\?\z/)
       method, argument = "#{m[1]}?", m[2]
 
-      @blocks.push(reference)
+      validate_reference(method)
 
-      unless presenter_class.method_available?(method.to_sym)
-        raise Curly::InvalidReference.new(method.to_sym)
-      end
+      @blocks.push(reference)
 
       if presenter_class.instance_method(method).arity == 1
         <<-RUBY
@@ -148,9 +144,7 @@ module Curly
     def compile_reference(reference)
       method, argument = reference.split(".", 2)
 
-      unless presenter_class.method_available?(method.to_sym)
-        raise Curly::InvalidReference.new(method.to_sym)
-      end
+      validate_reference(method)
 
       if presenter_class.instance_method(method).arity == 1
         # The method accepts a single argument -- pass it in.
@@ -179,6 +173,12 @@ module Curly
 
       unless last_block == reference
         raise Curly::IncorrectEndingError.new(reference, last_block)
+      end
+    end
+
+    def validate_reference(reference)
+      unless presenter_class.method_available?(reference.to_sym)
+        raise Curly::InvalidReference.new(reference.to_sym)
       end
     end
   end
