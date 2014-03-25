@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Curly::Compiler do
+  include CompilationSupport
+
   let :presenter_class do
     Class.new do
       def foo
@@ -17,10 +19,6 @@ describe Curly::Compiler do
 
       def hello?(value)
         value == "world"
-      end
-
-      def items
-        %w(foo bar)
       end
 
       def unicorns
@@ -45,7 +43,7 @@ describe Curly::Compiler do
 
       def self.method_available?(method)
         [:foo, :parameterized, :high_yield, :yield_value, :dirty,
-          :false?, :true?, :hello?, :items].include?(method)
+          :false?, :true?, :hello?].include?(method)
       end
 
       def self.available_methods
@@ -145,27 +143,6 @@ describe Curly::Compiler do
       evaluate("{{#hello.world?}}foo{{/hello.world?}}{{#hello.foo?}}bar{{/hello.foo?}}").should == "foo"
     end
 
-    it "compiles collection blocks" do
-      presenter_class = Class.new do
-        def initialize(context, locals)
-          @locals = locals
-        end
-
-        def name
-          @locals[:item]
-        end
-
-        def self.method_available?(*)
-          true
-        end
-      end
-
-      stub_const("ItemPresenter", presenter_class)
-
-      template = "<ul>{{#items}}<li>{{name}}</li>{{/items}}</ul>"
-      evaluate(template).should == "<ul><li>foo</li><li>bar</li></ul>"
-    end
-
     it "gives an error on mismatching blocks" do
       expect do
         evaluate("test{{#false?}}bar{{/true?}}")
@@ -214,18 +191,5 @@ describe Curly::Compiler do
     def validate(template)
       Curly.valid?(template, presenter_class)
     end
-  end
-
-  def evaluate(template, &block)
-    code = Curly::Compiler.compile(template, presenter_class)
-    context = double("context", presenter: presenter)
-
-    context.instance_eval(<<-RUBY)
-      def self.render
-        #{code}
-      end
-    RUBY
-
-    context.render(&block)
   end
 end

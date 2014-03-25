@@ -68,6 +68,7 @@ module Curly
 
       <<-RUBY
         buffer = ActiveSupport::SafeBuffer.new
+        presenters = []
         #{parts.join("\n")}
         buffer
       RUBY
@@ -99,6 +100,7 @@ module Curly
       @presenter_classes.push(item_presenter_class)
 
       <<-RUBY
+        presenters << presenter
         presenter.#{reference}.each do |item|
           presenter = #{item_presenter_class}.new(self, :#{as} => item)
       RUBY
@@ -109,7 +111,6 @@ module Curly
       method, argument = "#{m[1]}?", m[2]
 
       @blocks.push(reference)
-      @presenter_classes.push(presenter_class)
 
       unless presenter_class.method_available?(method.to_sym)
         raise Curly::InvalidReference.new(method.to_sym)
@@ -126,7 +127,19 @@ module Curly
       end
     end
 
-    def compile_block_end(reference)
+    def compile_conditional_block_end(reference)
+      last_block = @blocks.pop
+
+      unless last_block == reference
+        raise Curly::IncorrectEndingError.new(reference, last_block)
+      end
+
+      <<-RUBY
+        end
+      RUBY
+    end
+
+    def compile_collection_block_end(reference)
       @presenter_classes.pop
       last_block = @blocks.pop
 
@@ -136,6 +149,7 @@ module Curly
 
       <<-RUBY
         end
+        presenter = presenters.pop
       RUBY
     end
 
