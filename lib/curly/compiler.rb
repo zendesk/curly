@@ -128,11 +128,7 @@ module Curly
     end
 
     def compile_conditional_block_end(reference)
-      last_block = @blocks.pop
-
-      unless last_block == reference
-        raise Curly::IncorrectEndingError.new(reference, last_block)
-      end
+      validate_block_end(reference)
 
       <<-RUBY
         end
@@ -141,11 +137,7 @@ module Curly
 
     def compile_collection_block_end(reference)
       @presenter_classes.pop
-      last_block = @blocks.pop
-
-      unless last_block == reference
-        raise Curly::IncorrectEndingError.new(reference, last_block)
-      end
+      validate_block_end(reference)     
 
       <<-RUBY
         end
@@ -180,6 +172,14 @@ module Curly
 
     def compile_comment(comment)
       "" # Replace the content with an empty string.
+    end
+
+    def validate_block_end(reference)
+      last_block = @blocks.pop
+
+      unless last_block == reference
+        raise Curly::IncorrectEndingError.new(reference, last_block)
+      end
     end
   end
 end
