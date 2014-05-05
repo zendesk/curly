@@ -12,7 +12,9 @@ describe Curly::Presenter do
     presents :midget, :clown, default: nil
     presents :elephant, default: "Dumbo"
 
-    attr_reader :midget, :clown, :elephant
+    attr_reader :midget, :clown, :elephant, :horse
+
+    deprecate_methods :horse
   end
 
   class FrenchCircusPresenter < CircusPresenter
@@ -82,6 +84,10 @@ describe Curly::Presenter do
 
     it "does not include methods on the Curly::Presenter base class" do
       CircusPresenter.available_methods.should_not include(:cache_key)
+    end
+
+    it "does not include deprecated methods" do
+      CircusPresenter.available_methods.should_not include(:horse)
     end
   end
 

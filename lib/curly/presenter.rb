@@ -174,7 +174,7 @@ module Curly
       #
       # Returns an Array of Symbol method names.
       def available_methods
-        public_instance_methods - Curly::Presenter.public_instance_methods
+        public_instance_methods - Curly::Presenter.public_instance_methods - deprecated_methods
       end
 
       # The set of view paths that the presenter depends on.
@@ -253,14 +253,19 @@ module Curly
           self.default_values = self.default_values.merge(default_values)
         end
       end
+
+      def deprecate_methods(*args)
+        self.deprecated_methods += args
+      end
     end
 
     private
 
-    class_attribute :presented_names, :default_values
+    class_attribute :presented_names, :default_values, :deprecated_methods
 
     self.presented_names = [].freeze
     self.default_values = {}.freeze
+    self.deprecated_methods = [].freeze
 
     # Delegates private method calls to the current view context.
     #
