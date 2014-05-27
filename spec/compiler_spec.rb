@@ -39,8 +39,12 @@ describe Curly::Compiler do
         value
       end
 
+      def parameterized_multiple(value1, value2)
+        value1 + value2
+      end
+
       def self.method_available?(method)
-        [:foo, :parameterized, :high_yield, :yield_value, :dirty,
+        [:foo, :parameterized, :parameterized_multiple, :high_yield, :yield_value, :dirty,
           :false?, :true?, :hello?].include?(method)
       end
 
@@ -64,7 +68,11 @@ describe Curly::Compiler do
     end
 
     it "passes on an optional reference parameter to the presenter method" do
-      evaluate("{{parameterized.foo.bar}}").should == "foo.bar"
+      evaluate("{{parameterized:foo}}").should == "foo"
+    end
+
+    it "passes on more than optional reference parameter to the presenter method" do
+      evaluate("{{parameterized_multiple:foo,bar}}").should == "foobar"
     end
 
     it "passes an empty string to methods that take a parameter when none is provided" do
