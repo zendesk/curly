@@ -117,6 +117,7 @@ module Curly
 
     def compile_reference(reference)
       method, arguments = reference.split(":", 2)
+      method.strip!
       if arguments
         arguments = arguments.split(",").map(&:inspect).join(",")
       else
