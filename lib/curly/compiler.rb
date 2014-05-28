@@ -116,27 +116,20 @@ module Curly
     end
 
     def compile_reference(reference)
-      method, arguments = reference.split(":", 2)
+      method, arguments = reference.split(" ", 2)
       method.strip!
+
       if arguments
-        arguments = arguments.split(",").map(&:inspect).join(",")
-      else
-        arguments = "\"\""
+        arguments = arguments.split(" ").join(",")
       end
 
       unless presenter_class.method_available?(method.to_sym)
         raise Curly::InvalidReference.new(method.to_sym)
       end
 
-      if presenter_class.instance_method(method).arity > 0
-        code = <<-RUBY
-          presenter.#{method}(#{arguments}) {|*args| yield(*args) }
-        RUBY
-      else
-        code = <<-RUBY
-          presenter.#{method} {|*args| yield(*args) }
-        RUBY
-      end
+      code = <<-RUBY
+        presenter.#{method}(#{arguments if arguments}) {|*args| yield(*args) }
+      RUBY
 
       'buffer.concat(%s.to_s)' % code.strip
     end

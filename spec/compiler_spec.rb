@@ -35,7 +35,7 @@ describe Curly::Compiler do
         true
       end
 
-      def parameterized(value)
+      def parameterized(value="foo")
         value
       end
 
@@ -43,8 +43,13 @@ describe Curly::Compiler do
         value1 + value2
       end
 
+      def parameterized_multiple_with_keywords(a: "foo", b: "bar")
+        a + b
+      end
+
       def self.method_available?(method)
-        [:foo, :parameterized, :parameterized_multiple, :high_yield, :yield_value, :dirty,
+        [:foo, :parameterized, :parameterized_multiple,
+          :parameterized_multiple_with_keywords,:high_yield, :yield_value, :dirty,
           :false?, :true?, :hello?].include?(method)
       end
 
@@ -68,15 +73,21 @@ describe Curly::Compiler do
     end
 
     it "passes on an optional reference parameter to the presenter method" do
-      evaluate("{{parameterized:foo}}").should == "foo"
+      evaluate('{{parameterized "foo"}}').should == "foo"
     end
 
     it "passes on more than optional reference parameter to the presenter method" do
-      evaluate("{{parameterized_multiple:foo,bar}}").should == "foobar"
+      evaluate('{{parameterized_multiple "foo" "bar"}}').should == "foobar"
     end
 
-    it "passes an empty string to methods that take a parameter when none is provided" do
-      evaluate("{{parameterized}}").should == ""
+    it "passes on more than optional reference parameter to the presenter method with keyword arguments" do
+      evaluate('{{parameterized_multiple_with_keywords a:"baz" b:"foo"}}').should == "bazfoo"
+      evaluate('{{parameterized_multiple_with_keywords a:"baz"}}').should == "bazbar"
+    end
+
+    it "doesn't pass arguments to methods that take parameters when none is provided" do
+      evaluate("{{parameterized}}").should == "foo"
+      evaluate("{{parameterized_multiple_with_keywords}}").should == "foobar"
     end
 
     it "raises ArgumentError if the presenter class is nil" do
