@@ -100,6 +100,7 @@ describe Curly::Compiler do
 
     it "converts symbol arguments to string" do
       evaluate("{{check_security :foo}}").should == "String"
+      evaluate("{{check_security :a => :b}}").should == "String"
       evaluate("{{check_security_with_keywords a::foo}}").should == "String"
     end
 
