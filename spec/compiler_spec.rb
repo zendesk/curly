@@ -47,8 +47,16 @@ describe Curly::Compiler do
         a + b
       end
 
+      def check_security(param)
+        "#{param.class}"
+      end
+
+      def check_security_with_keywords(a: :foo)
+        "#{param.class}"
+      end
+
       def self.method_available?(method)
-        [:foo, :parameterized, :parameterized_multiple,
+        [:foo, :parameterized, :parameterized_multiple, :check_security, :check_security_with_keywords,
           :parameterized_multiple_with_keywords,:high_yield, :yield_value, :dirty,
           :false?, :true?, :hello?].include?(method)
       end
@@ -88,6 +96,11 @@ describe Curly::Compiler do
     it "doesn't pass arguments to methods that take parameters when none is provided" do
       evaluate("{{parameterized}}").should == "foo"
       evaluate("{{parameterized_multiple_with_keywords}}").should == "foobar"
+    end
+
+    it "converts symbol arguments to string" do
+      evaluate("{{check_security :foo}}").should == "String"
+      evaluate("{{check_security_with_keywords a::foo}}").should == "String"
     end
 
     it "raises ArgumentError if the presenter class is nil" do

@@ -120,7 +120,13 @@ module Curly
       method.strip!
 
       if arguments
-        arguments = arguments.split(" ").join(",")
+        arguments = arguments.split(" ").map do |a|
+          if a[0] == ":"
+            a.gsub(/^([:]{1})(.*)$/, '"\2"')
+          else
+            a.gsub(/:([:]{1})(.*)/, ':"\2"')
+          end
+        end.join(",")
       end
 
       unless presenter_class.method_available?(method.to_sym)
