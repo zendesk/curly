@@ -21,7 +21,7 @@ describe Curly::Compiler do
 
       if RUBY_VERSION >= "2.0.0"
         class_eval %{
-          def hey(ya: )
+          def hey(ya: nil)
             ya
           end
         }
