@@ -87,11 +87,11 @@ describe Curly::Presenter do
 
   describe ".method_available?" do
     it "returns true if the method is available" do
-      CircusPresenter.method_available?(:midget).should be_true
+      CircusPresenter.method_available?(:midget).should == true
     end
 
     it "returns false if the method is not available" do
-      CircusPresenter.method_available?(:bear).should be_false
+      CircusPresenter.method_available?(:bear).should == false
     end
   end
 
