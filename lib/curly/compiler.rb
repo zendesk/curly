@@ -100,7 +100,7 @@ module Curly
       <<-RUBY
         presenters << presenter
         presenter.#{reference}.each do |item|
-          presenter = #{item_presenter_class}.new(self, :#{as} => item)
+          presenter = #{item_presenter_class}.new(self, options.merge(:#{as} => item))
       RUBY
     end
 

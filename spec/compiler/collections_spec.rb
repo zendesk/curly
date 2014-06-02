@@ -20,9 +20,14 @@ describe Curly::Compiler do
   let(:inner_presenter_class) do
     Class.new(Curly::Presenter) do
       presents :item
+      presents :list, default: nil
 
       def name
         @item.name
+      end
+
+      def list_title
+        @list.title
       end
 
       def parts
@@ -67,6 +72,13 @@ describe Curly::Compiler do
 
     template = "{{#items}}{{#parts}}{{identifier}}{{/parts}}{{name}}{{/items}}{{title}}"
     evaluate(template).should == "XfooInventory"
+  end
+
+  it "passes the parent presenter's options to the nested presenter" do
+    list.stub(:items) { [double(name: "foo"), double(name: "bar")] }
+
+    template = "{{#items}}{{list_title}}: {{name}}. {{/items}}"
+    evaluate(template, list: list).should == "Inventory: foo. Inventory: bar. "
   end
 
   it "compiles nested collection blocks" do
