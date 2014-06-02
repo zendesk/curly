@@ -19,6 +19,10 @@ describe Curly::Compiler do
         value == "world"
       end
 
+      def hey(stuff)
+        stuff["ya"]
+      end
+
       def unicorns
         "UNICORN"
       end
@@ -41,7 +45,7 @@ describe Curly::Compiler do
 
       def self.method_available?(method)
         [:foo, :parameterized, :high_yield, :yield_value, :dirty,
-          :false?, :true?, :hello?].include?(method)
+          :false?, :true?, :hello?, :hey].include?(method)
       end
 
       def self.available_methods
@@ -138,7 +142,11 @@ describe Curly::Compiler do
     end
 
     it "passes an argument to blocks" do
-      evaluate("{{#hello.world?}}foo{{/hello.world?}}{{#hello.foo?}}bar{{/hello.foo?}}").should == "foo"
+      evaluate("{{#hello.world?}}foo{{/hello?}}{{#hello.foo?}}bar{{/hello?}}").should == "foo"
+    end
+
+    it "handles keyword arguments" do
+      evaluate("{{hey ya: test}}").should == "test"
     end
 
     it "gives an error on mismatching blocks" do
