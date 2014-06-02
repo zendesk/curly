@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Curly::Compiler do
+  include CompilationSupport
+
   let :presenter_class do
     Class.new do
       def foo
@@ -35,12 +37,29 @@ describe Curly::Compiler do
         true
       end
 
-      def parameterized(value)
-        value
+      def parameterized(value="foo")
+        value.to_s
+      end
+
+      def parameterized_multiple(value1, value2)
+        value1.to_s + value2.to_s
+      end
+
+      def parameterized_multiple_with_keywords(a: "foo", b: "bar")
+        a.to_s + b.to_s
+      end
+
+      def check_security(param)
+        "#{param.class}"
+      end
+
+      def check_security_with_keywords(a: :foo)
+        "#{param.class}"
       end
 
       def self.method_available?(method)
-        [:foo, :parameterized, :high_yield, :yield_value, :dirty,
+        [:foo, :parameterized, :parameterized_multiple, :check_security, :check_security_with_keywords,
+          :parameterized_multiple_with_keywords,:high_yield, :yield_value, :dirty,
           :false?, :true?, :hello?].include?(method)
       end
 
@@ -64,11 +83,38 @@ describe Curly::Compiler do
     end
 
     it "passes on an optional reference parameter to the presenter method" do
-      evaluate("{{parameterized.foo.bar}}").should == "foo.bar"
+      evaluate("{{parameterized 'foo'}}").should == "foo"
     end
 
-    it "passes an empty string to methods that take a parameter when none is provided" do
-      evaluate("{{parameterized}}").should == ""
+    it "passes on more than optional reference parameter to the presenter method" do
+      evaluate("{{parameterized_multiple 1 'bar'}}").should == "1bar"
+    end
+
+    it "passes on more than optional reference parameter to the presenter method with keyword arguments" do
+      evaluate("{{parameterized_multiple_with_keywords a:'baz' b:'foo'}}").should == "bazfoo"
+      evaluate("{{parameterized_multiple_with_keywords a:'baz'}}").should == "bazbar"
+      evaluate("{{parameterized_multiple_with_keywords a:'baz' b:2}}").should == "baz2"
+    end
+
+    it "doesn't pass arguments to methods that take parameters when none is provided" do
+      evaluate("{{parameterized}}").should == "foo"
+      evaluate("{{parameterized_multiple_with_keywords}}").should == "foobar"
+    end
+
+    it "converts double-quotes to single-quotes" do
+      evaluate('{{parameterized_multiple "#{Time.new}" "bar"}}').should == '#{Time.new}bar'
+      evaluate('{{parameterized_multiple_with_keywords a:"#{Time.new}" b:"bar"}}').should == '#{Time.new}bar'
+    end
+
+    it "rejects arguments different of single-quote or numbers" do
+      expect { evaluate("{{parameterized_multiple [] 'bar'}}")}.to raise_exception(ArgumentError)
+      expect { evaluate("{{parameterized_multiple :foo 'bar'}}")}.to raise_exception(ArgumentError)
+      expect { evaluate("{{parameterized_multiple {:foo=>'bar'} 'bar'}}")}.to raise_exception(ArgumentError)
+      expect { evaluate("{{parameterized_multiple `ls -lha` 'bar'}}")}.to raise_exception(ArgumentError)
+      evaluate("{{parameterized_multiple_with_keywords a:`ls -lha` b:[]}}").should == "foobar"
+      evaluate("{{parameterized_multiple_with_keywords a:[] b:'bar'}}").should == "foobar"
+      evaluate("{{parameterized_multiple_with_keywords a:{} b:[]}}").should == "foobar"
+      evaluate("{{parameterized_multiple_with_keywords a::baz b:'bar'}}").should == "foobar"
     end
 
     it "raises ArgumentError if the presenter class is nil" do
@@ -189,18 +235,5 @@ describe Curly::Compiler do
     def validate(template)
       Curly.valid?(template, presenter_class)
     end
-  end
-
-  def evaluate(template, &block)
-    code = Curly::Compiler.compile(template, presenter_class)
-    context = double("context", presenter: presenter)
-
-    context.instance_eval(<<-RUBY)
-      def self.render
-        #{code}
-      end
-    RUBY
-
-    context.render(&block)
   end
 end
