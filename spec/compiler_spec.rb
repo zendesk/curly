@@ -36,15 +36,15 @@ describe Curly::Compiler do
       end
 
       def parameterized(value="foo")
-        value
+        value.to_s
       end
 
       def parameterized_multiple(value1, value2)
-        value1 + value2
+        value1.to_s + value2.to_s
       end
 
       def parameterized_multiple_with_keywords(a: "foo", b: "bar")
-        a + b
+        a.to_s + b.to_s
       end
 
       def check_security(param)
@@ -81,16 +81,17 @@ describe Curly::Compiler do
     end
 
     it "passes on an optional reference parameter to the presenter method" do
-      evaluate('{{parameterized "foo"}}').should == "foo"
+      evaluate("{{parameterized 'foo'}}").should == "foo"
     end
 
     it "passes on more than optional reference parameter to the presenter method" do
-      evaluate('{{parameterized_multiple "foo" "bar"}}').should == "foobar"
+      evaluate("{{parameterized_multiple 1 'bar'}}").should == "1bar"
     end
 
     it "passes on more than optional reference parameter to the presenter method with keyword arguments" do
-      evaluate('{{parameterized_multiple_with_keywords a:"baz" b:"foo"}}').should == "bazfoo"
-      evaluate('{{parameterized_multiple_with_keywords a:"baz"}}').should == "bazbar"
+      evaluate("{{parameterized_multiple_with_keywords a:'baz' b:'foo'}}").should == "bazfoo"
+      evaluate("{{parameterized_multiple_with_keywords a:'baz'}}").should == "bazbar"
+      evaluate("{{parameterized_multiple_with_keywords a:'baz' b:2}}").should == "baz2"
     end
 
     it "doesn't pass arguments to methods that take parameters when none is provided" do
@@ -98,10 +99,20 @@ describe Curly::Compiler do
       evaluate("{{parameterized_multiple_with_keywords}}").should == "foobar"
     end
 
-    it "converts symbol arguments to string" do
-      evaluate("{{check_security :foo}}").should == "String"
-      evaluate("{{check_security :a => :b}}").should == "String"
-      evaluate("{{check_security_with_keywords a::foo}}").should == "String"
+    it "converts double-quotes to single-quotes" do
+      evaluate('{{parameterized_multiple "#{Time.new}" "bar"}}').should == '#{Time.new}bar'
+      evaluate('{{parameterized_multiple_with_keywords a:"#{Time.new}" b:"bar"}}').should == '#{Time.new}bar'
+    end
+
+    it "rejects arguments different of single-quote or numbers" do
+      expect { evaluate("{{parameterized_multiple [] 'bar'}}")}.to raise_exception(ArgumentError)
+      expect { evaluate("{{parameterized_multiple :foo 'bar'}}")}.to raise_exception(ArgumentError)
+      expect { evaluate("{{parameterized_multiple {:foo=>'bar'} 'bar'}}")}.to raise_exception(ArgumentError)
+      expect { evaluate("{{parameterized_multiple `ls -lha` 'bar'}}")}.to raise_exception(ArgumentError)
+      evaluate("{{parameterized_multiple_with_keywords a:`ls -lha` b:[]}}").should == "foobar"
+      evaluate("{{parameterized_multiple_with_keywords a:[] b:'bar'}}").should == "foobar"
+      evaluate("{{parameterized_multiple_with_keywords a:{} b:[]}}").should == "foobar"
+      evaluate("{{parameterized_multiple_with_keywords a::baz b:'bar'}}").should == "foobar"
     end
 
     it "raises ArgumentError if the presenter class is nil" do

@@ -116,16 +116,17 @@ module Curly
     end
 
     def compile_reference(reference)
+      # avoid string interpolation
+      reference.gsub! /"/, "'"
       method, arguments = reference.split(" ", 2)
       method.strip!
 
       if arguments
-        arguments = arguments.split(" ").map do |a|
-          if a[0] == ":"
-            a.gsub(/^([:]{1})(.*)$/, '"\2"')
-          else
-            a.gsub(/^([a-zA-Z0-9_]+[:]{1})([:]{1})(.*)$/, '\1"\3"')
-          end
+        # don't split inside the string
+        arguments = arguments.scan(/(?:'(?:\\.|[^'])*'|[^' ])+/)
+        .reject do |a|
+          # accept only single-quote strings, numbers and keyword arguments with this pattern
+          a[0] =~ /[^'0-9a-zA-Z_]/ || a =~ /[a-zA-Z0-9_]+\:[^'0-9]+/
         end.join(",")
       end
 
