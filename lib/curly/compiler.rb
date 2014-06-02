@@ -122,10 +122,12 @@ module Curly
         raise Curly::InvalidReference.new(method.to_sym)
       end
 
+
+
       if presenter_class.instance_method(method).arity == 1
         # The method accepts a single argument -- pass it in.
         code = <<-RUBY
-          presenter.#{method}(#{arguments.inspect}) {|*args| yield(*args) }
+          presenter.#{method}(#{stringify_arguments(arguments)}) {|*args| yield(*args) }
         RUBY
       else
         code = <<-RUBY
@@ -134,6 +136,14 @@ module Curly
       end
 
       'buffer.concat(%s.to_s)' % code.strip
+    end
+
+    def stringify_arguments(arguments)
+      if arguments.is_a? Hash and RUBY_VERSION >= "2.0.0"
+        arguments.symbolize_keys.inspect[1..-2]
+      else
+        arguments.inspect
+      end
     end
 
     def compile_text(text)

@@ -2,7 +2,7 @@ module Curly
   class ReferenceParser
 
     VALUE_MATCH = %{(?:
-                      (?:\"((?:\\"|.)*?)\")
+                      (?:("|')((?:\\"|\\'|.)*?)\1)
                     | ([[:word:]\.]+)
                   )}
 
@@ -41,7 +41,7 @@ module Curly
 
     def scan_singular
       if @scanner.scan(/\.#{VALUE_MATCH}/x)
-        @scanner[1] || @scanner[2]
+        @scanner[2] || @scanner[3]
       end
     end
 
@@ -61,11 +61,15 @@ module Curly
 
     def scan_keypair
       return unless @scanner.scan(/\A\s*#{VALUE_MATCH}\s*=/x)
-      key = @scanner[1] || @scanner[2]
+      key = @scanner[2] || @scanner[3]
       return unless @scanner.scan(/\A\s*#{VALUE_MATCH}/x)
-      value = @scanner[1] || @scanner[2]
+      value = @scanner[2] || @scanner[3]
 
-      [key.gsub(/\\"/, "\""), value.gsub(/\\"/, "\"")]
+      [normalize(key), normalize(value)]
+    end
+
+    def normalize(string)
+      string.gsub(/\\"/, "\"").gsub(/\\'/, "\'")
     end
 
     def syntax_error!

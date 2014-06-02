@@ -19,8 +19,18 @@ describe Curly::Compiler do
         value == "world"
       end
 
-      def hey(stuff)
-        stuff["ya"]
+      if RUBY_VERSION >= "2.0.0"
+        class_eval %{
+          def hey(ya: )
+            ya
+          end
+        }
+      else
+        class_eval %{
+          def hey(stuff)
+            stuff["ya"]
+          end
+        }
       end
 
       def unicorns
