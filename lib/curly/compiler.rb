@@ -122,8 +122,6 @@ module Curly
         raise Curly::InvalidReference.new(method.to_sym)
       end
 
-
-
       if presenter_class.instance_method(method).arity != 0
         # The method accepts a single argument -- pass it in.
         code = <<-RUBY
