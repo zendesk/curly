@@ -152,7 +152,7 @@ describe Curly::Compiler do
     end
 
     it "passes an argument to blocks" do
-      evaluate("{{#hello.world?}}foo{{/hello.world?}}{{#hello.foo?}}bar{{/hello.foo?}}").should == "foo"
+      evaluate("{{#hello.world?}}foo{{/hello?}}{{#hello.foo?}}bar{{/hello?}}").should == "foo"
     end
 
     it "handles keyword arguments" do

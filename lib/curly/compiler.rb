@@ -86,7 +86,7 @@ module Curly
     def compile_conditional_block(keyword, reference)
       method, argument = ReferenceParser.parse(reference)
 
-      @blocks.push reference
+      @blocks.push method
 
       unless presenter_class.method_available?(method.to_sym)
         raise Curly::InvalidReference.new(method.to_sym)
