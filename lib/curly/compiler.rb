@@ -3,6 +3,7 @@ require 'curly/error'
 require 'curly/invalid_reference'
 require 'curly/incorrect_ending_error'
 require 'curly/incomplete_block_error'
+require 'curly/reference_parser'
 
 module Curly
 
@@ -83,16 +84,15 @@ module Curly
     end
 
     def compile_conditional_block(keyword, reference)
-      m = reference.match(/\A(.+?)(?:\.(.+))?\?\z/)
-      method, argument = "#{m[1]}?", m[2]
+      method, argument = ReferenceParser.parse(reference)
 
-      @blocks.push reference
+      @blocks.push method
 
       unless presenter_class.method_available?(method.to_sym)
         raise Curly::InvalidReference.new(method.to_sym)
       end
 
-      if presenter_class.instance_method(method).arity == 1
+      if presenter_class.instance_method(method).parameters.any?
         <<-RUBY
           #{keyword} presenter.#{method}(#{argument.inspect})
         RUBY
@@ -116,16 +116,16 @@ module Curly
     end
 
     def compile_reference(reference)
-      method, argument = reference.split(".", 2)
+      method, arguments = ReferenceParser.parse(reference)
 
       unless presenter_class.method_available?(method.to_sym)
         raise Curly::InvalidReference.new(method.to_sym)
       end
 
-      if presenter_class.instance_method(method).arity == 1
+      if presenter_class.instance_method(method).parameters.any?
         # The method accepts a single argument -- pass it in.
         code = <<-RUBY
-          presenter.#{method}(#{argument.inspect}) {|*args| yield(*args) }
+          presenter.#{method}(#{stringify_arguments(arguments)}) {|*args| yield(*args) }
         RUBY
       else
         code = <<-RUBY
@@ -134,6 +134,14 @@ module Curly
       end
 
       'buffer.concat(%s.to_s)' % code.strip
+    end
+
+    def stringify_arguments(arguments)
+      if arguments.is_a? Hash and RUBY_VERSION >= "2.0.0"
+        arguments.symbolize_keys.inspect[1..-2]
+      else
+        arguments.inspect
+      end
     end
 
     def compile_text(text)
