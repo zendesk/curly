@@ -60,7 +60,7 @@ module Curly
     end
 
     def scan_keypair
-      return unless @scanner.scan(/\A\s*#{VALUE_MATCH}:/x)
+      return unless @scanner.scan(/\A\s*#{VALUE_MATCH}\s*=/x)
       key = @scanner[1] || @scanner[2]
       return unless @scanner.scan(/\A\s*#{VALUE_MATCH}/x)
       value = @scanner[1] || @scanner[2]

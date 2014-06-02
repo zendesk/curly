@@ -146,7 +146,7 @@ describe Curly::Compiler do
     end
 
     it "handles keyword arguments" do
-      evaluate("{{hey ya: test}}").should == "test"
+      evaluate("{{hey ya=test}}").should == "test"
     end
 
     it "gives an error on mismatching blocks" do
