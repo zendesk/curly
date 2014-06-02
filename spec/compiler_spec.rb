@@ -212,6 +212,7 @@ describe Curly::Compiler do
   def evaluate(template, &block)
     code = Curly::Compiler.compile(template, presenter_class)
     context = double("context", presenter: presenter)
+    puts code
 
     context.instance_eval(<<-RUBY)
       def self.render

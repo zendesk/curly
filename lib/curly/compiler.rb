@@ -92,7 +92,7 @@ module Curly
         raise Curly::InvalidReference.new(method.to_sym)
       end
 
-      if presenter_class.instance_method(method).arity == 1
+      if presenter_class.instance_method(method).arity != 0
         <<-RUBY
           #{keyword} presenter.#{method}(#{argument.inspect})
         RUBY
@@ -124,7 +124,7 @@ module Curly
 
 
 
-      if presenter_class.instance_method(method).arity == 1
+      if presenter_class.instance_method(method).arity != 0
         # The method accepts a single argument -- pass it in.
         code = <<-RUBY
           presenter.#{method}(#{stringify_arguments(arguments)}) {|*args| yield(*args) }
