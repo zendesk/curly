@@ -11,6 +11,13 @@ describe Curly::ReferenceCompiler do
         "Welcome to our lovely place!"
       end
 
+      def summary(length = "long")
+        case length
+        when "long" then "This is a long summary"
+        when "short" then "This is a short summary"
+        end
+      end
+
       def self.method_available?(name)
         true
       end
@@ -19,6 +26,11 @@ describe Curly::ReferenceCompiler do
 
   it "compiles parameterized references" do
     evaluate("{{i18n.home.welcome}}").should == "Welcome to our lovely place!"
+  end
+
+  it "compiles optionally parameterized references" do
+    evaluate("{{summary}}").should == "This is a long summary"
+    evaluate("{{summary.short}}").should == "This is a short summary"
   end
 
   it "fails when a parameterized reference is missing a parameter" do
