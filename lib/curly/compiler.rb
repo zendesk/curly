@@ -114,7 +114,7 @@ module Curly
     end
 
     def compile_method(method, argument)
-      ReferenceCompiler.new(presenter_class).compile(method, argument)
+      ReferenceCompiler.new(presenter_class, method).compile(argument)
     end
 
     def compile_text(text)
