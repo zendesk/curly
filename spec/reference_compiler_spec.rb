@@ -18,6 +18,9 @@ describe Curly::ReferenceCompiler do
         end
       end
 
+      def invalid(x, y)
+      end
+
       def self.method_available?(name)
         true
       end
@@ -39,6 +42,10 @@ describe Curly::ReferenceCompiler do
 
   it "fails when a non-parameterized reference is passed a parameter" do
     expect { evaluate("{{title.rugby}}") }.to raise_exception(Curly::Error)
+  end
+
+  it "fails when the method takes more than one argument" do
+    expect { evaluate("{{invalid}}") }.to raise_exception(Curly::Error)
   end
 
   def evaluate(template, &block)

@@ -21,6 +21,8 @@ module Curly
         code << "(#{argument.inspect})"
       elsif optional_parameter?(method)
         code << "(#{argument.inspect})" unless argument.nil?
+      elsif invalid_signature?(method)
+        raise Curly::Error, "`#{method}` is not a valid reference method"
       elsif !argument.nil?
         raise Curly::Error, "`#{method}` does not take a parameter"
       end
@@ -29,6 +31,10 @@ module Curly
     end
 
     private
+
+    def invalid_signature?(method)
+      params_for(method).size > 1
+    end
 
     def required_parameter?(method)
       params_for(method).map(&:first) == [:req]
