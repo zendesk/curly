@@ -120,7 +120,13 @@ module Curly
       code = "presenter.#{method}"
 
       if presenter_class.instance_method(method).arity == 1
+        if argument.nil?
+          raise Curly::Error, "`#{method}` requires a parameter"
+        end
+
         code << "(#{argument.inspect})"
+      elsif !argument.nil?
+        raise Curly::Error, "`#{method}` does not take a parameter"
       end
 
       code

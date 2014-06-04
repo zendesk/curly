@@ -62,12 +62,16 @@ describe Curly::Compiler do
       evaluate("{{foo}}").should == "FOO"
     end
 
-    it "passes on an optional reference parameter to the presenter method" do
+    it "compiles parameterized references" do
       evaluate("{{parameterized.foo.bar}}").should == "foo.bar"
     end
 
-    it "passes an empty string to methods that take a parameter when none is provided" do
-      evaluate("{{parameterized}}").should == ""
+    it "fails when a parameterized reference is missing a parameter" do
+      expect { evaluate("{{parameterized}}") }.to raise_exception(Curly::Error)
+    end
+
+    it "fails when a non-parameterized reference is passed a parameter" do
+      expect { evaluate("{{foo.bar}}") }.to raise_exception(Curly::Error)
     end
 
     it "raises ArgumentError if the presenter class is nil" do
