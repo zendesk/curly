@@ -6,7 +6,18 @@ module Curly
       @presenter_class, @method = presenter_class, method
     end
 
-    def compile(method, argument)
+    def self.compile_reference(presenter_class, reference)
+      method, argument = reference.split(".", 2)
+      new(presenter_class, method).compile(argument)
+    end
+
+    def self.compile_conditional(presenter_class, reference)
+      m = reference.match(/\A(.+?)(?:\.(.+))?\?\z/)
+      method, argument = "#{m[1]}?", m[2]
+      new(presenter_class, method).compile(argument)
+    end
+
+    def compile(argument)
       unless presenter_class.method_available?(method)
         raise Curly::InvalidReference.new(method)
       end

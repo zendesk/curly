@@ -84,13 +84,12 @@ module Curly
     end
 
     def compile_conditional_block(keyword, reference)
-      m = reference.match(/\A(.+?)(?:\.(.+))?\?\z/)
-      method, argument = "#{m[1]}?", m[2]
+      method_call = ReferenceCompiler.compile_conditional(presenter_class, reference)
 
       @blocks.push reference
 
       <<-RUBY
-        #{keyword} #{compile_method(method, argument)}
+        #{keyword} #{method_call}
       RUBY
     end
 
@@ -107,14 +106,10 @@ module Curly
     end
 
     def compile_reference(reference)
-      method, argument = reference.split(".", 2)
-      code = "#{compile_method(method, argument)} {|*args| yield(*args) }"
+      method_call = ReferenceCompiler.compile_reference(presenter_class, reference)
+      code = "#{method_call} {|*args| yield(*args) }"
 
       "buffer.concat(#{code.strip}.to_s)"
-    end
-
-    def compile_method(method, argument)
-      ReferenceCompiler.new(presenter_class, method).compile(argument)
     end
 
     def compile_text(text)
