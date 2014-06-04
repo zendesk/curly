@@ -88,19 +88,9 @@ module Curly
 
       @blocks.push reference
 
-      unless presenter_class.method_available?(method)
-        raise Curly::InvalidReference.new(method)
-      end
-
-      if presenter_class.instance_method(method).arity == 1
-        <<-RUBY
-          #{keyword} presenter.#{method}(#{argument.inspect})
-        RUBY
-      else
-        <<-RUBY
-          #{keyword} presenter.#{method}
-        RUBY
-      end
+      <<-RUBY
+        #{keyword} #{compile_method(method, argument)}
+      RUBY
     end
 
     def compile_block_end(reference)
@@ -117,27 +107,27 @@ module Curly
 
     def compile_reference(reference)
       method, argument = reference.split(".", 2)
+      code = "#{compile_method(method, argument)} {|*args| yield(*args) }"
 
+      "buffer.concat(#{code.strip}.to_s)"
+    end
+
+    def compile_method(method, argument)
       unless presenter_class.method_available?(method)
         raise Curly::InvalidReference.new(method)
       end
 
+      code = "presenter.#{method}"
+
       if presenter_class.instance_method(method).arity == 1
-        # The method accepts a single argument -- pass it in.
-        code = <<-RUBY
-          presenter.#{method}(#{argument.inspect}) {|*args| yield(*args) }
-        RUBY
-      else
-        code = <<-RUBY
-          presenter.#{method} {|*args| yield(*args) }
-        RUBY
+        code << "(#{argument.inspect})"
       end
 
-      'buffer.concat(%s.to_s)' % code.strip
+      code
     end
 
     def compile_text(text)
-      'buffer.safe_concat(%s)' % text.inspect
+      "buffer.safe_concat(#{text.inspect})"
     end
 
     def compile_comment(comment)
