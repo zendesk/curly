@@ -35,12 +35,8 @@ describe Curly::Compiler do
         true
       end
 
-      def parameterized(value)
-        value
-      end
-
       def self.method_available?(method)
-        %w[foo parameterized high_yield yield_value dirty false? true? hello?].include?(method)
+        %w[foo high_yield yield_value dirty false? true? hello?].include?(method)
       end
 
       def self.available_methods
@@ -60,18 +56,6 @@ describe Curly::Compiler do
   describe ".compile" do
     it "compiles Curly templates to Ruby code" do
       evaluate("{{foo}}").should == "FOO"
-    end
-
-    it "compiles parameterized references" do
-      evaluate("{{parameterized.foo.bar}}").should == "foo.bar"
-    end
-
-    it "fails when a parameterized reference is missing a parameter" do
-      expect { evaluate("{{parameterized}}") }.to raise_exception(Curly::Error)
-    end
-
-    it "fails when a non-parameterized reference is passed a parameter" do
-      expect { evaluate("{{foo.bar}}") }.to raise_exception(Curly::Error)
     end
 
     it "raises ArgumentError if the presenter class is nil" do

@@ -1,4 +1,5 @@
 require 'curly/scanner'
+require 'curly/reference_compiler'
 require 'curly/error'
 require 'curly/invalid_reference'
 require 'curly/incorrect_ending_error'
@@ -113,23 +114,7 @@ module Curly
     end
 
     def compile_method(method, argument)
-      unless presenter_class.method_available?(method)
-        raise Curly::InvalidReference.new(method)
-      end
-
-      code = "presenter.#{method}"
-
-      if presenter_class.instance_method(method).arity == 1
-        if argument.nil?
-          raise Curly::Error, "`#{method}` requires a parameter"
-        end
-
-        code << "(#{argument.inspect})"
-      elsif !argument.nil?
-        raise Curly::Error, "`#{method}` does not take a parameter"
-      end
-
-      code
+      ReferenceCompiler.new(presenter_class).compile(method, argument)
     end
 
     def compile_text(text)
