@@ -88,8 +88,8 @@ module Curly
 
       @blocks.push reference
 
-      unless presenter_class.method_available?(method.to_sym)
-        raise Curly::InvalidReference.new(method.to_sym)
+      unless presenter_class.method_available?(method)
+        raise Curly::InvalidReference.new(method)
       end
 
       if presenter_class.instance_method(method).arity == 1
@@ -118,8 +118,8 @@ module Curly
     def compile_reference(reference)
       method, argument = reference.split(".", 2)
 
-      unless presenter_class.method_available?(method.to_sym)
-        raise Curly::InvalidReference.new(method.to_sym)
+      unless presenter_class.method_available?(method)
+        raise Curly::InvalidReference.new(method)
       end
 
       if presenter_class.instance_method(method).arity == 1
