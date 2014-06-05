@@ -162,7 +162,7 @@ module Curly
       #
       # This policy can be changed by overriding this method in your presenters.
       #
-      # method - The Symbol name of the method.
+      # method - The String name of the method.
       #
       # Returns true if the method can be referenced by a template,
       #   false otherwise.
@@ -172,9 +172,10 @@ module Curly
 
       # A list of methods available to templates rendered with the presenter.
       #
-      # Returns an Array of Symbol method names.
+      # Returns an Array of String method names.
       def available_methods
-        public_instance_methods - Curly::Presenter.public_instance_methods
+        methods = public_instance_methods - Curly::Presenter.public_instance_methods
+        methods.map(&:to_s)
       end
 
       # The set of view paths that the presenter depends on.

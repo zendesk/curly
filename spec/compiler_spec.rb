@@ -40,8 +40,7 @@ describe Curly::Compiler do
       end
 
       def self.method_available?(method)
-        [:foo, :parameterized, :high_yield, :yield_value, :dirty,
-          :false?, :true?, :hello?].include?(method)
+        %w[foo parameterized high_yield yield_value dirty false? true? hello?].include?(method)
       end
 
       def self.available_methods
@@ -86,7 +85,7 @@ describe Curly::Compiler do
         evaluate("{{bar}}")
         fail
       rescue Curly::InvalidReference => e
-        e.reference.should == :bar
+        e.reference.should == "bar"
       end
     end
 
