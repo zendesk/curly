@@ -108,6 +108,23 @@ render comment
 render collection: post.comments
 ```
 
+### Parameterized variables
+
+Curly variables can be parameterized using the so-called dot notation: `{{x.y.z}}`. This
+can be very useful if the data you're accessing is hierarchical in nature. One common
+example is I18n:
+
+```html
+<h1>{{i18n.homepage.header}}</h1>
+```
+
+```ruby
+# In the presenter:
+def i18n(key)
+  translate(key)
+end
+```
+
 
 ### Conditional blocks
 
