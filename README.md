@@ -26,6 +26,7 @@ or [Handlebars](http://handlebarsjs.com/), Curly is different in some key ways:
 2. [How to use Curly](#how-to-use-curly)
     1. [Parameterized variables](#parameterized-variables)
     1. [Conditional blocks](#conditional-blocks)
+    1. [Setting up state](#setting-up-state)
     2. [Escaping Curly syntax](#escaping-curly-syntax)
 3. [Presenters](#presenters)
     1. [Layouts and Content Blocks](#layouts-and-content-blocks)
@@ -147,6 +148,28 @@ class SomePresenter < Curly::Presenter
 end
 ```
 
+
+### Setting up state
+
+Although most code in Curly presenters should be free of side effects, sometimes side
+effects are required. One common example is defining content for a `content_for` block.
+
+If a Curly presenter class defines a `setup!` method, it will be called before the view
+is rendered:
+
+```ruby
+class PostPresenter < Curly::Presenter
+  presents :post
+
+  def setup!
+    content_for :title, post.title
+
+    content_for :sidebar do
+      render 'post_sidebar', post: post
+    end
+  end
+end
+```
 
 ### Escaping Curly syntax
 
