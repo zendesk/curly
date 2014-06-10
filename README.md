@@ -24,6 +24,7 @@ or [Handlebars](http://handlebarsjs.com/), Curly is different in some key ways:
 
 1. [Installing](#installing)
 2. [How to use Curly](#how-to-use-curly)
+    1. [Parameterized variables](#parameterized-variables)
     1. [Conditional blocks](#conditional-blocks)
     2. [Escaping Curly syntax](#escaping-curly-syntax)
 3. [Presenters](#presenters)
