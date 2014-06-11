@@ -1,5 +1,9 @@
 ### Unreleased
 
+* Remove memory leak that could cause unbounded memory growth.
+
+  *Daniel Schierbeck*
+
 ### Curly 1.0.0rc1 (February 18, 2014)
 
 * Add support for conditional blocks:
