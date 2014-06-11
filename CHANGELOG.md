@@ -1,5 +1,9 @@
 ### Unreleased
 
+* Add support for keyword parameters to references.
+
+  *Alisson Cavalcante Agiani, Jeremy Rodi, and Daniel Schierbeck*
+
 * Remove memory leak that could cause unbounded memory growth.
 
   *Daniel Schierbeck*
