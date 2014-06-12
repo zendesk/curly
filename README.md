@@ -25,6 +25,7 @@ or [Handlebars](http://handlebarsjs.com/), Curly is different in some key ways:
 1. [Installing](#installing)
 2. [How to use Curly](#how-to-use-curly)
     1. [Parameterized variables](#parameterized-variables)
+    1. [Variable attributes](#variable-attributes)
     1. [Conditional blocks](#conditional-blocks)
     1. [Setting up state](#setting-up-state)
     2. [Escaping Curly syntax](#escaping-curly-syntax)
@@ -126,6 +127,33 @@ def i18n(key)
   translate(key)
 end
 ```
+
+
+### Variable attributes
+
+In addition to [a parameter](#parameterized-variables), Curly variables can be annotated
+with *attributes*. These are key-value pairs that affect how a variable is rendered.
+
+The syntax is reminiscent of HMTL:
+
+```html
+<div>{{sidebar rows=3 title="I'm the sidebar!"}}</div>
+```
+
+The presenter method that implements the variable must have a matching keyword argument:
+
+```ruby
+def sidebar(rows: 1, title:); end
+```
+
+A compilation error will be raised if
+
+- an attribute is used on a variable without a matching keyword argument being present
+  in the method definition; or
+- a required keyword argument in the method definition is not set as an attribute on the
+  variable.
+
+You can define default values using Ruby's own syntax.
 
 
 ### Conditional blocks
@@ -461,7 +489,6 @@ Thanks to [Zendesk](http://zendesk.com/) for sponsoring the work on Curly.
 - Daniel Schierbeck ([@dasch](https://github.com/dasch))
 - Benjamin Quorning ([@bquorning](https://github.com/bquorning))
 - Jeremy Rodi ([@redjazz96](https://github.com/redjazz96))
-
 
 Build Status
 ------------
