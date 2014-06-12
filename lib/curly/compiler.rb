@@ -1,4 +1,5 @@
 require 'curly/scanner'
+require 'curly/reference_compiler'
 require 'curly/error'
 require 'curly/invalid_reference'
 require 'curly/incorrect_ending_error'
@@ -83,24 +84,13 @@ module Curly
     end
 
     def compile_conditional_block(keyword, reference)
-      m = reference.match(/\A(.+?)(?:\.(.+))?\?\z/)
-      method, argument = "#{m[1]}?", m[2]
+      method_call = ReferenceCompiler.compile_conditional(presenter_class, reference)
 
       @blocks.push reference
 
-      unless presenter_class.method_available?(method)
-        raise Curly::InvalidReference.new(method)
-      end
-
-      if presenter_class.instance_method(method).arity == 1
-        <<-RUBY
-          #{keyword} presenter.#{method}(#{argument.inspect})
-        RUBY
-      else
-        <<-RUBY
-          #{keyword} presenter.#{method}
-        RUBY
-      end
+      <<-RUBY
+        #{keyword} #{method_call}
+      RUBY
     end
 
     def compile_block_end(reference)
@@ -116,28 +106,14 @@ module Curly
     end
 
     def compile_reference(reference)
-      method, argument = reference.split(".", 2)
+      method_call = ReferenceCompiler.compile_reference(presenter_class, reference)
+      code = "#{method_call} {|*args| yield(*args) }"
 
-      unless presenter_class.method_available?(method)
-        raise Curly::InvalidReference.new(method)
-      end
-
-      if presenter_class.instance_method(method).arity == 1
-        # The method accepts a single argument -- pass it in.
-        code = <<-RUBY
-          presenter.#{method}(#{argument.inspect}) {|*args| yield(*args) }
-        RUBY
-      else
-        code = <<-RUBY
-          presenter.#{method} {|*args| yield(*args) }
-        RUBY
-      end
-
-      'buffer.concat(%s.to_s)' % code.strip
+      "buffer.concat(#{code.strip}.to_s)"
     end
 
     def compile_text(text)
-      'buffer.safe_concat(%s)' % text.inspect
+      "buffer.safe_concat(#{text.inspect})"
     end
 
     def compile_comment(comment)
