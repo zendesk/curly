@@ -137,16 +137,16 @@ with *attributes*. These are key-value pairs that affect how a variable is rende
 The syntax is reminiscent of HMTL:
 
 ```html
-<div>{{sidebar rows=3 title="I'm the sidebar!"}}</div>
+<div>{{sidebar rows=3 width=200px title="I'm the sidebar!"}}</div>
 ```
 
 The presenter method that implements the variable must have a matching keyword argument:
 
 ```ruby
-def sidebar(rows: 1, title:); end
+def sidebar(rows: "1", width: "100px", title:); end
 ```
 
-A compilation error will be raised if
+All argument values will be strings. A compilation error will be raised if
 
 - an attribute is used on a variable without a matching keyword argument being present
   in the method definition; or
