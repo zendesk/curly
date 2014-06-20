@@ -95,7 +95,7 @@ describe Curly::Compiler do
     expect { evaluate(template) }.to raise_exception(Curly::Error)
   end
 
-  it "works even if the reference method doesn't returned an Array" do
+  it "works even if the reference method doesn't return an Array" do
     stub_const("CompanyPresenter", simple_presenter_class)
     template = "<ul>{{*companies}}<li>{{name}}</li>{{/companies}}</ul>"
     expect(evaluate(template)).to eql "<ul><li>Nike, Adidas</li></ul>"
