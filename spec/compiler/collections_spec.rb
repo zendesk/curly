@@ -82,7 +82,7 @@ describe Curly::Compiler do
     list.stub(:items) { [item1, item2] }
 
     template = "<ul>{{*items}}<li>{{name}}</li>{{/items}}</ul>"
-    evaluate(template).should == "<ul><li>foo</li><li>bar</li></ul>"
+    expect(evaluate(template)).to eql "<ul><li>foo</li><li>bar</li></ul>"
   end
 
   it "fails if the reference isn't available" do
@@ -98,7 +98,7 @@ describe Curly::Compiler do
   it "works even if the reference method doesn't returned an Array" do
     stub_const("CompanyPresenter", simple_presenter_class)
     template = "<ul>{{*companies}}<li>{{name}}</li>{{/companies}}</ul>"
-    evaluate(template).should == "<ul><li>Nike, Adidas</li></ul>"
+    expect(evaluate(template)).to eql "<ul><li>Nike, Adidas</li></ul>"
   end
 
   it "passes the index of the current item to the nested presenter" do
@@ -108,7 +108,7 @@ describe Curly::Compiler do
     list.stub(:items) { [item1, item2] }
 
     template = "<ul>{{*items}}<li>{{item_counter}}</li>{{/items}}</ul>"
-    evaluate(template).should == "<ul><li>1</li><li>2</li></ul>"
+    expect(evaluate(template)).to eql "<ul><li>1</li><li>2</li></ul>"
   end
 
   it "restores the previous scope after exiting the collection block" do
@@ -117,14 +117,14 @@ describe Curly::Compiler do
     list.stub(:items) { [item] }
 
     template = "{{*items}}{{*parts}}{{identifier}}{{/parts}}{{name}}{{/items}}{{title}}"
-    evaluate(template).should == "XfooInventory"
+    expect(evaluate(template)).to eql "XfooInventory"
   end
 
   it "passes the parent presenter's options to the nested presenter" do
     list.stub(:items) { [double(name: "foo"), double(name: "bar")] }
 
     template = "{{*items}}{{list_title}}: {{name}}. {{/items}}"
-    evaluate(template, list: list).should == "Inventory: foo. Inventory: bar. "
+    expect(evaluate(template, list: list)).to eql "Inventory: foo. Inventory: bar. "
   end
 
   it "compiles nested collection blocks" do
@@ -134,6 +134,6 @@ describe Curly::Compiler do
     list.stub(:items) { [item1, item2] }
 
     template = "{{title}}: {{*items}}{{name}} - {{*parts}}{{identifier}}{{/parts}}. {{/items}}"
-    evaluate(template).should == "Inventory: item1 - AB. item2 - CD. "
+    expect(evaluate(template)).to eql "Inventory: item1 - AB. item2 - CD. "
   end
 end
