@@ -9,16 +9,32 @@ module Curly
     end
 
     def self.compile_reference(presenter_class, reference)
-      name, rest = reference.split(/\s+/, 2)
-      method, argument = name.split(".", 2)
-      attributes = AttributeParser.parse(rest)
+      method, argument, attributes = parse_reference(reference)
+
       new(presenter_class, method).compile(argument, attributes)
     end
 
     def self.compile_conditional(presenter_class, reference)
-      m = reference.match(/\A(.+?)(?:\.(.+))?\?\z/)
-      method, argument = "#{m[1]}?", m[2]
-      new(presenter_class, method).compile(argument)
+      method, argument, attributes = parse_reference(reference)
+
+      if argument && argument.end_with?("?")
+        method << "?"
+        argument = argument[0..-2]
+      end
+
+      unless method.end_with?("?")
+        raise Curly::Error, "conditional references must end with `?`"
+      end
+
+      new(presenter_class, method).compile(argument, attributes)
+    end
+
+    def self.parse_reference(reference)
+      name, rest = reference.split(/\s+/, 2)
+      method, argument = name.split(".", 2)
+      attributes = AttributeParser.parse(rest)
+
+      [method, argument, attributes]
     end
 
     def compile(argument, attributes = {})
