@@ -4,8 +4,8 @@ Gem::Specification.new do |s|
   s.rubygems_version = '1.3.5'
 
   s.name              = 'curly-templates'
-  s.version           = '1.0.0'
-  s.date              = '2014-03-12'
+  s.version           = '1.0.1'
+  s.date              = '2014-06-24'
 
   s.summary     = "Free your views!"
   s.description = "A view layer for your Rails apps that separates structure and logic."
