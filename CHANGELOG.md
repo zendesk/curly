@@ -1,4 +1,9 @@
-### Unreleased
+### Curly 1.0.1 (June 24, 2014)
+
+* Use SortedSet to store view dependencies. We always want these to be in
+  order.
+
+  *Liborio Cannici*
 
 ### Curly 1.0.0rc1 (February 18, 2014)
 
