@@ -193,9 +193,9 @@ module Curly
       # Returns a Set of String view paths.
       def dependencies
         # The base presenter doesn't have any dependencies.
-        return Set.new if self == Curly::Presenter
+        return SortedSet.new if self == Curly::Presenter
 
-        @dependencies ||= Set.new
+        @dependencies ||= SortedSet.new
         @dependencies.union(superclass.dependencies)
       end
 
@@ -205,7 +205,7 @@ module Curly
       #
       # Returns nothing.
       def depends_on(*dependencies)
-        @dependencies ||= Set.new
+        @dependencies ||= SortedSet.new
         @dependencies.merge(dependencies)
       end
 
