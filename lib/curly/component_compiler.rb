@@ -24,7 +24,7 @@ module Curly
     end
 
     def compile(argument, attributes = {})
-      unless presenter_class.method_available?(method)
+      unless presenter_class.component_available?(method)
         raise Curly::InvalidComponent.new(method)
       end
 

@@ -29,7 +29,7 @@ describe Curly::TemplateHandler do
         @cache_duration
       end
 
-      def self.method_available?(method)
+      def self.component_available?(method)
         true
       end
     end

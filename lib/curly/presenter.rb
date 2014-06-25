@@ -152,9 +152,9 @@ module Curly
         end
       end
 
-      # Whether a method is available to templates rendered with the presenter.
+      # Whether a component is available to templates rendered with the presenter.
       #
-      # Templates can component "variables", which are simply methods defined on
+      # Templates have components which correspond with methods defined on
       # the presenter. By default, only public instance methods can be
       # referenced, and any method defined on Curly::Presenter itself cannot be
       # referenced. This means that methods such as `#cache_key` and #inspect are
@@ -162,18 +162,18 @@ module Curly
       #
       # This policy can be changed by overriding this method in your presenters.
       #
-      # method - The String name of the method.
+      # name - The String name of the component.
       #
       # Returns true if the method can be referenced by a template,
       #   false otherwise.
-      def method_available?(method)
-        available_methods.include?(method)
+      def component_available?(name)
+        available_components.include?(name)
       end
 
-      # A list of methods available to templates rendered with the presenter.
+      # A list of components available to templates rendered with the presenter.
       #
-      # Returns an Array of String method names.
-      def available_methods
+      # Returns an Array of String component names.
+      def available_components
         methods = public_instance_methods - Curly::Presenter.public_instance_methods
         methods.map(&:to_s)
       end
