@@ -180,6 +180,17 @@ class SomePresenter < Curly::Presenter
 end
 ```
 
+Furthermore, attributes can be set on the block. These only need to be specified when
+opening the block, not when closing it:
+
+```html
+{{#square? width=3 height=3}}
+  <p>It's square!</p>
+{{/square?}}
+```
+
+Attributes work the same way as they do for normal references.
+
 
 ### Setting up state
 
