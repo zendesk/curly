@@ -190,7 +190,7 @@ opening the block, not when closing it:
 {{/square?}}
 ```
 
-Attributes work the same way as they do for normal references.
+Attributes work the same way as they do for normal components.
 
 
 ### Collection blocks
@@ -222,7 +222,7 @@ end
 ```
 
 The template within the collection block will be used to render each item, and it will
-be backed by a presenter named after the reference – in this case, `comments`. The name
+be backed by a presenter named after the component – in this case, `comments`. The name
 will be singularized and Curly will try to find the presenter class in the following
 order:
 

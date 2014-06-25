@@ -99,17 +99,17 @@ describe Curly::Compiler do
     expect(evaluate(template)).to eql "<ul><li>foo</li></ul>"
   end
 
-  it "fails if the reference isn't available" do
+  it "fails if the component isn't available" do
     template = "<ul>{{*doodads}}<li>{{name}}</li>{{/doodads}}</ul>"
     expect { evaluate(template) }.to raise_exception(Curly::Error)
   end
 
-  it "fails if the reference doesn't support enumeration" do
+  it "fails if the component doesn't support enumeration" do
     template = "<ul>{{*numbers}}<li>{{name}}</li>{{/numbers}}</ul>"
     expect { evaluate(template) }.to raise_exception(Curly::Error)
   end
 
-  it "works even if the reference method doesn't return an Array" do
+  it "works even if the component method doesn't return an Array" do
     stub_const("CompanyPresenter", simple_presenter_class)
     template = "<ul>{{*companies}}<li>{{name}}</li>{{/companies}}</ul>"
     expect(evaluate(template)).to eql "<ul><li>Nike, Adidas</li></ul>"

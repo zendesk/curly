@@ -1,11 +1,11 @@
 # Curly is a simple view system. Each view consists of two parts, a
 # template and a presenter. The template is a simple string that can contain
-# references in the format `{{refname}}`, e.g.
+# components in the format `{{refname}}`, e.g.
 #
 #   Hello {{recipient}},
 #   you owe us ${{amount}}.
 #
-# The references will be converted into messages that are sent to the
+# The components will be converted into messages that are sent to the
 # presenter, which is any Ruby object. Only public methods can be referenced.
 # To continue the earlier example, here's the matching presenter:
 #
@@ -38,7 +38,7 @@ module Curly
   end
 
   # Whether the Curly template is valid. This includes whether all
-  # references are available on the presenter class.
+  # components are available on the presenter class.
   #
   # template        - The template String that should be validated.
   # presenter_class - The presenter Class.

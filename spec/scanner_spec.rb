@@ -4,20 +4,20 @@ describe Curly::Scanner, ".scan" do
   it "returns the tokens in the source" do
     scan("foo {{bar}} baz").should == [
       [:text, "foo "],
-      [:reference, "bar"],
+      [:component, "bar"],
       [:text, " baz"]
     ]
   end
 
-  it "scans parameterized references" do
+  it "scans parameterized components" do
     scan("{{foo.bar}}").should == [
-      [:reference, "foo.bar"]
+      [:component, "foo.bar"]
     ]
   end
 
-  it "allows references with whitespace" do
+  it "allows components with whitespace" do
     scan("{{ foo bar}}").should == [
-      [:reference, " foo bar"]
+      [:component, " foo bar"]
     ]
   end
 
@@ -98,7 +98,7 @@ describe Curly::Scanner, ".scan" do
     ]
   end
 
-  it "raises Curly::SyntaxError on unclosed references" do
+  it "raises Curly::SyntaxError on unclosed components" do
     ["{{", "{{yolo"].each do |template|
       expect { scan(template) }.to raise_error(Curly::SyntaxError)
     end

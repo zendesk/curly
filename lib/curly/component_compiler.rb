@@ -1,12 +1,12 @@
 module Curly
-  class ReferenceCompiler
+  class ComponentCompiler
     attr_reader :presenter_class, :method
 
     def initialize(presenter_class, method)
       @presenter_class, @method = presenter_class, method
     end
 
-    def self.compile_reference(presenter_class, method, argument, attributes)
+    def self.compile_component(presenter_class, method, argument, attributes)
       new(presenter_class, method).compile(argument, attributes)
     end
 
@@ -17,7 +17,7 @@ module Curly
       end
 
       unless method.end_with?("?")
-        raise Curly::Error, "conditional references must end with `?`"
+        raise Curly::Error, "conditional components must end with `?`"
       end
 
       new(presenter_class, method).compile(argument, attributes)
@@ -25,7 +25,7 @@ module Curly
 
     def compile(argument, attributes = {})
       unless presenter_class.method_available?(method)
-        raise Curly::InvalidReference.new(method)
+        raise Curly::InvalidComponent.new(method)
       end
 
       validate_attributes(attributes)
@@ -50,7 +50,7 @@ module Curly
       elsif optional_parameter?
         code << argument.inspect unless argument.nil?
       elsif invalid_signature?
-        raise Curly::Error, "`#{method}` is not a valid reference method"
+        raise Curly::Error, "`#{method}` is not a valid component method"
       elsif !argument.nil?
         raise Curly::Error, "`#{method}` does not take a parameter"
       end

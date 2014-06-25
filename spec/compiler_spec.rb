@@ -71,15 +71,15 @@ describe Curly::Compiler do
     end
 
     it "makes sure only public methods are called on the presenter object" do
-      expect { evaluate("{{bar}}") }.to raise_exception(Curly::InvalidReference)
+      expect { evaluate("{{bar}}") }.to raise_exception(Curly::InvalidComponent)
     end
 
-    it "includes the invalid reference when failing to compile" do
+    it "includes the invalid component when failing to compile" do
       begin
         evaluate("{{bar}}")
         fail
-      rescue Curly::InvalidReference => e
-        e.reference.should == "bar"
+      rescue Curly::InvalidComponent => e
+        e.component.should == "bar"
       end
     end
 

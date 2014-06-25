@@ -28,7 +28,7 @@ module Curly
     # Example
     #
     #   Curly::Scanner.scan("hello {{name}}!")
-    #   #=> [[:text, "hello "], [:reference, "name"], [:text, "!"]]
+    #   #=> [[:text, "hello "], [:component, "name"], [:text, "!"]]
     #
     # Returns an Array of type/value pairs representing the tokens in the
     #   template.
@@ -80,7 +80,7 @@ module Curly
       elsif @scanner.scan(END_BLOCK_MARKER)
         scan_block_end
       else
-        scan_reference
+        scan_component
       end
     end
 
@@ -118,9 +118,9 @@ module Curly
       end
     end
 
-    def scan_reference
+    def scan_component
       if value = scan_until_end_of_curly
-        [:reference, value]
+        [:component, value]
       end
     end
 
