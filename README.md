@@ -238,16 +238,22 @@ presenters.
 Note that the nested template will *only* have access to the methods on the nested
 presenter, but all variables passed to the "parent" presenter will be forwarded to
 the nested presenter. In addition, the current item in the collection will be
-passed:
+passed, as well as that item's index in the collection:
 
 ```ruby
 class Posts::CommentPresenter < Curly::Presenter
-  presents :post, :comment
-  
+  presents :post, :comment, :comment_counter
+
+  def number
+    # `comment_counter` is automatically set to the item's index in the collection,
+    # starting with 1.
+    @comment_counter
+  end
+
   def body
     @comment.body
   end
-  
+
   def author_name
     @comment.author.name
   end
