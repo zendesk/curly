@@ -166,7 +166,7 @@ module Curly
       last_block = @blocks.pop
 
       unless last_block == [method, argument]
-        raise Curly::IncorrectEndingError.new(reference, last_block.compact.join("."))
+        raise Curly::IncorrectEndingError.new([method, argument], last_block)
       end
     end
 
