@@ -91,10 +91,10 @@ module Curly
     end
 
     def compile_collection_block_start(component)
-      method, argument, attributes = ComponentParser.parse(component)
-      method_call = ComponentCompiler.compile_component(presenter_class, method, argument, attributes)
+      name, identifier, attributes = ComponentParser.parse(component)
+      method_call = ComponentCompiler.compile_component(presenter_class, name, identifier, attributes)
 
-      as = method.singularize
+      as = name.singularize
       counter = "#{as}_counter"
 
       begin
@@ -105,7 +105,7 @@ module Curly
           "cannot enumerate `#{component}`, no matching presenter #{nested_presenter_name}"
       end
 
-      push_block(method, argument)
+      push_block(name, identifier)
       @presenter_classes.push(item_presenter_class)
 
       <<-RUBY
@@ -118,10 +118,10 @@ module Curly
     end
 
     def compile_conditional_block(keyword, component)
-      method, argument, attributes = ComponentParser.parse(component)
-      method_call = ComponentCompiler.compile_conditional(presenter_class, method, argument, attributes)
+      name, identifier, attributes = ComponentParser.parse(component)
+      method_call = ComponentCompiler.compile_conditional(presenter_class, name, identifier, attributes)
 
-      push_block(method, argument)
+      push_block(name, identifier)
 
       <<-RUBY
         #{keyword} #{method_call}
@@ -147,8 +147,8 @@ module Curly
     end
 
     def compile_component(component)
-      method, argument, attributes = ComponentParser.parse(component)
-      method_call = ComponentCompiler.compile_component(presenter_class, method, argument, attributes)
+      name, identifier, attributes = ComponentParser.parse(component)
+      method_call = ComponentCompiler.compile_component(presenter_class, name, identifier, attributes)
       code = "#{method_call} {|*args| yield(*args) }"
 
       "buffer.concat(#{code.strip}.to_s)"
@@ -163,16 +163,16 @@ module Curly
     end
 
     def validate_block_end(component)
-      method, argument, attributes = ComponentParser.parse(component)
+      name, identifier, attributes = ComponentParser.parse(component)
       last_block = @blocks.pop
 
-      unless last_block == [method, argument]
-        raise Curly::IncorrectEndingError.new([method, argument], last_block)
+      unless last_block == [name, identifier]
+        raise Curly::IncorrectEndingError.new([name, identifier], last_block)
       end
     end
 
-    def push_block(method, argument)
-      @blocks.push([method, argument])
+    def push_block(name, identifier)
+      @blocks.push([name, identifier])
     end
   end
 end
