@@ -35,7 +35,7 @@ describe Curly::ComponentCompiler do
       evaluate("tuesday?").should == false
     end
 
-    it "compiles components with a parameter" do
+    it "compiles components with an identifier" do
       evaluate("day.monday?").should == true
       evaluate("day.tuesday?").should == false
     end
@@ -101,11 +101,11 @@ describe Curly::ComponentCompiler do
       end
     end
 
-    it "compiles parameterized components" do
+    it "compiles components with identifiers" do
       evaluate("i18n.home.welcome").should == "Welcome to our lovely place!"
     end
 
-    it "compiles optionally parameterized components" do
+    it "compiles components with optional identifiers" do
       evaluate("summary").should == "This is a long summary"
       evaluate("summary.short").should == "This is a short summary"
     end
@@ -118,7 +118,7 @@ describe Curly::ComponentCompiler do
       evaluate("widget color=blue size=50px").should == "Widget (50px) - blue"
     end
 
-    it "allows both parameter and attributes" do
+    it "allows both identifier and attributes" do
       evaluate("i18n.hello fallback=yolo").should == "yolo"
     end
 
@@ -126,7 +126,7 @@ describe Curly::ComponentCompiler do
       expect { evaluate("i18n.foo extreme=true") }.to raise_exception(Curly::Error)
     end
 
-    it "fails when a parameterized component is missing a parameter" do
+    it "fails when a component is missing a required identifier" do
       expect { evaluate("i18n") }.to raise_exception(Curly::Error)
     end
 
@@ -134,7 +134,7 @@ describe Curly::ComponentCompiler do
       expect { evaluate("widget") }.to raise_exception(Curly::Error)
     end
 
-    it "fails when a non-parameterized component is passed a parameter" do
+    it "fails when an identifier is specified for a component that doesn't support one" do
       expect { evaluate("title.rugby") }.to raise_exception(Curly::Error)
     end
 

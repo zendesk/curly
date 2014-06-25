@@ -9,7 +9,7 @@ describe Curly::Scanner, ".scan" do
     ]
   end
 
-  it "scans parameterized components" do
+  it "scans components with identifiers" do
     scan("{{foo.bar}}").should == [
       [:component, "foo.bar"]
     ]

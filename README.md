@@ -28,8 +28,8 @@ or [Handlebars](http://handlebarsjs.com/), Curly is different in some key ways:
 
 1. [Installing](#installing)
 2. [How to use Curly](#how-to-use-curly)
-    1. [Parameterized variables](#parameterized-variables)
-    1. [Variable attributes](#variable-attributes)
+    1. [Identifiers](#identifiers)
+    1. [Attributes](#attributes)
     1. [Conditional blocks](#conditional-blocks)
     1. [Collection blocks](#collection-blocks)
     1. [Setting up state](#setting-up-state)
@@ -61,7 +61,7 @@ these are placed in `app/presenters/`, so in this case the presenter would
 reside in `app/presenters/posts/comment_presenter.rb`. Note that presenters
 for partials are not prepended with an underscore.
 
-Add some HTML to the partial template along with some Curly variables:
+Add some HTML to the partial template along with some Curly components:
 
 ```html
 <!-- app/views/posts/_comment.html.curly -->
@@ -78,8 +78,8 @@ Add some HTML to the partial template along with some Curly variables:
 </div>
 ```
 
-The presenter will be responsible for filling in the variables. Add the necessary
-Ruby code to the presenter:
+The presenter will be responsible for providing the data for the components. Add
+the necessary Ruby code to the presenter:
 
 ```ruby
 # app/presenters/posts/comment_presenter.rb
@@ -116,10 +116,10 @@ render comment
 render collection: post.comments
 ```
 
-### Parameterized variables
+### Identifiers
 
-Curly variables can be parameterized using the so-called dot notation: `{{x.y.z}}`. This
-can be very useful if the data you're accessing is hierarchical in nature. One common
+Curly components can specify an _identifier_ using the so-called dot notation: `{{x.y.z}}`.
+This can be very useful if the data you're accessing is hierarchical in nature. One common
 example is I18n:
 
 ```html
@@ -133,11 +133,13 @@ def i18n(key)
 end
 ```
 
+The identifier is separated from the component name with a dot.
 
-### Variable attributes
 
-In addition to [a parameter](#parameterized-variables), Curly variables can be annotated
-with *attributes*. These are key-value pairs that affect how a variable is rendered.
+### Attributes
+
+In addition to [an identifier](#identifiers), Curly components can be annotated
+with *attributes*. These are key-value pairs that affect how a component is rendered.
 
 The syntax is reminiscent of HMTL:
 
@@ -145,7 +147,7 @@ The syntax is reminiscent of HMTL:
 <div>{{sidebar rows=3 width=200px title="I'm the sidebar!"}}</div>
 ```
 
-The presenter method that implements the variable must have a matching keyword argument:
+The presenter method that implements the component must have a matching keyword argument:
 
 ```ruby
 def sidebar(rows: "1", width: "100px", title:); end
@@ -153,10 +155,10 @@ def sidebar(rows: "1", width: "100px", title:); end
 
 All argument values will be strings. A compilation error will be raised if
 
-- an attribute is used on a variable without a matching keyword argument being present
+- an attribute is used in a component without a matching keyword argument being present
   in the method definition; or
-- a required keyword argument in the method definition is not set as an attribute on the
-  variable.
+- a required keyword argument in the method definition is not set as an attribute in the
+  component.
 
 You can define default values using Ruby's own syntax.
 
@@ -168,8 +170,8 @@ use _conditional blocks_. The `{{#admin?}}...{{/admin?}}` syntax will only rende
 content of the block if the `admin?` method on the presenter returns true, while the
 `{{^admin?}}...{{/admin?}}` syntax will only render the content if it returns false.
 
-Both forms can be parameterized by a single argument: `{{#locale.en?}}...{{/locale.en?}}`
-will only render the block if the `locale?` method on the presenter returns true given the
+Both forms can have an identifier: `{{#locale.en?}}...{{/locale.en?}}` will only
+render the block if the `locale?` method on the presenter returns true given the
 argument `"en"`. Here's how to implement that method in the presenter:
 
 ```ruby
@@ -299,7 +301,7 @@ rendering `posts/show`, the `Posts::ShowPresenter` class will be used. Note that
 is only used to render a view if a template can be found – in this case, at
 `app/views/posts/show.html.curly`.
 
-Presenters can declare a list of accepted parameters using the `presents` method:
+Presenters can declare a list of accepted variables using the `presents` method:
 
 ```ruby
 class Posts::ShowPresenter < Curly::Presenter
@@ -307,7 +309,7 @@ class Posts::ShowPresenter < Curly::Presenter
 end
 ```
 
-A parameter can have a default value:
+A variable can have a default value:
 
 ```ruby
 class Posts::ShowPresenter < Curly::Presenter
@@ -316,7 +318,8 @@ class Posts::ShowPresenter < Curly::Presenter
 end
 ```
 
-Any public method defined on the presenter is made available to the template:
+Any public method defined on the presenter is made available to the template as
+a component:
 
 ```ruby
 class Posts::ShowPresenter < Curly::Presenter

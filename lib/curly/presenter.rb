@@ -47,7 +47,7 @@ module Curly
       self.class.presented_names.each do |name|
         value = options.fetch(name) do
           default_values.fetch(name) do
-            raise ArgumentError.new("required parameter `#{name}` missing")
+            raise ArgumentError.new("required identifier `#{name}` missing")
           end
         end
 

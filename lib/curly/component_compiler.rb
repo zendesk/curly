@@ -41,18 +41,18 @@ module Curly
     private
 
     def append_positional_argument(code, argument)
-      if required_parameter?
+      if required_identifier?
         if argument.nil?
-          raise Curly::Error, "`#{method}` requires a parameter"
+          raise Curly::Error, "`#{method}` requires an identifier"
         end
 
         code << argument.inspect
-      elsif optional_parameter?
+      elsif optional_identifier?
         code << argument.inspect unless argument.nil?
       elsif invalid_signature?
         raise Curly::Error, "`#{method}` is not a valid component method"
       elsif !argument.nil?
-        raise Curly::Error, "`#{method}` does not take a parameter"
+        raise Curly::Error, "`#{method}` does not take an identifier"
       end
     end
 
@@ -70,11 +70,11 @@ module Curly
       positional_params.size > 1
     end
 
-    def required_parameter?
+    def required_identifier?
       param_types.include?(:req)
     end
 
-    def optional_parameter?
+    def optional_identifier?
       param_types.include?(:opt)
     end
 
