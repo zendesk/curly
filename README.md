@@ -31,6 +31,7 @@ or [Handlebars](http://handlebarsjs.com/), Curly is different in some key ways:
     1. [Parameterized variables](#parameterized-variables)
     1. [Variable attributes](#variable-attributes)
     1. [Conditional blocks](#conditional-blocks)
+    1. [Collection blocks](#collection-blocks)
     1. [Setting up state](#setting-up-state)
     2. [Escaping Curly syntax](#escaping-curly-syntax)
 3. [Presenters](#presenters)
@@ -190,6 +191,69 @@ opening the block, not when closing it:
 ```
 
 Attributes work the same way as they do for normal references.
+
+
+### Collection blocks
+
+Sometimes you want to render one or more items within the current template, and splitting
+out a separate template and rendering that in the presenter is too much overhead. You can
+instead define the template that should be used to render the items inline in the current
+template using the _collection block syntax_.
+
+Collection blocks are opened using an asterisk:
+
+```html
+{{*comments}}
+  <li>{{body}} ({{author_name}})</li>
+{{/comments}}
+```
+
+The presenter will need to expose the method `#comments`, which should return a collection
+of objects:
+
+```ruby
+class Posts::ShowPresenter < Curly::Presenter
+  presents :post
+
+  def comments
+    @post.comments
+  end
+end
+```
+
+The template within the collection block will be used to render each item, and it will
+be backed by a presenter named after the reference – in this case, `comments`. The name
+will be singularized and Curly will try to find the presenter class in the following
+order:
+
+* `Posts::ShowPresenter::CommentPresenter`
+* `Posts::CommentPresenter`
+* `CommentPresenter`
+
+This allows you some flexibility about how to organize these nested templates and
+presenters.
+
+Note that the nested template will *only* have access to the methods on the nested
+presenter, but all variables passed to the "parent" presenter will be forwarded to
+the nested presenter. In addition, the current item in the collection will be
+passed:
+
+```ruby
+class Posts::CommentPresenter < Curly::Presenter
+  presents :post, :comment
+  
+  def body
+    @comment.body
+  end
+  
+  def author_name
+    @comment.author.name
+  end
+end
+```
+
+Collection blocks are an alternative to splitting out a separate template and rendering
+that from the presenter – which solution is best depends on you use case.
 
 
 ### Setting up state
