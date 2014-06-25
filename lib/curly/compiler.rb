@@ -92,7 +92,7 @@ module Curly
 
     def compile_collection_block_start(reference)
       method, argument, attributes = ReferenceParser.parse(reference)
-      method_call = ReferenceCompiler.compile_reference(presenter_class, reference)
+      method_call = ReferenceCompiler.compile_reference(presenter_class, method, argument, attributes)
 
       as = method.singularize
       counter = "#{as}_counter"
@@ -119,7 +119,7 @@ module Curly
 
     def compile_conditional_block(keyword, reference)
       method, argument, attributes = ReferenceParser.parse(reference)
-      method_call = ReferenceCompiler.compile_conditional(presenter_class, reference)
+      method_call = ReferenceCompiler.compile_conditional(presenter_class, method, argument, attributes)
 
       push_block(method, argument)
 
@@ -147,7 +147,8 @@ module Curly
     end
 
     def compile_reference(reference)
-      method_call = ReferenceCompiler.compile_reference(presenter_class, reference)
+      method, argument, attributes = ReferenceParser.parse(reference)
+      method_call = ReferenceCompiler.compile_reference(presenter_class, method, argument, attributes)
       code = "#{method_call} {|*args| yield(*args) }"
 
       "buffer.concat(#{code.strip}.to_s)"

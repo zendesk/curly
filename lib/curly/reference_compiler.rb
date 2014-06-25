@@ -1,5 +1,3 @@
-require 'curly/reference_parser'
-
 module Curly
   class ReferenceCompiler
     attr_reader :presenter_class, :method
@@ -8,17 +6,13 @@ module Curly
       @presenter_class, @method = presenter_class, method
     end
 
-    def self.compile_reference(presenter_class, reference)
-      method, argument, attributes = ReferenceParser.parse(reference)
-
+    def self.compile_reference(presenter_class, method, argument, attributes)
       new(presenter_class, method).compile(argument, attributes)
     end
 
-    def self.compile_conditional(presenter_class, reference)
-      method, argument, attributes = ReferenceParser.parse(reference)
-
+    def self.compile_conditional(presenter_class, method, argument, attributes)
       if argument && argument.end_with?("?")
-        method << "?"
+        method += "?"
         argument = argument[0..-2]
       end
 
