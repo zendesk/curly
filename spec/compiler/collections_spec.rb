@@ -11,8 +11,12 @@ describe Curly::Compiler do
         @list.title
       end
 
-      def items
-        @list.items
+      def items(status: nil)
+        if status
+          @list.items.select {|item| item.status == status }
+        else
+          @list.items
+        end
       end
 
       def companies
@@ -83,6 +87,16 @@ describe Curly::Compiler do
 
     template = "<ul>{{*items}}<li>{{name}}</li>{{/items}}</ul>"
     expect(evaluate(template)).to eql "<ul><li>foo</li><li>bar</li></ul>"
+  end
+
+  it "allows attributes on collection blocks" do
+    item1 = double("item1", name: "foo", status: "active")
+    item2 = double("item2", name: "bar", status: "inactive")
+
+    list.stub(:items) { [item1, item2] }
+
+    template = "<ul>{{*items status=active}}<li>{{name}}</li>{{/items}}</ul>"
+    expect(evaluate(template)).to eql "<ul><li>foo</li></ul>"
   end
 
   it "fails if the reference isn't available" do

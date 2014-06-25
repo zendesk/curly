@@ -135,7 +135,7 @@ describe Curly::Compiler do
     end
 
     it "passes attributes to blocks" do
-      evaluate("{{#square? width=2 height=2}}yeah!{{/square? width=2 height=2}}").should == "yeah!"
+      evaluate("{{#square? width=2 height=2}}yeah!{{/square?}}").should == "yeah!"
     end
 
     it "gives an error on mismatching blocks" do

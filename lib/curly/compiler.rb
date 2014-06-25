@@ -1,5 +1,6 @@
 require 'curly/scanner'
 require 'curly/reference_compiler'
+require 'curly/reference_parser'
 require 'curly/error'
 require 'curly/invalid_reference'
 require 'curly/incorrect_ending_error'
@@ -90,11 +91,10 @@ module Curly
     end
 
     def compile_collection_block_start(reference)
-      unless presenter_class.method_available?(reference)
-        raise Curly::InvalidReference.new(reference)
-      end
+      method, argument, attributes = ReferenceParser.parse(reference)
+      method_call = ReferenceCompiler.compile_reference(presenter_class, method, argument, attributes)
 
-      as = reference.singularize
+      as = method.singularize
       counter = "#{as}_counter"
 
       begin
@@ -105,12 +105,12 @@ module Curly
           "cannot enumerate `#{reference}`, no matching presenter #{nested_presenter_name}"
       end
 
-      @blocks.push(reference)
+      push_block(method, argument)
       @presenter_classes.push(item_presenter_class)
 
       <<-RUBY
         presenters << presenter
-        items = Array(presenter.#{reference})
+        items = Array(#{method_call})
         items.each_with_index do |item, index|
           item_options = options.merge(:#{as} => item, :#{counter} => index + 1)
           presenter = #{item_presenter_class}.new(self, item_options)
@@ -118,9 +118,10 @@ module Curly
     end
 
     def compile_conditional_block(keyword, reference)
-      method_call = ReferenceCompiler.compile_conditional(presenter_class, reference)
+      method, argument, attributes = ReferenceParser.parse(reference)
+      method_call = ReferenceCompiler.compile_conditional(presenter_class, method, argument, attributes)
 
-      @blocks.push(reference)
+      push_block(method, argument)
 
       <<-RUBY
         #{keyword} #{method_call}
@@ -146,7 +147,8 @@ module Curly
     end
 
     def compile_reference(reference)
-      method_call = ReferenceCompiler.compile_reference(presenter_class, reference)
+      method, argument, attributes = ReferenceParser.parse(reference)
+      method_call = ReferenceCompiler.compile_reference(presenter_class, method, argument, attributes)
       code = "#{method_call} {|*args| yield(*args) }"
 
       "buffer.concat(#{code.strip}.to_s)"
@@ -161,11 +163,16 @@ module Curly
     end
 
     def validate_block_end(reference)
+      method, argument, attributes = ReferenceParser.parse(reference)
       last_block = @blocks.pop
 
-      unless last_block == reference
-        raise Curly::IncorrectEndingError.new(reference, last_block)
+      unless last_block == [method, argument]
+        raise Curly::IncorrectEndingError.new([method, argument], last_block)
       end
+    end
+
+    def push_block(method, argument)
+      @blocks.push([method, argument])
     end
   end
 end
