@@ -1,5 +1,6 @@
 require 'curly/scanner'
 require 'curly/reference_compiler'
+require 'curly/reference_parser'
 require 'curly/error'
 require 'curly/invalid_reference'
 require 'curly/incorrect_ending_error'
@@ -90,11 +91,10 @@ module Curly
     end
 
     def compile_collection_block_start(reference)
-      unless presenter_class.method_available?(reference)
-        raise Curly::InvalidReference.new(reference)
-      end
+      method, argument, attributes = ReferenceParser.parse(reference)
+      method_call = ReferenceCompiler.compile_reference(presenter_class, reference)
 
-      as = reference.singularize
+      as = method.singularize
       counter = "#{as}_counter"
 
       begin
@@ -110,7 +110,7 @@ module Curly
 
       <<-RUBY
         presenters << presenter
-        items = Array(presenter.#{reference})
+        items = Array(#{method_call})
         items.each_with_index do |item, index|
           item_options = options.merge(:#{as} => item, :#{counter} => index + 1)
           presenter = #{item_presenter_class}.new(self, item_options)

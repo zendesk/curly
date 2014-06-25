@@ -1,4 +1,4 @@
-require 'curly/attribute_parser'
+require 'curly/reference_parser'
 
 module Curly
   class ReferenceCompiler
@@ -9,13 +9,13 @@ module Curly
     end
 
     def self.compile_reference(presenter_class, reference)
-      method, argument, attributes = parse_reference(reference)
+      method, argument, attributes = ReferenceParser.parse(reference)
 
       new(presenter_class, method).compile(argument, attributes)
     end
 
     def self.compile_conditional(presenter_class, reference)
-      method, argument, attributes = parse_reference(reference)
+      method, argument, attributes = ReferenceParser.parse(reference)
 
       if argument && argument.end_with?("?")
         method << "?"
@@ -27,14 +27,6 @@ module Curly
       end
 
       new(presenter_class, method).compile(argument, attributes)
-    end
-
-    def self.parse_reference(reference)
-      name, rest = reference.split(/\s+/, 2)
-      method, argument = name.split(".", 2)
-      attributes = AttributeParser.parse(rest)
-
-      [method, argument, attributes]
     end
 
     def compile(argument, attributes = {})
