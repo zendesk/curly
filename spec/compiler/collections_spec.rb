@@ -95,7 +95,7 @@ describe Curly::Compiler do
 
     list.stub(:items) { [item1, item2] }
 
-    template = "<ul>{{*items status=active}}<li>{{name}}</li>{{/items status=active}}</ul>"
+    template = "<ul>{{*items status=active}}<li>{{name}}</li>{{/items}}</ul>"
     expect(evaluate(template)).to eql "<ul><li>foo</li></ul>"
   end
 

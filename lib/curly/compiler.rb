@@ -105,7 +105,7 @@ module Curly
           "cannot enumerate `#{reference}`, no matching presenter #{nested_presenter_name}"
       end
 
-      @blocks.push(reference)
+      push_block(method, argument)
       @presenter_classes.push(item_presenter_class)
 
       <<-RUBY
@@ -118,9 +118,10 @@ module Curly
     end
 
     def compile_conditional_block(keyword, reference)
+      method, argument, attributes = ReferenceParser.parse(reference)
       method_call = ReferenceCompiler.compile_conditional(presenter_class, reference)
 
-      @blocks.push(reference)
+      push_block(method, argument)
 
       <<-RUBY
         #{keyword} #{method_call}
@@ -161,11 +162,16 @@ module Curly
     end
 
     def validate_block_end(reference)
+      method, argument, attributes = ReferenceParser.parse(reference)
       last_block = @blocks.pop
 
-      unless last_block == reference
-        raise Curly::IncorrectEndingError.new(reference, last_block)
+      unless last_block == [method, argument]
+        raise Curly::IncorrectEndingError.new(reference, last_block.compact.join("."))
       end
+    end
+
+    def push_block(method, argument)
+      @blocks.push([method, argument])
     end
   end
 end
