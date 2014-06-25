@@ -75,23 +75,23 @@ describe Curly::Presenter do
     end
   end
 
-  describe ".available_methods" do
+  describe ".available_components" do
     it "includes the methods on the presenter" do
-      CircusPresenter.available_methods.should include("midget")
+      CircusPresenter.available_components.should include("midget")
     end
 
     it "does not include methods on the Curly::Presenter base class" do
-      CircusPresenter.available_methods.should_not include("cache_key")
+      CircusPresenter.available_components.should_not include("cache_key")
     end
   end
 
-  describe ".method_available?" do
+  describe ".component_available?" do
     it "returns true if the method is available" do
-      CircusPresenter.method_available?("midget").should == true
+      CircusPresenter.component_available?("midget").should == true
     end
 
     it "returns false if the method is not available" do
-      CircusPresenter.method_available?("bear").should == false
+      CircusPresenter.component_available?("bear").should == false
     end
   end
 

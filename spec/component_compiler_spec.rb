@@ -24,7 +24,7 @@ describe Curly::ComponentCompiler do
           "hello"
         end
 
-        def self.method_available?(name)
+        def self.component_available?(name)
           true
         end
       end
@@ -95,7 +95,7 @@ describe Curly::ComponentCompiler do
           s
         end
 
-        def self.method_available?(name)
+        def self.component_available?(name)
           true
         end
       end

@@ -41,11 +41,11 @@ describe Curly::Compiler do
         true
       end
 
-      def self.method_available?(method)
+      def self.component_available?(method)
         %w[foo high_yield yield_value dirty false? true? hello? square?].include?(method)
       end
 
-      def self.available_methods
+      def self.available_components
         public_instance_methods
       end
 
@@ -171,7 +171,7 @@ describe Curly::Compiler do
     end
 
     it "returns false if an unavailable method is referenced" do
-      presenter_class.stub(:available_methods) { [:foo] }
+      presenter_class.stub(:available_components) { [:foo] }
       validate("Hello, {{inspect}}").should == false
     end
 
