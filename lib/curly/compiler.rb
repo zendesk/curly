@@ -1,8 +1,8 @@
 require 'curly/scanner'
-require 'curly/reference_compiler'
-require 'curly/reference_parser'
+require 'curly/component_compiler'
+require 'curly/component_parser'
 require 'curly/error'
-require 'curly/invalid_reference'
+require 'curly/invalid_component'
 require 'curly/incorrect_ending_error'
 require 'curly/incomplete_block_error'
 
@@ -11,7 +11,7 @@ module Curly
   # Compiles Curly templates into executable Ruby code.
   #
   # A template must be accompanied by a presenter class. This class defines the
-  # references that are valid within the template.
+  # components that are valid within the template.
   #
   class Compiler
     # Compiles a Curly template to Ruby code.
@@ -19,7 +19,7 @@ module Curly
     # template        - The template String that should be compiled.
     # presenter_class - The presenter Class.
     #
-    # Raises InvalidReference if the template contains a reference that is not
+    # Raises InvalidComponent if the template contains a component that is not
     #   allowed.
     # Raises IncorrectEndingError if a conditional block is not ended in the
     #   correct order - the most recent block must be ended first.
@@ -30,7 +30,7 @@ module Curly
     end
 
     # Whether the Curly template is valid. This includes whether all
-    # references are available on the presenter class.
+    # components are available on the presenter class.
     #
     # template        - The template String that should be validated.
     # presenter_class - The presenter Class.
@@ -82,19 +82,19 @@ module Curly
       @presenter_classes.last
     end
 
-    def compile_conditional_block_start(reference)
-      compile_conditional_block "if", reference
+    def compile_conditional_block_start(component)
+      compile_conditional_block "if", component
     end
 
-    def compile_inverse_conditional_block_start(reference)
-      compile_conditional_block "unless", reference
+    def compile_inverse_conditional_block_start(component)
+      compile_conditional_block "unless", component
     end
 
-    def compile_collection_block_start(reference)
-      method, argument, attributes = ReferenceParser.parse(reference)
-      method_call = ReferenceCompiler.compile_reference(presenter_class, method, argument, attributes)
+    def compile_collection_block_start(component)
+      name, identifier, attributes = ComponentParser.parse(component)
+      method_call = ComponentCompiler.compile_component(presenter_class, name, identifier, attributes)
 
-      as = method.singularize
+      as = name.singularize
       counter = "#{as}_counter"
 
       begin
@@ -102,10 +102,10 @@ module Curly
         item_presenter_class = presenter_class.const_get(nested_presenter_name)
       rescue NameError
         raise Curly::Error,
-          "cannot enumerate `#{reference}`, no matching presenter #{nested_presenter_name}"
+          "cannot enumerate `#{component}`, no matching presenter #{nested_presenter_name}"
       end
 
-      push_block(method, argument)
+      push_block(name, identifier)
       @presenter_classes.push(item_presenter_class)
 
       <<-RUBY
@@ -117,28 +117,28 @@ module Curly
       RUBY
     end
 
-    def compile_conditional_block(keyword, reference)
-      method, argument, attributes = ReferenceParser.parse(reference)
-      method_call = ReferenceCompiler.compile_conditional(presenter_class, method, argument, attributes)
+    def compile_conditional_block(keyword, component)
+      name, identifier, attributes = ComponentParser.parse(component)
+      method_call = ComponentCompiler.compile_conditional(presenter_class, name, identifier, attributes)
 
-      push_block(method, argument)
+      push_block(name, identifier)
 
       <<-RUBY
         #{keyword} #{method_call}
       RUBY
     end
 
-    def compile_conditional_block_end(reference)
-      validate_block_end(reference)
+    def compile_conditional_block_end(component)
+      validate_block_end(component)
 
       <<-RUBY
         end
       RUBY
     end
 
-    def compile_collection_block_end(reference)
+    def compile_collection_block_end(component)
       @presenter_classes.pop
-      validate_block_end(reference)
+      validate_block_end(component)
 
       <<-RUBY
         end
@@ -146,9 +146,9 @@ module Curly
       RUBY
     end
 
-    def compile_reference(reference)
-      method, argument, attributes = ReferenceParser.parse(reference)
-      method_call = ReferenceCompiler.compile_reference(presenter_class, method, argument, attributes)
+    def compile_component(component)
+      name, identifier, attributes = ComponentParser.parse(component)
+      method_call = ComponentCompiler.compile_component(presenter_class, name, identifier, attributes)
       code = "#{method_call} {|*args| yield(*args) }"
 
       "buffer.concat(#{code.strip}.to_s)"
@@ -162,17 +162,17 @@ module Curly
       "" # Replace the content with an empty string.
     end
 
-    def validate_block_end(reference)
-      method, argument, attributes = ReferenceParser.parse(reference)
+    def validate_block_end(component)
+      name, identifier, attributes = ComponentParser.parse(component)
       last_block = @blocks.pop
 
-      unless last_block == [method, argument]
-        raise Curly::IncorrectEndingError.new([method, argument], last_block)
+      unless last_block == [name, identifier]
+        raise Curly::IncorrectEndingError.new([name, identifier], last_block)
       end
     end
 
-    def push_block(method, argument)
-      @blocks.push([method, argument])
+    def push_block(name, identifier)
+      @blocks.push([name, identifier])
     end
   end
 end

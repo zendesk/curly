@@ -26,7 +26,7 @@ describe Curly::Presenter do
   describe "#initialize" do
     let(:context) { double("context") }
 
-    it "sets the presented parameters as instance variables" do
+    it "sets the presented identifiers as instance variables" do
       presenter = CircusPresenter.new(context,
         midget: "Meek Harolson",
         clown: "Bubbles"
@@ -36,13 +36,13 @@ describe Curly::Presenter do
       presenter.clown.should == "Bubbles"
     end
 
-    it "raises an exception if a required parameter is not specified" do
+    it "raises an exception if a required identifier is not specified" do
       expect {
         FancyCircusPresenter.new(context, {})
-      }.to raise_exception(ArgumentError, "required parameter `champagne` missing")
+      }.to raise_exception(ArgumentError, "required identifier `champagne` missing")
     end
 
-    it "allows specifying default values for parameters" do
+    it "allows specifying default values for identifiers" do
       # Make sure subclasses can change default values.
       french_presenter = FrenchCircusPresenter.new(context)
       french_presenter.elephant.should == "Babar"

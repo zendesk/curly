@@ -6,7 +6,7 @@ describe Curly::IncorrectEndingError do
     error.message.should == "compilation error: expected `{{/foo}}`, got `{{/bar}}`"
   end
 
-  it "handles references with a parameter" do
+  it "handles components with an identifier" do
     error = Curly::IncorrectEndingError.new(["foo", "y"], ["foo", "x"])
     error.message.should == "compilation error: expected `{{/foo.x}}`, got `{{/foo.y}}`"
   end

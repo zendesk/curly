@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Curly::ReferenceCompiler do
+describe Curly::ComponentCompiler do
   describe ".compile_conditional" do
     let(:presenter_class) do
       Class.new do
@@ -30,28 +30,28 @@ describe Curly::ReferenceCompiler do
       end
     end
 
-    it "compiles simple references" do
+    it "compiles simple components" do
       evaluate("monday?").should == true
       evaluate("tuesday?").should == false
     end
 
-    it "compiles references with a parameter" do
+    it "compiles components with an identifier" do
       evaluate("day.monday?").should == true
       evaluate("day.tuesday?").should == false
     end
 
-    it "compiles references with attributes" do
+    it "compiles components with attributes" do
       evaluate("season? name=summer").should == true
       evaluate("season? name=winter").should == false
     end
 
-    it "fails if the reference is missing a question mark" do
+    it "fails if the component is missing a question mark" do
       expect { evaluate("hello") }.to raise_exception(Curly::Error)
     end
 
-    def evaluate(reference, &block)
-      method, argument, attributes = Curly::ReferenceParser.parse(reference)
-      code = Curly::ReferenceCompiler.compile_conditional(presenter_class, method, argument, attributes)
+    def evaluate(component, &block)
+      method, argument, attributes = Curly::ComponentParser.parse(component)
+      code = Curly::ComponentCompiler.compile_conditional(presenter_class, method, argument, attributes)
       presenter = presenter_class.new
       context = double("context", presenter: presenter)
 
@@ -65,7 +65,7 @@ describe Curly::ReferenceCompiler do
     end
   end
 
-  describe ".compile_reference" do
+  describe ".compile_component" do
     let(:presenter_class) do
       Class.new do
         def title
@@ -101,24 +101,24 @@ describe Curly::ReferenceCompiler do
       end
     end
 
-    it "compiles parameterized references" do
+    it "compiles components with identifiers" do
       evaluate("i18n.home.welcome").should == "Welcome to our lovely place!"
     end
 
-    it "compiles optionally parameterized references" do
+    it "compiles components with optional identifiers" do
       evaluate("summary").should == "This is a long summary"
       evaluate("summary.short").should == "This is a short summary"
     end
 
-    it "compiles references with attributes" do
+    it "compiles components with attributes" do
       evaluate("widget size=100px").should == "Widget (100px)"
     end
 
-    it "compiles references with optional attributes" do
+    it "compiles components with optional attributes" do
       evaluate("widget color=blue size=50px").should == "Widget (50px) - blue"
     end
 
-    it "allows both parameter and attributes" do
+    it "allows both identifier and attributes" do
       evaluate("i18n.hello fallback=yolo").should == "yolo"
     end
 
@@ -126,15 +126,15 @@ describe Curly::ReferenceCompiler do
       expect { evaluate("i18n.foo extreme=true") }.to raise_exception(Curly::Error)
     end
 
-    it "fails when a parameterized reference is missing a parameter" do
+    it "fails when a component is missing a required identifier" do
       expect { evaluate("i18n") }.to raise_exception(Curly::Error)
     end
 
-    it "fails when a reference is missing a required attribute" do
+    it "fails when a component is missing a required attribute" do
       expect { evaluate("widget") }.to raise_exception(Curly::Error)
     end
 
-    it "fails when a non-parameterized reference is passed a parameter" do
+    it "fails when an identifier is specified for a component that doesn't support one" do
       expect { evaluate("title.rugby") }.to raise_exception(Curly::Error)
     end
 
@@ -142,9 +142,9 @@ describe Curly::ReferenceCompiler do
       expect { evaluate("invalid") }.to raise_exception(Curly::Error)
     end
 
-    def evaluate(reference, &block)
-      method, argument, attributes = Curly::ReferenceParser.parse(reference)
-      code = Curly::ReferenceCompiler.compile_reference(presenter_class, method, argument, attributes)
+    def evaluate(component, &block)
+      method, argument, attributes = Curly::ComponentParser.parse(component)
+      code = Curly::ComponentCompiler.compile_component(presenter_class, method, argument, attributes)
       presenter = presenter_class.new
       context = double("context", presenter: presenter)
 

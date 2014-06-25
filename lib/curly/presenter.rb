@@ -6,7 +6,7 @@ module Curly
   # form of simple strings. Each public instance method on the presenter class
   # can be referenced in a template. When a template is evaluated with a
   # presenter, the referenced methods will be called with no arguments, and
-  # the returned strings inserted in place of the references in the template.
+  # the returned strings inserted in place of the components in the template.
   #
   # Note that strings that are not HTML safe will be escaped.
   #
@@ -47,7 +47,7 @@ module Curly
       self.class.presented_names.each do |name|
         value = options.fetch(name) do
           default_values.fetch(name) do
-            raise ArgumentError.new("required parameter `#{name}` missing")
+            raise ArgumentError.new("required identifier `#{name}` missing")
           end
         end
 
@@ -154,7 +154,7 @@ module Curly
 
       # Whether a method is available to templates rendered with the presenter.
       #
-      # Templates can reference "variables", which are simply methods defined on
+      # Templates can component "variables", which are simply methods defined on
       # the presenter. By default, only public instance methods can be
       # referenced, and any method defined on Curly::Presenter itself cannot be
       # referenced. This means that methods such as `#cache_key` and #inspect are
