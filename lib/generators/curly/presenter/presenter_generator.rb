@@ -9,6 +9,7 @@ module Curly
       desc "Creates a presenter class for the given view path."
       def generate_presenter
         @presenter_name = "#{presenter_namespace}::#{file_name.capitalize}Presenter"
+        @assign = class_path.last.singularize
 
         empty_directory base_presenters_path
         template "presenter.rb.erb", presenter_path
