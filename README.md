@@ -141,7 +141,7 @@ The identifier is separated from the component name with a dot.
 In addition to [an identifier](#identifiers), Curly components can be annotated
 with *attributes*. These are key-value pairs that affect how a component is rendered.
 
-The syntax is reminiscent of HMTL:
+The syntax is reminiscent of HTML:
 
 ```html
 <div>{{sidebar rows=3 width=200px title="I'm the sidebar!"}}</div>
