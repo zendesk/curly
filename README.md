@@ -127,13 +127,15 @@ example is I18n:
 ```
 
 ```ruby
-# In the presenter:
+# In the presenter, the identifier is passed as an argument to the method. The
+# argument will always be a String.
 def i18n(key)
   translate(key)
 end
 ```
 
-The identifier is separated from the component name with a dot.
+The identifier is separated from the component name with a dot. If the presenter method
+has a default value for the argument, the identifier is optional – otherwise it's mandatory.
 
 
 ### Attributes
