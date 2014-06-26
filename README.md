@@ -234,8 +234,8 @@ order:
 * `Posts::CommentPresenter`
 * `CommentPresenter`
 
-This allows you some flexibility about how to organize these nested templates and
-presenters.
+This allows you some flexibility with regards to how you want to organize these nested
+templates and presenters.
 
 Note that the nested template will *only* have access to the methods on the nested
 presenter, but all variables passed to the "parent" presenter will be forwarded to
@@ -263,7 +263,7 @@ end
 ```
 
 Collection blocks are an alternative to splitting out a separate template and rendering
-that from the presenter – which solution is best depends on you use case.
+that from the presenter – which solution is best depends on your use case.
 
 
 ### Setting up state
