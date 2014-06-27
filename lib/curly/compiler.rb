@@ -98,11 +98,10 @@ module Curly
       counter = "#{as}_counter"
 
       begin
-        nested_presenter_name = "#{as.camelcase}Presenter"
-        item_presenter_class = presenter_class.const_get(nested_presenter_name)
+        item_presenter_class = presenter_class.presenter_for_name(as)
       rescue NameError
         raise Curly::Error,
-          "cannot enumerate `#{component}`, no matching presenter #{nested_presenter_name}"
+          "cannot enumerate `#{component}`, could not find matching presenter class"
       end
 
       push_block(name, identifier)
