@@ -1,5 +1,7 @@
 ### Unreleased
 
+### Curly 2.0.0.beta1 (June 27, 2014)
+
 * Add support for collection blocks.
 
   *Daniel Schierbeck*
