@@ -23,6 +23,9 @@ describe Curly::Presenter do
     presents :champagne
   end
 
+  class CircusPresenter::MonkeyPresenter < Curly::Presenter
+  end
+
   describe "#initialize" do
     let(:context) { double("context") }
 
@@ -72,6 +75,20 @@ describe Curly::Presenter do
       expect do
         Curly::Presenter.presenter_for_path("foo/bar")
       end.to raise_error(NameError)
+    end
+  end
+
+  describe ".presenter_for_name" do
+    it "returns the presenter class for the given name" do
+      CircusPresenter.presenter_for_name("monkey").should == CircusPresenter::MonkeyPresenter
+    end
+
+    it "looks in the namespace" do
+      CircusPresenter.presenter_for_name("french_circus").should == FrenchCircusPresenter
+    end
+
+    it "returns NameError if the presenter class doesn't exist" do
+      expect { CircusPresenter.presenter_for_name("clown") }.to raise_exception(NameError)
     end
   end
 

@@ -152,6 +152,25 @@ module Curly
         end
       end
 
+      def presenter_for_name(name)
+        namespace = to_s.split("::")
+        class_name = name.camelcase << "Presenter"
+
+        # Because Rails' autoloading mechanism doesn't work properly with
+        # namespace we need to loop through the namespace ourselves. Ideally,
+        # `X::Y.const_get("Z")` would autoload `X::Z`, but only `X::Y::Z` is
+        # attempted by Rails. This sucks, and hopefully we can find a better
+        # solution in the future.
+        begin
+          full_name = namespace.join("::") << "::" << class_name
+          const_get(full_name)
+        rescue NameError
+          raise if namespace.empty?
+          namespace.pop
+          retry
+        end
+      end
+
       # Whether a component is available to templates rendered with the presenter.
       #
       # Templates have components which correspond with methods defined on
