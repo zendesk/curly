@@ -1,5 +1,9 @@
 ### Unreleased
 
+* Add support for collection blocks.
+
+  *Daniel Schierbeck*
+
 * Add support for keyword parameters to references.
 
   *Alisson Cavalcante Agiani, Jeremy Rodi, and Daniel Schierbeck*
