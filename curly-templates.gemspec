@@ -4,8 +4,8 @@ Gem::Specification.new do |s|
   s.rubygems_version = '1.3.5'
 
   s.name              = 'curly-templates'
-  s.version           = '1.0.0'
-  s.date              = '2014-03-12'
+  s.version           = '2.0.0.beta1'
+  s.date              = '2014-06-27'
 
   s.summary     = "Free your views!"
   s.description = "A view layer for your Rails apps that separates structure and logic."
@@ -36,13 +36,16 @@ Gem::Specification.new do |s|
     curly-templates.gemspec
     lib/curly-templates.rb
     lib/curly.rb
+    lib/curly/attribute_parser.rb
     lib/curly/compilation_error.rb
     lib/curly/compiler.rb
+    lib/curly/component_compiler.rb
+    lib/curly/component_parser.rb
     lib/curly/dependency_tracker.rb
     lib/curly/error.rb
     lib/curly/incomplete_block_error.rb
     lib/curly/incorrect_ending_error.rb
-    lib/curly/invalid_reference.rb
+    lib/curly/invalid_component.rb
     lib/curly/presenter.rb
     lib/curly/railtie.rb
     lib/curly/scanner.rb
@@ -52,8 +55,12 @@ Gem::Specification.new do |s|
     lib/generators/curly/controller/templates/presenter.rb.erb
     lib/generators/curly/controller/templates/view.html.curly.erb
     lib/rails/projections.json
+    spec/attribute_parser_spec.rb
+    spec/compiler/collections_spec.rb
     spec/compiler_spec.rb
+    spec/component_compiler_spec.rb
     spec/generators/controller_generator_spec.rb
+    spec/incorrect_ending_error_spec.rb
     spec/presenter_spec.rb
     spec/scanner_spec.rb
     spec/spec_helper.rb
