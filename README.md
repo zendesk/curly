@@ -34,6 +34,7 @@ or [Handlebars](http://handlebarsjs.com/), Curly is different in some key ways:
     1. [Collection blocks](#collection-blocks)
     1. [Setting up state](#setting-up-state)
     2. [Escaping Curly syntax](#escaping-curly-syntax)
+    2. [Comments](#comments)
 3. [Presenters](#presenters)
     1. [Layouts and Content Blocks](#layouts-and-content-blocks)
     2. [Examples](#examples)
@@ -297,6 +298,16 @@ This is {{{escaped}}.
 ```
 
 You don't need to escape the closing `}}`.
+
+
+### Comments
+
+If you want to add comments to your Curly templates that are not visible in the rendered HTML,
+use the following syntax:
+
+```html
+{{! This is some interesting stuff }}
+```
 
 
 Presenters
