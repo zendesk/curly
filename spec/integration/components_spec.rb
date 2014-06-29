@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe "Components" do
+  include RenderingSupport
+
   example "with neither identifier nor attributes" do
     presenter do
       def title
@@ -39,21 +41,5 @@ describe "Components" do
     end
 
     render(%({{a href="/welcome.html" title="Welcome!"}})).should == %(<a href="/welcome.html" title="Welcome!"></a>)
-  end
-
-  def presenter(&block)
-    @presenter = block
-  end
-
-  def render(source)
-    stub_const("TestPresenter", Class.new(Curly::Presenter, &@presenter))
-    identifier = "test"
-    handler = Curly::TemplateHandler
-    details = { virtual_path: 'test' }
-    template = ActionView::Template.new(source, identifier, handler, details)
-    locals = {}
-    view = ActionView::Base.new
-
-    template.render(view, locals)
   end
 end
