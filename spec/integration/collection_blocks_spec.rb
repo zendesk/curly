@@ -52,7 +52,37 @@ describe "Collection block components" do
     render("{{*items}}<{{name}}>{{/items}}").should == "<x>"
   end
 
+  example "with nested collection blocks" do
+    presenter do
+      def items
+        [{ parts: [1, 2] }, { parts: [3, 4] }]
+      end
+    end
+
+    item_presenter do
+      presents :item
+
+      def parts
+        @item[:parts]
+      end
+    end
+
+    part_presenter do
+      presents :part
+
+      def number
+        @part
+      end
+    end
+
+    render("{{*items}}<{{*parts}}[{{number}}]{{/parts}}>{{/items}}").should == "<[1][2]><[3][4]>"
+  end
+
   def item_presenter(&block)
     stub_const("ItemPresenter", Class.new(Curly::Presenter, &block))
+  end
+
+  def part_presenter(&block)
+    stub_const("ItemPresenter::PartPresenter", Class.new(Curly::Presenter, &block))
   end
 end
