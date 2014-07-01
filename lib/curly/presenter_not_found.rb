@@ -1,7 +1,7 @@
 require 'curly/error'
 
 module Curly
-  class CompilationError < Error
+  class PresenterNotFound < Error
     attr_reader :path
 
     def initialize(path)

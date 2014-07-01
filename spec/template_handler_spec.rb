@@ -105,7 +105,7 @@ describe Curly::TemplateHandler do
   it "should fail if there's no matching presenter class" do
     template.stub(:virtual_path) { "missing" }
     template.stub(:source) { " FOO " }
-    expect { output }.to raise_exception(Curly::CompilationError)
+    expect { output }.to raise_exception(Curly::PresenterNotFound)
   end
 
   it "allows calling public methods on the presenter" do
