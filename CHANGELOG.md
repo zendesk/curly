@@ -1,5 +1,11 @@
 ### Unreleased
 
+### Curly 2.0.0 (July 1, 2014)
+
+* Rename Curly::CompilationError to Curly::PresenterNotFound.
+
+  *Daniel Schierbeck*
+
 ### Curly 2.0.0.beta1 (June 27, 2014)
 
 * Add support for collection blocks.
