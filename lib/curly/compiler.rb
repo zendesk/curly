@@ -165,6 +165,10 @@ module Curly
       name, identifier, attributes = ComponentParser.parse(component)
       last_block = @blocks.pop
 
+      if last_block.nil?
+        raise Curly::Error, "block ending not expected"
+      end
+
       unless last_block == [name, identifier]
         raise Curly::IncorrectEndingError.new([name, identifier], last_block)
       end

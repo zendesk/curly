@@ -11,6 +11,24 @@ end
 
 require 'curly'
 
+module RenderingSupport
+  def presenter(&block)
+    @presenter = block
+  end
+
+  def render(source)
+    stub_const("TestPresenter", Class.new(Curly::Presenter, &@presenter))
+    identifier = "test"
+    handler = Curly::TemplateHandler
+    details = { virtual_path: 'test' }
+    template = ActionView::Template.new(source, identifier, handler, details)
+    locals = {}
+    view = ActionView::Base.new
+
+    template.render(view, locals)
+  end
+end
+
 module CompilationSupport
   def evaluate(template, options = {}, &block)
     code = Curly::Compiler.compile(template, presenter_class)
