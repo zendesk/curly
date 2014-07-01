@@ -1,7 +1,3 @@
-Note: this documentation is for the upcoming Curly v2 – you may be looking for the
-[documentation for the latest final release](https://github.com/zendesk/curly/tree/1-0-stable).
-
-
 Curly
 =======
 
