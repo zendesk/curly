@@ -38,6 +38,7 @@ module Curly
 
     def initialize(source)
       @scanner = StringScanner.new(source)
+      @line    = 1
     end
 
     def scan
@@ -144,18 +145,20 @@ module Curly
 
     def scan_until_start_of_curly
       if value = @scanner.scan_until(CURLY_START)
+        @line += value.count("\n")
         value[0..-3]
       end
     end
 
     def scan_until_end_of_curly
       if value = @scanner.scan_until(CURLY_END)
+        @line += value.count("\n")
         value[0..-3]
       end
     end
 
     def syntax_error!
-      raise SyntaxError.new(@scanner.pos, @scanner.string)
+      raise SyntaxError.new(@scanner.pos, @scanner.string, @line)
     end
   end
 end
