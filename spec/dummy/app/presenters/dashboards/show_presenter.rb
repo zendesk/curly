@@ -4,4 +4,9 @@ class Dashboards::ShowPresenter < Curly::Presenter
   def message
     @message
   end
+
+  def welcome
+    # This is a helper method:
+    welcome_message
+  end
 end

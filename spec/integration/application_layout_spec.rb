@@ -12,6 +12,7 @@ describe "Using Curly for the application layout", type: :request do
       <body>
       <h1>Dashboard</h1>
       <p>Hello, World!</p>
+      <p>Welcome!</p>
 
       </body>
       </html>
