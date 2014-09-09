@@ -1,5 +1,15 @@
 ### Unreleased
 
+### Curly 2.0.1 (September 9, 2014)
+
+* Fixed an issue when using Curly with Rails 4.1.
+
+  *Daniel Schierbeck*
+
+* Add line number information to syntax errors.
+
+  *Jeremy Rodi*
+
 ### Curly 2.0.0 (July 1, 2014)
 
 * Rename Curly::CompilationError to Curly::PresenterNotFound.
