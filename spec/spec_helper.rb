@@ -1,4 +1,7 @@
-require 'active_support/all'
+ENV["RAILS_ENV"] = "test"
+
+require 'dummy/config/environment'
+require 'rspec/rails'
 
 if ENV['CI']
   begin
@@ -8,8 +11,6 @@ if ENV['CI']
     STDERR.puts "Failed to load Coveralls"
   end
 end
-
-require 'curly'
 
 module RenderingSupport
   def presenter(&block)
