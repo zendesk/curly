@@ -86,7 +86,7 @@ module Curly
     #
     # - is a String,
     # - responds to #cache_key itself, or
-    # - is an Array of a Hash whose items themselves fit either of these
+    # - is an Array or a Hash whose items themselves fit either of these
     #   criteria.
     #
     # Returns the cache key Object or nil if no caching should be performed.
