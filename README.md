@@ -525,7 +525,7 @@ end
 Static caching will only be enabled for presenters that define a non-nil `#cache_key`
 method (see [Dynamic Caching.](#dynamic-caching))
 
-In order to make a deploy expire the cache for a specific view, set the version of the
+In order to make a deploy expire the cache for a specific view, set the `version` of the
 view to something new, usually by incrementing by one:
 
 ```ruby
@@ -559,7 +559,6 @@ end
 
 class Posts::CommentPresenter < Curly::Presenter
   version 4
-  depends_on 'posts/comment'
 
   def cache_key
     # Some objects
@@ -567,11 +566,13 @@ class Posts::CommentPresenter < Curly::Presenter
 end
 ```
 
-Now, if the version of `Posts::CommentPresenter` is bumped, the cache keys for both
+Now, if the `version` of `Posts::CommentPresenter` is bumped, the cache keys for both
 presenters would change. You can register any number of view paths with `depends_on`.
 
-If you use [Cache Digests](https://github.com/rails/cache_digests), Curly will
-automatically provide a list of dependencies. This will allow you to deploy changes
+Curly integrates well with the
+[caching mechanism](http://guides.rubyonrails.org/caching_with_rails.html) in Rails 4 (or
+[Cache Digests](https://github.com/rails/cache_digests) in Rails 3), so the dependencies
+defined with `depends_on` will be tracked by Rails. This will allow you to deploy changes
 to your templates and have the relevant caches automatically expire.
 
 
