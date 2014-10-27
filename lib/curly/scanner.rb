@@ -15,7 +15,7 @@ module Curly
     ESCAPED_CURLY_START = /\{\{\{/
 
     COMMENT_MARKER = /!/
-    CONDITIONAL_BLOCK_MARKER = /#/
+    BLOCK_MARKER = /#/
     INVERSE_BLOCK_MARKER = /\^/
     COLLECTION_BLOCK_MARKER = /\*/
     END_BLOCK_MARKER = /\//
@@ -71,8 +71,8 @@ module Curly
     def scan_tag
       if @scanner.scan(COMMENT_MARKER)
         scan_comment
-      elsif @scanner.scan(CONDITIONAL_BLOCK_MARKER)
-        scan_conditional_block_start
+      elsif @scanner.scan(BLOCK_MARKER)
+        scan_block_start
       elsif @scanner.scan(INVERSE_BLOCK_MARKER)
         scan_inverse_block_start
       elsif @scanner.scan(COLLECTION_BLOCK_MARKER)
@@ -90,37 +90,54 @@ module Curly
       end
     end
 
-    def scan_conditional_block_start
+    def scan_block_start
       if value = scan_until_end_of_curly
-        [:conditional_block_start, value]
+        name, identifier, attributes = ComponentParser.parse(value)
+
+        if identifier && identifier.end_with?("?")
+          name += "?"
+          identifier = identifier[0..-2]
+        end
+
+        [:conditional_block_start, name, identifier, attributes]
       end
     end
 
     def scan_collection_block_start
       if value = scan_until_end_of_curly
-        [:collection_block_start, value]
+        name, identifier, attributes = ComponentParser.parse(value)
+        [:collection_block_start, name, identifier, attributes]
       end
     end
 
     def scan_inverse_block_start
       if value = scan_until_end_of_curly
-        [:inverse_conditional_block_start, value]
+        name, identifier, attributes = ComponentParser.parse(value)
+        [:inverse_conditional_block_start, name, identifier, attributes]
       end
     end
 
     def scan_block_end
       if value = scan_until_end_of_curly
-        if value.end_with?("?")
-          [:conditional_block_end, value]
+        name, identifier, attributes = ComponentParser.parse(value)
+
+        if identifier && identifier.end_with?("?")
+          name += "?"
+          identifier = identifier[0..-2]
+        end
+
+        if name.end_with?("?") || (identifier && identifier.end_with?("?"))
+          [:conditional_block_end, name, identifier]
         else
-          [:collection_block_end, value]
+          [:collection_block_end, name, identifier]
         end
       end
     end
 
     def scan_component
       if value = scan_until_end_of_curly
-        [:component, value]
+        name, identifier, attributes = ComponentParser.parse(value)
+        [:component, name, identifier, attributes]
       end
     end
 
