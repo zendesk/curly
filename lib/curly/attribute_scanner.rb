@@ -3,17 +3,17 @@ require 'curly/error'
 module Curly
   AttributeError = Class.new(Curly::Error)
 
-  class AttributeParser
-    def self.parse(string)
+  class AttributeScanner
+    def self.scan(string)
       return {} if string.nil?
-      new(string).parse
+      new(string).scan
     end
 
     def initialize(string)
       @scanner = StringScanner.new(string)
     end
 
-    def parse
+    def scan
       attributes = scan_attributes
       Hash[attributes]
     end
