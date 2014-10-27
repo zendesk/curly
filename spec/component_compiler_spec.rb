@@ -50,7 +50,7 @@ describe Curly::ComponentCompiler do
     end
 
     def evaluate(component, &block)
-      method, argument, attributes = Curly::ComponentParser.parse(component)
+      method, argument, attributes = Curly::ComponentScanner.scan(component)
       code = Curly::ComponentCompiler.compile_conditional(presenter_class, method, argument, attributes)
       presenter = presenter_class.new
       context = double("context", presenter: presenter)
@@ -143,7 +143,7 @@ describe Curly::ComponentCompiler do
     end
 
     def evaluate(component, &block)
-      method, argument, attributes = Curly::ComponentParser.parse(component)
+      method, argument, attributes = Curly::ComponentScanner.scan(component)
       code = Curly::ComponentCompiler.compile_component(presenter_class, method, argument, attributes)
       presenter = presenter_class.new
       context = double("context", presenter: presenter)

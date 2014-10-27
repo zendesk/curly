@@ -1,6 +1,5 @@
 require 'curly/scanner'
 require 'curly/component_compiler'
-require 'curly/component_parser'
 require 'curly/error'
 require 'curly/invalid_component'
 require 'curly/incorrect_ending_error'

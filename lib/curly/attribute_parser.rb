@@ -1,3 +1,5 @@
+require 'curly/error'
+
 module Curly
   AttributeError = Class.new(Curly::Error)
 

@@ -1,4 +1,5 @@
 require 'strscan'
+require 'curly/component_scanner'
 require 'curly/syntax_error'
 
 module Curly
@@ -92,7 +93,7 @@ module Curly
 
     def scan_block_start
       if value = scan_until_end_of_curly
-        name, identifier, attributes = ComponentParser.parse(value)
+        name, identifier, attributes = ComponentScanner.scan(value)
 
         if identifier && identifier.end_with?("?")
           name += "?"
@@ -105,21 +106,21 @@ module Curly
 
     def scan_collection_block_start
       if value = scan_until_end_of_curly
-        name, identifier, attributes = ComponentParser.parse(value)
+        name, identifier, attributes = ComponentScanner.scan(value)
         [:collection_block_start, name, identifier, attributes]
       end
     end
 
     def scan_inverse_block_start
       if value = scan_until_end_of_curly
-        name, identifier, attributes = ComponentParser.parse(value)
+        name, identifier, attributes = ComponentScanner.scan(value)
         [:inverse_conditional_block_start, name, identifier, attributes]
       end
     end
 
     def scan_block_end
       if value = scan_until_end_of_curly
-        name, identifier, attributes = ComponentParser.parse(value)
+        name, identifier, attributes = ComponentScanner.scan(value)
 
         if identifier && identifier.end_with?("?")
           name += "?"
@@ -136,7 +137,7 @@ module Curly
 
     def scan_component
       if value = scan_until_end_of_curly
-        name, identifier, attributes = ComponentParser.parse(value)
+        name, identifier, attributes = ComponentScanner.scan(value)
         [:component, name, identifier, attributes]
       end
     end
