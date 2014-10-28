@@ -1,9 +1,8 @@
 require 'curly/scanner'
+require 'curly/parser'
 require 'curly/component_compiler'
 require 'curly/error'
 require 'curly/invalid_component'
-require 'curly/incorrect_ending_error'
-require 'curly/incomplete_block_error'
 
 module Curly
 
@@ -25,7 +24,16 @@ module Curly
     # Raises IncompleteBlockError if a block is not completed.
     # Returns a String containing the Ruby code.
     def self.compile(template, presenter_class)
-      new(template, presenter_class).compile
+      if presenter_class.nil?
+        raise ArgumentError, "presenter class cannot be nil"
+      end
+
+      tokens = Scanner.scan(template)
+      nodes = Parser.parse(tokens)
+
+      compiler = new(presenter_class)
+      compiler.compile(nodes)
+      compiler.code
     end
 
     # Whether the Curly template is valid. This includes whether all
@@ -43,34 +51,22 @@ module Curly
       false
     end
 
-    attr_reader :template
-
-    def initialize(template, presenter_class)
-      @template = template
+    def initialize(presenter_class)
       @presenter_classes = [presenter_class]
+      @parts = []
     end
 
-    def compile
-      if presenter_class.nil?
-        raise ArgumentError, "presenter class cannot be nil"
+    def compile(nodes)
+      nodes.each do |node|
+        send("compile_#{node.type}", node)
       end
+    end
 
-      tokens = Scanner.scan(template)
-
-      @blocks = []
-
-      parts = tokens.map do |type, *args|
-        send("compile_#{type}", *args)
-      end
-
-      if @blocks.any?
-        raise IncompleteBlockError.new(@blocks.pop)
-      end
-
+    def code
       <<-RUBY
         buffer = ActiveSupport::SafeBuffer.new
         presenters = []
-        #{parts.join("\n")}
+        #{@parts.join("\n")}
         buffer
       RUBY
     end
@@ -81,96 +77,82 @@ module Curly
       @presenter_classes.last
     end
 
-    def compile_conditional_block_start(name, identifier, attributes)
-      compile_conditional_block "if", name, identifier, attributes
+    def compile_conditional(block)
+      compile_conditional_block("if", block)
     end
 
-    def compile_inverse_conditional_block_start(name, identifier, attributes)
-      compile_conditional_block "unless", name, identifier, attributes
+    def compile_inverse_conditional(block)
+      compile_conditional_block("unless", block)
     end
 
-    def compile_collection_block_start(name, identifier, attributes)
-      method_call = ComponentCompiler.compile_component(presenter_class, name, identifier, attributes)
+    def compile_collection(block)
+      component = block.component
+      method_call = ComponentCompiler.compile(presenter_class, component)
 
-      as = name.singularize
-      counter = "#{as}_counter"
+      name = component.name.singularize
+      counter = "#{name}_counter"
 
       begin
-        item_presenter_class = presenter_class.presenter_for_name(as)
+        item_presenter_class = presenter_class.presenter_for_name(name)
       rescue NameError
         raise Curly::Error,
           "cannot enumerate `#{name}`, could not find matching presenter class"
       end
 
-      push_block(name, identifier)
-      @presenter_classes.push(item_presenter_class)
-
-      <<-RUBY
+      output <<-RUBY
         presenters << presenter
         items = Array(#{method_call})
         items.each_with_index do |item, index|
-          item_options = options.merge(:#{as} => item, :#{counter} => index + 1)
+          item_options = options.merge(:#{name} => item, :#{counter} => index + 1)
           presenter = #{item_presenter_class}.new(self, item_options)
       RUBY
-    end
 
-    def compile_conditional_block(keyword, name, identifier, attributes)
-      method_call = ComponentCompiler.compile_conditional(presenter_class, name, identifier, attributes)
-
-      push_block(name, identifier)
-
-      <<-RUBY
-        #{keyword} #{method_call}
-      RUBY
-    end
-
-    def compile_conditional_block_end(name, identifier)
-      validate_block_end(name, identifier)
-
-      <<-RUBY
-        end
-      RUBY
-    end
-
-    def compile_collection_block_end(name, identifier)
+      @presenter_classes.push(item_presenter_class)
+      compile(block.nodes)
       @presenter_classes.pop
-      validate_block_end(name, identifier)
 
-      <<-RUBY
+      output <<-RUBY
         end
         presenter = presenters.pop
       RUBY
     end
 
-    def compile_component(name, identifier, attributes)
-      method_call = ComponentCompiler.compile_component(presenter_class, name, identifier, attributes)
+    def compile_conditional_block(keyword, block)
+      component = block.component
+      method_call = ComponentCompiler.compile(presenter_class, component)
+
+      unless component.name.end_with?("?")
+        raise Curly::Error, "conditional components must end with `?`"
+      end
+
+      output <<-RUBY
+        #{keyword} #{method_call}
+      RUBY
+
+      compile(block.nodes)
+
+      output <<-RUBY
+        end
+      RUBY
+    end
+
+    def compile_component(component)
+      method_call = ComponentCompiler.compile(presenter_class, component)
       code = "#{method_call} {|*args| yield(*args) }"
 
-      "buffer.concat(#{code.strip}.to_s)"
+      output "buffer.concat(#{code.strip}.to_s)"
     end
 
     def compile_text(text)
-      "buffer.safe_concat(#{text.inspect})"
+      output "buffer.safe_concat(#{text.value.inspect})"
     end
 
     def compile_comment(comment)
-      "" # Replace the content with an empty string.
+      # Do nothing.
     end
 
-    def validate_block_end(name, identifier)
-      last_block = @blocks.pop
-
-      if last_block.nil?
-        raise Curly::Error, "block ending not expected"
-      end
-
-      unless last_block == [name, identifier]
-        raise Curly::IncorrectEndingError.new([name, identifier], last_block)
-      end
-    end
-
-    def push_block(name, identifier)
-      @blocks.push([name, identifier])
+    def output(code)
+      @parts << code
     end
   end
 end

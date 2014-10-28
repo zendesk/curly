@@ -58,7 +58,7 @@ describe Curly::Scanner, ".scan" do
       [:text, "foo "],
       [:conditional_block_start, "bar?", nil, {}],
       [:text, " hello "],
-      [:conditional_block_end, "bar?", nil]
+      [:block_end, "bar?", nil]
     ]
   end
 
@@ -66,7 +66,7 @@ describe Curly::Scanner, ".scan" do
     scan('{{#active.test? name="test"}}yo{{/active.test?}}').should == [
       [:conditional_block_start, "active?", "test", { "name" => "test" }],
       [:text, "yo"],
-      [:conditional_block_end, "active?", "test"]
+      [:block_end, "active?", "test"]
     ]
   end
 
@@ -75,7 +75,7 @@ describe Curly::Scanner, ".scan" do
       [:text, "foo "],
       [:inverse_conditional_block_start, "bar?", nil, {}],
       [:text, " hello "],
-      [:conditional_block_end, "bar?", nil]
+      [:block_end, "bar?", nil]
     ]
   end
 
@@ -84,7 +84,7 @@ describe Curly::Scanner, ".scan" do
       [:text, "foo "],
       [:collection_block_start, "bar", nil, {}],
       [:text, " hello "],
-      [:collection_block_end, "bar", nil]
+      [:block_end, "bar", nil]
     ]
   end
 
