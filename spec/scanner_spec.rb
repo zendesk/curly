@@ -4,20 +4,14 @@ describe Curly::Scanner, ".scan" do
   it "returns the tokens in the source" do
     scan("foo {{bar}} baz").should == [
       [:text, "foo "],
-      [:component, "bar"],
+      [:component, "bar", nil, {}],
       [:text, " baz"]
     ]
   end
 
   it "scans components with identifiers" do
     scan("{{foo.bar}}").should == [
-      [:component, "foo.bar"]
-    ]
-  end
-
-  it "allows components with whitespace" do
-    scan("{{ foo bar}}").should == [
-      [:component, " foo bar"]
+      [:component, "foo", "bar", {}]
     ]
   end
 
@@ -62,27 +56,35 @@ describe Curly::Scanner, ".scan" do
   it "scans conditional block tags" do
     scan('foo {{#bar?}} hello {{/bar?}}').should == [
       [:text, "foo "],
-      [:conditional_block_start, "bar?"],
+      [:conditional_block_start, "bar?", nil, {}],
       [:text, " hello "],
-      [:conditional_block_end, "bar?"]
+      [:conditional_block_end, "bar?", nil]
+    ]
+  end
+
+  it "scans conditional block tags with parameters and attributes" do
+    scan('{{#active.test? name="test"}}yo{{/active.test?}}').should == [
+      [:conditional_block_start, "active?", "test", { "name" => "test" }],
+      [:text, "yo"],
+      [:conditional_block_end, "active?", "test"]
     ]
   end
 
   it "scans inverse block tags" do
     scan('foo {{^bar?}} hello {{/bar?}}').should == [
       [:text, "foo "],
-      [:inverse_conditional_block_start, "bar?"],
+      [:inverse_conditional_block_start, "bar?", nil, {}],
       [:text, " hello "],
-      [:conditional_block_end, "bar?"]
+      [:conditional_block_end, "bar?", nil]
     ]
   end
 
   it "scans collection block tags" do
     scan('foo {{*bar}} hello {{/bar}}').should == [
       [:text, "foo "],
-      [:collection_block_start, "bar"],
+      [:collection_block_start, "bar", nil, {}],
       [:text, " hello "],
-      [:collection_block_end, "bar"]
+      [:collection_block_end, "bar", nil]
     ]
   end
 

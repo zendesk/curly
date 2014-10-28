@@ -1,6 +1,5 @@
 require 'curly/scanner'
 require 'curly/component_compiler'
-require 'curly/component_parser'
 require 'curly/error'
 require 'curly/invalid_component'
 require 'curly/incorrect_ending_error'
@@ -60,8 +59,8 @@ module Curly
 
       @blocks = []
 
-      parts = tokens.map do |type, value|
-        send("compile_#{type}", value)
+      parts = tokens.map do |type, *args|
+        send("compile_#{type}", *args)
       end
 
       if @blocks.any?
@@ -82,16 +81,15 @@ module Curly
       @presenter_classes.last
     end
 
-    def compile_conditional_block_start(component)
-      compile_conditional_block "if", component
+    def compile_conditional_block_start(name, identifier, attributes)
+      compile_conditional_block "if", name, identifier, attributes
     end
 
-    def compile_inverse_conditional_block_start(component)
-      compile_conditional_block "unless", component
+    def compile_inverse_conditional_block_start(name, identifier, attributes)
+      compile_conditional_block "unless", name, identifier, attributes
     end
 
-    def compile_collection_block_start(component)
-      name, identifier, attributes = ComponentParser.parse(component)
+    def compile_collection_block_start(name, identifier, attributes)
       method_call = ComponentCompiler.compile_component(presenter_class, name, identifier, attributes)
 
       as = name.singularize
@@ -101,7 +99,7 @@ module Curly
         item_presenter_class = presenter_class.presenter_for_name(as)
       rescue NameError
         raise Curly::Error,
-          "cannot enumerate `#{component}`, could not find matching presenter class"
+          "cannot enumerate `#{name}`, could not find matching presenter class"
       end
 
       push_block(name, identifier)
@@ -116,8 +114,7 @@ module Curly
       RUBY
     end
 
-    def compile_conditional_block(keyword, component)
-      name, identifier, attributes = ComponentParser.parse(component)
+    def compile_conditional_block(keyword, name, identifier, attributes)
       method_call = ComponentCompiler.compile_conditional(presenter_class, name, identifier, attributes)
 
       push_block(name, identifier)
@@ -127,17 +124,17 @@ module Curly
       RUBY
     end
 
-    def compile_conditional_block_end(component)
-      validate_block_end(component)
+    def compile_conditional_block_end(name, identifier)
+      validate_block_end(name, identifier)
 
       <<-RUBY
         end
       RUBY
     end
 
-    def compile_collection_block_end(component)
+    def compile_collection_block_end(name, identifier)
       @presenter_classes.pop
-      validate_block_end(component)
+      validate_block_end(name, identifier)
 
       <<-RUBY
         end
@@ -145,8 +142,7 @@ module Curly
       RUBY
     end
 
-    def compile_component(component)
-      name, identifier, attributes = ComponentParser.parse(component)
+    def compile_component(name, identifier, attributes)
       method_call = ComponentCompiler.compile_component(presenter_class, name, identifier, attributes)
       code = "#{method_call} {|*args| yield(*args) }"
 
@@ -161,8 +157,7 @@ module Curly
       "" # Replace the content with an empty string.
     end
 
-    def validate_block_end(component)
-      name, identifier, attributes = ComponentParser.parse(component)
+    def validate_block_end(name, identifier)
       last_block = @blocks.pop
 
       if last_block.nil?
