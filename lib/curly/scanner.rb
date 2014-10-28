@@ -116,12 +116,7 @@ module Curly
     def scan_block_end
       if value = scan_until_end_of_curly
         name, identifier, attributes = ComponentScanner.scan(value)
-
-        if name.end_with?("?")
-          [:conditional_block_end, name, identifier]
-        else
-          [:collection_block_end, name, identifier]
-        end
+        [:block_end, name, identifier]
       end
     end
 

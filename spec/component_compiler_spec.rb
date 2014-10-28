@@ -1,71 +1,7 @@
 require 'spec_helper'
 
 describe Curly::ComponentCompiler do
-  describe ".compile_conditional" do
-    let(:presenter_class) do
-      Class.new do
-        def monday?
-          true
-        end
-
-        def tuesday?
-          false
-        end
-
-        def day?(name)
-          name == "monday"
-        end
-
-        def season?(name:)
-          name == "summer"
-        end
-
-        def hello
-          "hello"
-        end
-
-        def self.component_available?(name)
-          true
-        end
-      end
-    end
-
-    it "compiles simple components" do
-      evaluate("monday?").should == true
-      evaluate("tuesday?").should == false
-    end
-
-    it "compiles components with an identifier" do
-      evaluate("day.monday?").should == true
-      evaluate("day.tuesday?").should == false
-    end
-
-    it "compiles components with attributes" do
-      evaluate("season? name=summer").should == true
-      evaluate("season? name=winter").should == false
-    end
-
-    it "fails if the component is missing a question mark" do
-      expect { evaluate("hello") }.to raise_exception(Curly::Error)
-    end
-
-    def evaluate(component, &block)
-      method, argument, attributes = Curly::ComponentScanner.scan(component)
-      code = Curly::ComponentCompiler.compile_conditional(presenter_class, method, argument, attributes)
-      presenter = presenter_class.new
-      context = double("context", presenter: presenter)
-
-      context.instance_eval(<<-RUBY)
-        def self.render
-          #{code}
-        end
-      RUBY
-
-      context.render(&block)
-    end
-  end
-
-  describe ".compile_component" do
+  describe ".compile" do
     let(:presenter_class) do
       Class.new do
         def title
@@ -141,20 +77,21 @@ describe Curly::ComponentCompiler do
     it "fails when the method takes more than one argument" do
       expect { evaluate("invalid") }.to raise_exception(Curly::Error)
     end
+  end
 
-    def evaluate(component, &block)
-      method, argument, attributes = Curly::ComponentScanner.scan(component)
-      code = Curly::ComponentCompiler.compile_component(presenter_class, method, argument, attributes)
-      presenter = presenter_class.new
-      context = double("context", presenter: presenter)
+  def evaluate(text, &block)
+    name, identifier, attributes = Curly::ComponentScanner.scan(text)
+    component = Curly::Parser::Component.new(name, identifier, attributes)
+    code = Curly::ComponentCompiler.compile(presenter_class, component)
+    presenter = presenter_class.new
+    context = double("context", presenter: presenter)
 
-      context.instance_eval(<<-RUBY)
-        def self.render
-          #{code}
-        end
-      RUBY
+    context.instance_eval(<<-RUBY)
+      def self.render
+        #{code}
+      end
+    RUBY
 
-      context.render(&block)
-    end
+    context.render(&block)
   end
 end

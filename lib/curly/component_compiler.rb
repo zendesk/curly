@@ -6,21 +6,8 @@ module Curly
       @presenter_class, @method = presenter_class, method
     end
 
-    def self.compile_component(presenter_class, method, argument, attributes)
-      new(presenter_class, method).compile(argument, attributes)
-    end
-
-    def self.compile_conditional(presenter_class, method, argument, attributes)
-      if argument && argument.end_with?("?")
-        method += "?"
-        argument = argument[0..-2]
-      end
-
-      unless method.end_with?("?")
-        raise Curly::Error, "conditional components must end with `?`"
-      end
-
-      new(presenter_class, method).compile(argument, attributes)
+    def self.compile(presenter_class, component)
+      new(presenter_class, component.name).compile(component.identifier, component.attributes)
     end
 
     def compile(argument, attributes = {})
