@@ -1,33 +1,45 @@
 module Curly
   class ComponentCompiler
-    attr_reader :presenter_class, :method
-
-    def initialize(presenter_class, method)
-      @presenter_class, @method = presenter_class, method
-    end
+    attr_reader :presenter_class, :component
 
     def self.compile(presenter_class, component)
-      new(presenter_class, component.name).compile(component.identifier, component.attributes)
+      new(presenter_class, component).compile
     end
 
-    def compile(argument, attributes = {})
+    def initialize(presenter_class, component)
+      @presenter_class, @component = presenter_class, component
+    end
+
+    def compile
       unless presenter_class.component_available?(method)
         raise Curly::InvalidComponent.new(method)
       end
 
-      validate_attributes(attributes)
+      validate_attributes!
 
       code = "presenter.#{method}("
 
-      append_positional_argument(code, argument)
-      append_keyword_arguments(code, argument, attributes)
+      append_positional_argument(code)
+      append_keyword_arguments(code)
 
       code << ")"
     end
 
     private
 
-    def append_positional_argument(code, argument)
+    def method
+      component.name
+    end
+
+    def argument
+      component.identifier
+    end
+
+    def attributes
+      component.attributes
+    end
+
+    def append_positional_argument(code)
       if required_identifier?
         if argument.nil?
           raise Curly::Error, "`#{method}` requires an identifier"
@@ -43,9 +55,7 @@ module Curly
       end
     end
 
-    def append_keyword_arguments(code, argument, attributes)
-      keyword_argument_string = build_keyword_argument_string(attributes)
-
+    def append_keyword_arguments(code)
       unless keyword_argument_string.empty?
         code << ", " unless argument.nil?
         code << keyword_argument_string
@@ -65,19 +75,21 @@ module Curly
       param_types.include?(:opt)
     end
 
-    def build_keyword_argument_string(kwargs)
-      kwargs.map {|name, value| "#{name}: #{value.inspect}" }.join(", ")
+    def keyword_argument_string
+      @keyword_argument_string ||= attributes.map {|name, value|
+        "#{name}: #{value.inspect}"
+      }.join(", ")
     end
 
-    def validate_attributes(kwargs)
-      kwargs.keys.each do |key|
+    def validate_attributes!
+      attributes.keys.each do |key|
         unless attribute_names.include?(key)
           raise Curly::Error, "`#{method}` does not allow attribute `#{key}`"
         end
       end
 
       required_attribute_names.each do |key|
-        unless kwargs.key?(key)
+        unless attributes.key?(key)
           raise Curly::Error, "`#{method}` is missing the required attribute `#{key}`"
         end
       end
