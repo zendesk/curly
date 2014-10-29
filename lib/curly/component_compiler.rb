@@ -1,13 +1,13 @@
 module Curly
   class ComponentCompiler
-    attr_reader :presenter_class, :component
+    attr_reader :presenter_class, :component, :type
 
-    def self.compile(presenter_class, component)
-      new(presenter_class, component).compile
+    def self.compile(presenter_class, component, type: nil)
+      new(presenter_class, component, type: type).compile
     end
 
-    def initialize(presenter_class, component)
-      @presenter_class, @component = presenter_class, component
+    def initialize(presenter_class, component, type: nil)
+      @presenter_class, @component, @type = presenter_class, component, type
     end
 
     def compile
@@ -15,6 +15,7 @@ module Curly
         raise Curly::InvalidComponent.new(method)
       end
 
+      validate_block_argument!
       validate_attributes!
 
       code = "presenter.#{method}("
@@ -79,6 +80,12 @@ module Curly
       @keyword_argument_string ||= attributes.map {|name, value|
         "#{name}: #{value.inspect}"
       }.join(", ")
+    end
+
+    def validate_block_argument!
+      if type == :context && !param_types.include?(:block)
+        raise Curly::Error, "`#{method}` cannot be used as a context block"
+      end
     end
 
     def validate_attributes!

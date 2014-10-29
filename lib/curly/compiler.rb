@@ -138,7 +138,7 @@ module Curly
 
     def compile_context(block)
       component = block.component
-      method_call = ComponentCompiler.compile(presenter_class, component)
+      method_call = ComponentCompiler.compile(presenter_class, component, type: block.type)
 
       name = component.name
 
