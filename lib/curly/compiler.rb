@@ -154,7 +154,7 @@ module Curly
         old_buffer, buffer = buffer, ActiveSupport::SafeBuffer.new
         old_buffer << #{method_call} do |item|
           item_options = options.merge(:#{name} => item)
-          presenter = #{item_presenter_class}.new(self, item_options)
+          presenter = #{item_presenter_class}.new(self, item_options.with_indifferent_access)
       RUBY
 
       @presenter_classes.push(item_presenter_class)

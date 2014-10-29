@@ -8,6 +8,6 @@ class DashboardsController < ApplicationController
   end
 
   def new
-    @name = "test dashboard"
+    @name = "test"
   end
 end

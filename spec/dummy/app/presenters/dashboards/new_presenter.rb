@@ -6,14 +6,14 @@ class Dashboards::NewPresenter < Curly::Presenter
   end
 
   class FormPresenter < Curly::Presenter
-    presents :form
+    presents :form, :name
 
     def name_label
       "Name"
     end
 
     def name_input
-      @form.text_field :name
+      @form.text_field :name, value: @name
     end
   end
 end
