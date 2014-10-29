@@ -1,0 +1,3 @@
+{{@form}}
+  <b>{{name_label}}</b> {{name_input}}
+{{/form}}
