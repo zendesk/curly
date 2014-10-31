@@ -140,6 +140,10 @@ class Curly::Parser
     parse_block(:collection, *args)
   end
 
+  def parse_context_block_start(*args)
+    parse_block(:context, *args)
+  end
+
   def parse_block(type, *args)
     component = Component.new(*args)
     block = Block.new(type, component)

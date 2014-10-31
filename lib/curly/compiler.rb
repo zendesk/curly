@@ -136,6 +136,38 @@ module Curly
       RUBY
     end
 
+    def compile_context(block)
+      component = block.component
+      method_call = ComponentCompiler.compile(presenter_class, component, type: block.type)
+
+      name = component.name
+
+      begin
+        item_presenter_class = presenter_class.presenter_for_name(name)
+      rescue NameError
+        raise Curly::Error,
+          "cannot use context `#{name}`, could not find matching presenter class"
+      end
+
+      output <<-RUBY
+        presenters << presenter
+        old_buffer, buffer = buffer, ActiveSupport::SafeBuffer.new
+        old_buffer << #{method_call} do |item|
+          item_options = options.merge(:#{name} => item)
+          presenter = #{item_presenter_class}.new(self, item_options.with_indifferent_access)
+      RUBY
+
+      @presenter_classes.push(item_presenter_class)
+      compile(block.nodes)
+      @presenter_classes.pop
+
+      output <<-RUBY
+        end
+        buffer = old_buffer
+        presenter = presenters.pop
+      RUBY
+    end
+
     def compile_component(component)
       method_call = ComponentCompiler.compile(presenter_class, component)
       code = "#{method_call} {|*args| yield(*args) }"

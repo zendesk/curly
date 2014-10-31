@@ -16,7 +16,8 @@ module Curly
     ESCAPED_CURLY_START = /\{\{\{/
 
     COMMENT_MARKER = /!/
-    BLOCK_MARKER = /#/
+    CONTEXT_BLOCK_MARKER = /@/
+    CONDITIONAL_BLOCK_MARKER = /#/
     INVERSE_BLOCK_MARKER = /\^/
     COLLECTION_BLOCK_MARKER = /\*/
     END_BLOCK_MARKER = /\//
@@ -72,8 +73,10 @@ module Curly
     def scan_tag
       if @scanner.scan(COMMENT_MARKER)
         scan_comment
-      elsif @scanner.scan(BLOCK_MARKER)
-        scan_block_start
+      elsif @scanner.scan(CONDITIONAL_BLOCK_MARKER)
+        scan_conditional_block_start
+      elsif @scanner.scan(CONTEXT_BLOCK_MARKER)
+        scan_context_block_start
       elsif @scanner.scan(INVERSE_BLOCK_MARKER)
         scan_inverse_block_start
       elsif @scanner.scan(COLLECTION_BLOCK_MARKER)
@@ -91,11 +94,19 @@ module Curly
       end
     end
 
-    def scan_block_start
+    def scan_conditional_block_start
       if value = scan_until_end_of_curly
         name, identifier, attributes = ComponentScanner.scan(value)
 
         [:conditional_block_start, name, identifier, attributes]
+      end
+    end
+
+    def scan_context_block_start
+      if value = scan_until_end_of_curly
+        name, identifier, attributes = ComponentScanner.scan(value)
+
+        [:context_block_start, name, identifier, attributes]
       end
     end
 

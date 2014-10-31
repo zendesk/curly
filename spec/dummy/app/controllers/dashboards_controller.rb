@@ -6,4 +6,8 @@ class DashboardsController < ApplicationController
   def collection
     @items = ["uno", "dos", "tres!"]
   end
+
+  def new
+    @name = "test"
+  end
 end

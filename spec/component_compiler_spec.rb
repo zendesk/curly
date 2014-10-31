@@ -31,6 +31,10 @@ describe Curly::ComponentCompiler do
           s
         end
 
+        def form(&block)
+          "some form"
+        end
+
         def self.component_available?(name)
           true
         end
@@ -52,6 +56,10 @@ describe Curly::ComponentCompiler do
 
     it "compiles components with optional attributes" do
       evaluate("widget color=blue size=50px").should == "Widget (50px) - blue"
+    end
+
+    it "compiles context block components" do
+      evaluate("form", type: :context).should == "some form"
     end
 
     it "allows both identifier and attributes" do
@@ -77,12 +85,16 @@ describe Curly::ComponentCompiler do
     it "fails when the method takes more than one argument" do
       expect { evaluate("invalid") }.to raise_exception(Curly::Error)
     end
+
+    it "fails when a context block component is used with a method that doesn't take a block" do
+      expect { evaluate("title", type: :context) }.to raise_exception(Curly::Error)
+    end
   end
 
-  def evaluate(text, &block)
+  def evaluate(text, type: nil, &block)
     name, identifier, attributes = Curly::ComponentScanner.scan(text)
     component = Curly::Parser::Component.new(name, identifier, attributes)
-    code = Curly::ComponentCompiler.compile(presenter_class, component)
+    code = Curly::ComponentCompiler.compile(presenter_class, component, type: type)
     presenter = presenter_class.new
     context = double("context", presenter: presenter)
 
