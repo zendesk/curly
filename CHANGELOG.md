@@ -1,5 +1,11 @@
 ### Unreleased
 
+### Curly 2.1.0
+
+* Add support for [context blocks](https://github.com/zendesk/curly#context-blocks).
+
+  *Daniel Schierbeck*
+
 ### Curly 2.0.1 (September 9, 2014)
 
 * Fixed an issue when using Curly with Rails 4.1.
