@@ -28,6 +28,7 @@ or [Handlebars](http://handlebarsjs.com/), Curly is different in some key ways:
     1. [Attributes](#attributes)
     1. [Conditional blocks](#conditional-blocks)
     1. [Collection blocks](#collection-blocks)
+    1. [Context blocks](#context-blocks)
     1. [Setting up state](#setting-up-state)
     2. [Escaping Curly syntax](#escaping-curly-syntax)
     2. [Comments](#comments)
@@ -261,6 +262,84 @@ end
 
 Collection blocks are an alternative to splitting out a separate template and rendering
 that from the presenter – which solution is best depends on your use case.
+
+
+### Context blocks
+
+While collection blocks allow you to define the template that should be used to render
+items in a collection right within the parent template, **context blocks** allow you
+to define the template for an arbitrary context. This is very powerful, and can be used
+to define widget-style components and helpers, and provide an easy way to work with
+structured data. Let's say you have a comment form on your page, and you'd rather keep
+the template inline. A simple template could look like:
+
+```html
+<!-- post.html.curly -->
+<h1>{{title}}</h1>
+{{body}}
+
+{{@comment_form}}
+  <b>Name: </b> {{name_field}}<br>
+  <b>E-mail: </b> {{email_field}}<br>
+  {{comment_field}}
+  
+  {{submit_button}}
+{{/comment_form}}
+```
+
+Note that an `@` character is used to denote a context block. Like with
+[collection blocks](#collection-blocks), a separate presenter class is used within the
+block, and a simple convention is used to find it. The name of the context component
+(in this case, `comment_form`) will be camel cased, and the current presenter's namespace
+will be searched:
+
+```ruby
+class PostPresenter < Curly::Presenter
+  presents :post
+  def title; @post.title; end
+  def body; markdown(@post.body); end
+  
+  # A context block method *must* take a block argument. The return value
+  # of the method will be used when rendering. Calling the block argument will
+  # render the nested template. If you pass a value when calling the block
+  # argument it will be passed to the presenter.
+  def comment_form(&block)
+    form_for(Comment.new, &block)
+  end
+  
+  # The presenter name is automatically deduced.
+  class CommentFormPresenter < Curly::Presenter
+    # The value passed to the block argument will be passed in a parameter named
+    # after the component.
+    presents :comment_form
+
+    # Any parameters passed to the parent presenter will be forwarded to this
+    # presenter as well.
+    presents :post
+
+    def name_field
+      @comment_form.text_field :name
+    end
+
+    # ...
+  end
+end
+```
+
+Context blocks were designed to work well with Rails' helper methods such as `form_for`
+and `content_tag`, but you can also work directly with the block. For instance, if you
+want to directly control the value that is passed to the nested presenter, you can call
+the `call` method on the block yourself:
+
+```ruby
+def author(&block)
+  content_tag :div, class: "author" do
+    # The return value of `call` will be the result of rendering the nested template
+    # with the argument. You can post-process the string if you want.
+    block.call(@post.author)
+  end
+end
+```
 
 
 ### Setting up state
