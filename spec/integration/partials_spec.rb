@@ -11,8 +11,8 @@ describe "Using Curly for Rails partials", type: :request do
       </head>
       <body>
       <ul>
-        <li>One</li>
-        <li>Two</li>
+        <li>One (yo)</li>
+        <li>Two (yo)</li>
 
       </ul>
 

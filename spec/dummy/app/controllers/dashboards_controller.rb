@@ -4,6 +4,7 @@ class DashboardsController < ApplicationController
   end
 
   def collection
+    @name = "numbers"
     @items = ["uno", "dos", "tres!"]
   end
 

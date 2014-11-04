@@ -1,5 +1,5 @@
 class Dashboards::CollectionPresenter < Curly::Presenter
-  presents :items
+  presents :items, :name
 
   def items
     @items

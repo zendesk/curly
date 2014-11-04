@@ -1,1 +1,1 @@
-  <li>{{item}}</li>
+  <li>{{item}} ({{name}})</li>
