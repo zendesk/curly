@@ -6,6 +6,11 @@
 
   *Daniel Schierbeck*
 
+* Forward the parent presenter's parameters to the nested presenter when
+  rendering collection blocks.
+
+  *Daniel Schierbeck*
+
 ### Curly 2.0.1 (September 9, 2014)
 
 * Fixed an issue when using Curly with Rails 4.1.
