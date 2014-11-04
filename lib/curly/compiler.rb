@@ -104,7 +104,7 @@ module Curly
         items = Array(#{method_call})
         items.each_with_index do |item, index|
           item_options = options.merge(:#{name} => item, :#{counter} => index + 1)
-          presenter = #{item_presenter_class}.new(self, item_options)
+          presenter = #{item_presenter_class}.new(self, item_options.with_indifferent_access)
       RUBY
 
       @presenter_classes.push(item_presenter_class)
