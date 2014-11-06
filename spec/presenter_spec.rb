@@ -39,6 +39,13 @@ describe Curly::Presenter do
       presenter.clown.should == "Bubbles"
     end
 
+    it "sets the presented helpers as instance variables" do
+      allow(context).to receive(:champagne) { "Bollinger" }
+      presenter = FancyCircusPresenter.new(context, {})
+
+      presenter.champagne.should == "Bollinger"
+    end
+
     it "raises an exception if a required identifier is not specified" do
       expect {
         FancyCircusPresenter.new(context, {})
