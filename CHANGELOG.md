@@ -1,6 +1,6 @@
 ### Unreleased
 
-### Curly 2.1.0
+### Curly 2.1.0 (November 6, 2014)
 
 * Add support for [context blocks](https://github.com/zendesk/curly#context-blocks).
 
