@@ -47,7 +47,11 @@ module Curly
       self.class.presented_names.each do |name|
         value = options.fetch(name) do
           default_values.fetch(name) do
-            raise ArgumentError.new("required identifier `#{name}` missing")
+            if @_context.respond_to?(name.to_sym)
+              @_context.send(name.to_sym)
+            else
+              raise ArgumentError.new("required identifier `#{name}` missing")
+            end
           end
         end
 
