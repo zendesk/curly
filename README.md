@@ -1,23 +1,9 @@
 Curly
 =======
 
-Free your views!
-
 Curly is a template language that completely separates structure and logic.
 Instead of interspersing your HTML with snippets of Ruby, all logic is moved
-to a presenter class, with only simple placeholders in the HTML.
-
-While the basic concepts are very similar to [Mustache](http://mustache.github.com/)
-or [Handlebars](http://handlebarsjs.com/), Curly is different in some key ways:
-
-- Instead of the template controlling the variable scope and looping through
-  data, all logic is left to the presenter object. This means that untrusted
-  templates can safely be executed, making Curly a possible alternative to
-  languages like [Liquid](http://liquidmarkup.org/).
-- Instead of implementing its own template resolution mechanism, Curly hooks
-  directly into Rails, leveraging the existing resolvers.
-- Because of its close integration with Rails, with Curly you can easily set
-  up caching for your views and partials.
+to a presenter class.
 
 
 ### Table of Contents
