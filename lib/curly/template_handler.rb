@@ -59,7 +59,7 @@ class Curly::TemplateHandler
         options = local_assigns
       end
 
-      presenter = ::#{presenter_class}.new(self, options.with_indifferent_access)
+      presenter = ::#{presenter_class}.new(self, options)
       presenter.setup!
 
       @output_buffer = output_buffer || ActiveSupport::SafeBuffer.new
