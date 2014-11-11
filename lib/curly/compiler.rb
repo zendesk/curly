@@ -103,8 +103,8 @@ module Curly
         presenters << presenter
         items = Array(#{method_call})
         items.each_with_index do |item, index|
-          item_options = options.merge(:#{name} => item, :#{counter} => index + 1)
-          presenter = #{item_presenter_class}.new(self, item_options.with_indifferent_access)
+          options = options.merge("#{name}" => item, "#{counter}" => index + 1)
+          presenter = #{item_presenter_class}.new(self, options)
       RUBY
 
       @presenter_classes.push(item_presenter_class)
@@ -153,8 +153,8 @@ module Curly
         presenters << presenter
         old_buffer, buffer = buffer, ActiveSupport::SafeBuffer.new
         old_buffer << #{method_call} do |item|
-          item_options = options.merge(:#{name} => item)
-          presenter = #{item_presenter_class}.new(self, item_options.with_indifferent_access)
+          options = options.merge("#{name}" => item)
+          presenter = #{item_presenter_class}.new(self, options)
       RUBY
 
       @presenter_classes.push(item_presenter_class)

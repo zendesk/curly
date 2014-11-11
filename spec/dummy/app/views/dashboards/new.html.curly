@@ -1,3 +1,5 @@
 {{@form}}
-  <b>{{name_label}}</b> {{name_input}}
+  {{@name_field}}
+    <b>{{label}}</b> {{input}}
+  {{/name_field}}
 {{/form}}

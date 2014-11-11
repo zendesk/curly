@@ -44,6 +44,8 @@ module Curly
     #
     def initialize(context, options = {})
       @_context = context
+      options.stringify_keys!
+
       self.class.presented_names.each do |name|
         value = options.fetch(name) do
           default_values.fetch(name) do
@@ -263,11 +265,11 @@ module Curly
       def presents(*args)
         options = args.extract_options!
 
-        self.presented_names += args
+        self.presented_names += args.map(&:to_s)
 
         if options.key?(:default)
           default_values = args.each_with_object(Hash.new) do |arg, hash|
-            hash[arg] = options.fetch(:default)
+            hash[arg.to_s] = options.fetch(:default)
           end
 
           self.default_values = self.default_values.merge(default_values)

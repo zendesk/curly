@@ -13,10 +13,19 @@ describe "Collection blocks", type: :request do
       <ul>
 
         <li>uno</li>
+        <ul>
+          <li>1</li><li>2</li><li>3</li>
+        </ul>
 
         <li>dos</li>
+        <ul>
+          <li>1</li><li>2</li><li>3</li>
+        </ul>
 
         <li>tres!</li>
+        <ul>
+          <li>1</li><li>2</li><li>3</li>
+        </ul>
 
       </ul>
 

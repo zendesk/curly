@@ -8,12 +8,22 @@ class Dashboards::NewPresenter < Curly::Presenter
   class FormPresenter < Curly::Presenter
     presents :form, :name
 
-    def name_label
-      "Name"
+    def name_field(&block)
+      content_tag :div, class: "field" do
+        block.call
+      end
     end
 
-    def name_input
-      @form.text_field :name, value: @name
+    class NameFieldPresenter < Curly::Presenter
+      presents :form, :name
+
+      def label
+        "Name"
+      end
+
+      def input
+        @form.text_field :name, value: @name
+      end
     end
   end
 end

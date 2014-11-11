@@ -72,7 +72,7 @@ describe Curly::Compiler do
 
   let(:list) { double("list", title: "Inventory") }
   let(:context) { double("context") }
-  let(:presenter) { presenter_class.new(context, list: list) }
+  let(:presenter) { presenter_class.new(context, "list" => list) }
 
   before do
     stub_const("ItemPresenter", inner_presenter_class)

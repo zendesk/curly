@@ -11,9 +11,10 @@ describe "Context blocks", type: :request do
       </head>
       <body>
       <form accept-charset="UTF-8" action="/new" method="post"><div style="display:none"><input name="utf8" type="hidden" value="&#x2713;" /></div>
-        <b>Name</b> <input id="dashboard_name" name="dashboard[name]" type="text" value="test" />
+        <div class="field">
+          <b>Name</b> <input id="dashboard_name" name="dashboard[name]" type="text" value="test" />
+        </div>
       </form>
-
       </body>
       </html>
     HTML
