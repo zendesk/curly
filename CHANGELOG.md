@@ -1,5 +1,12 @@
 ### Unreleased
 
+### Curly 2.1.1 (November 12, 2014)
+
+* Fix a bug where a parent presenter's parameters were not being passed to the
+  child presenter when using context blocks.
+
+  *Daniel Schierbeck*
+
 ### Curly 2.1.0 (November 6, 2014)
 
 * Add support for [context blocks](https://github.com/zendesk/curly#context-blocks).
