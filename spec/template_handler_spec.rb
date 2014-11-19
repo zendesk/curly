@@ -7,6 +7,7 @@ describe Curly::TemplateHandler do
         @context = context
         @cache_key = options.fetch(:cache_key, nil)
         @cache_duration = options.fetch(:cache_duration, nil)
+        @cache_options = options.fetch(:cache_options, {})
       end
 
       def setup!
@@ -27,6 +28,10 @@ describe Curly::TemplateHandler do
 
       def cache_duration
         @cache_duration
+      end
+
+      def cache_options
+        @cache_options
       end
 
       def self.component_available?(method)
@@ -166,6 +171,23 @@ describe Curly::TemplateHandler do
     it "expires the cache keys after #cache_duration" do
       context.assigns[:cache_key] = "x"
       context.assigns[:cache_duration] = 42
+
+      output.should == "BAR"
+
+      context.stub(:bar) { "FOO" }
+
+      # Cached fragment has not yet expired.
+      context.advance_clock(41)
+      output.should == "BAR"
+
+      # Now it has! Huzzah!
+      context.advance_clock(1)
+      output.should == "FOO"
+    end
+
+    it "passes #cache_options to the cache backend" do
+      context.assigns[:cache_key] = "x"
+      context.assigns[:cache_options] = { expires_in: 42 }
 
       output.should == "BAR"
 

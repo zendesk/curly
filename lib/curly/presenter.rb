@@ -96,10 +96,23 @@ module Curly
       nil
     end
 
+    # The options that should be passed to the cache backend when caching the
+    # view. The exact options may vary depending on the backend you're using.
+    #
+    # The most common option is `:expires_in`, which controls the duration of
+    # time that the cached view should be considered fresh. Because it's so
+    # common, you can set that option simply by defining `#cache_duration`.
+    #
+    # Returns a Hash.
+    def cache_options
+      {}
+    end
+
     # The duration that the view should be cached for. Only relevant if
     # `#cache_key` returns a non nil value.
     #
-    # If nil, the view will not have an expiration time set.
+    # If nil, the view will not have an expiration time set. See also
+    # `#cache_options` for a more flexible way to set cache options.
     #
     # Examples
     #
