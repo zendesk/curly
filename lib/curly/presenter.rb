@@ -103,6 +103,9 @@ module Curly
     # time that the cached view should be considered fresh. Because it's so
     # common, you can set that option simply by defining `#cache_duration`.
     #
+    # Note: if you set the `:expires_in` option through this method, the
+    # `#cache_duration` value will be ignored.
+    #
     # Returns a Hash.
     def cache_options
       {}
