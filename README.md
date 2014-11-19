@@ -584,6 +584,19 @@ class Posts::ShowPresenter < Curly::Presenter
 end
 ```
 
+In order to set *any* cache option, define a `#cache_options` method that
+returns a Hash of options:
+
+```ruby
+class Posts::ShowPresenter < Curly::Presenter
+  ...
+
+  def cache_options
+    { compress: true, namespace: "my-app" }
+  end
+end
+```
+
 
 ### Static Caching
 
