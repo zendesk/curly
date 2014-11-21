@@ -4,7 +4,7 @@ In order to keep the Curly code base nice and tidy, please observe these best pr
 - Document any unclear things in the code. Even better, don't make the code do unclear things.
 - Use the coding style already present in the code base.
 - Make your commit messages precise and to the point. Add a short summary (50 chars max) followed by a blank line and then a longer description, if necessary, e.g.
-  
+
   > Make invalid references raise an exception
   >
   > In order to avoid nasty errors when doing stuff, make the Curly compiler

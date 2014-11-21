@@ -8,7 +8,6 @@ module Curly
   #
   # The Scanner goes through the template piece by piece, extracting tokens
   # until the end of the template is reached.
-  #
   class Scanner
     CURLY_START = /\{\{/
     CURLY_END = /\}\}/
@@ -27,7 +26,7 @@ module Curly
     #
     # source - The String source of the template.
     #
-    # Example
+    # Examples
     #
     #   Curly::Scanner.scan("hello {{name}}!")
     #   #=> [[:text, "hello "], [:component, "name"], [:text, "!"]]
