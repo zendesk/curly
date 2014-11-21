@@ -71,7 +71,7 @@ class Posts::CommentPresenter < Curly::Presenter
   presents :comment
 
   def body
-    BlueCloth.new(@comment.body).to_html
+    SafeMarkdown.render(@comment.body)
   end
 
   def author_link
