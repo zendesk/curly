@@ -67,7 +67,7 @@ class Curly::Parser
       false
     end
   end
-  
+
   class Block
     attr_reader :type, :component, :nodes
 

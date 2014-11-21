@@ -77,7 +77,7 @@ class Posts::CommentPresenter < Curly::Presenter
   def author_link
     link_to @comment.author.name, @comment.author, rel: "author"
   end
-  
+
   def deletion_link
     link_to "Delete", @comment, method: :delete
   end
@@ -85,7 +85,7 @@ class Posts::CommentPresenter < Curly::Presenter
   def time_ago
     time_ago_in_words(@comment.created_at)
   end
-  
+
   def author?
     @comment.author == current_user
   end
@@ -268,7 +268,7 @@ the template inline. A simple template could look like:
   <b>Name: </b> {{name_field}}<br>
   <b>E-mail: </b> {{email_field}}<br>
   {{comment_field}}
-  
+
   {{submit_button}}
 {{/comment_form}}
 ```
@@ -284,7 +284,7 @@ class PostPresenter < Curly::Presenter
   presents :post
   def title; @post.title; end
   def body; markdown(@post.body); end
-  
+
   # A context block method *must* take a block argument. The return value
   # of the method will be used when rendering. Calling the block argument will
   # render the nested template. If you pass a value when calling the block
@@ -292,7 +292,7 @@ class PostPresenter < Curly::Presenter
   def comment_form(&block)
     form_for(Comment.new, &block)
   end
-  
+
   # The presenter name is automatically deduced.
   class CommentFormPresenter < Curly::Presenter
     # The value passed to the block argument will be passed in a parameter named
@@ -404,18 +404,18 @@ a component:
 ```ruby
 class Posts::ShowPresenter < Curly::Presenter
   presents :post
-  
+
   def title
     @post.title
   end
-  
+
   def author_link
     # You can call any Rails helper from within a presenter instance:
     link_to author.name, profile_path(author), rel: "author"
   end
-  
+
   private
-  
+
   # Private methods are not available to the template, so they're safe to
   # use.
   def author
@@ -464,12 +464,12 @@ class ApplicationLayout < Curly::Presenter
   def title
     "You can use methods just like in any other presenter!"
   end
-  
+
   def sidebar
     # A view can call `content_for(:sidebar) { "some HTML here" }`
     yield :sidebar
   end
-  
+
   def body
     # The view will be rendered and inserted here:
     yield
