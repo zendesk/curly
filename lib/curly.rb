@@ -24,7 +24,6 @@
 #   end
 #
 # See Curly::Presenter for more information on presenters.
-#
 module Curly
   VERSION = "2.1.1"
 

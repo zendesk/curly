@@ -8,7 +8,6 @@ module Curly
   #
   # The Scanner goes through the template piece by piece, extracting tokens
   # until the end of the template is reached.
-  #
   class Scanner
     CURLY_START = /\{\{/
     CURLY_END = /\}\}/

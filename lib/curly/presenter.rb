@@ -41,7 +41,6 @@ module Curly
     #
     # context - An ActionView::Base context.
     # options - A Hash of options given to the presenter.
-    #
     def initialize(context, options = {})
       @_context = context
       options.stringify_keys!
