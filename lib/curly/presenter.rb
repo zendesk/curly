@@ -188,13 +188,14 @@ module Curly
         end
       end
 
-      # Whether a component is available to templates rendered with the presenter.
+      # Whether a component is available to templates rendered with the
+      # presenter.
       #
       # Templates have components which correspond with methods defined on
       # the presenter. By default, only public instance methods can be
       # referenced, and any method defined on Curly::Presenter itself cannot be
-      # referenced. This means that methods such as `#cache_key` and #inspect are
-      # not available. This is done for safety purposes.
+      # referenced. This means that methods such as `#cache_key` and #inspect
+      # are not available. This is done for safety purposes.
       #
       # This policy can be changed by overriding this method in your presenters.
       #
@@ -256,7 +257,8 @@ module Curly
         @version || 0
       end
 
-      # The cache key for the presenter class. Includes all dependencies as well.
+      # The cache key for the presenter class. Includes all dependencies as
+      # well.
       #
       # Returns a String cache key.
       def cache_key
