@@ -26,7 +26,7 @@ module Curly
     #
     # source - The String source of the template.
     #
-    # Example
+    # Examples
     #
     #   Curly::Scanner.scan("hello {{name}}!")
     #   #=> [[:text, "hello "], [:component, "name"], [:text, "!"]]

@@ -62,7 +62,7 @@ module Curly
     # template is rendered. One use case is to call `content_for` in order
     # to inject content into other templates, e.g. a layout.
     #
-    # Example
+    # Examples
     #
     #   class Posts::ShowPresenter < Curly::Presenter
     #     presents :post
@@ -216,7 +216,7 @@ module Curly
 
       # The set of view paths that the presenter depends on.
       #
-      # Example
+      # Examples
       #
       #   class Posts::ShowPresenter < Curly::Presenter
       #     version 2
