@@ -1,5 +1,11 @@
 ### Unreleased
 
+### Curly 2.2.0 (December 4, 2014)
+
+* Allow configuring arbitrary cache options.
+
+  *Daniel Schierbeck*
+
 ### Curly 2.1.1 (November 12, 2014)
 
 * Fix a bug where a parent presenter's parameters were not being passed to the
