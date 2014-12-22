@@ -666,6 +666,7 @@ Thanks to [Zendesk](http://zendesk.com/) for sponsoring the work on Curly.
 - Benjamin Quorning ([@bquorning](https://github.com/bquorning))
 - Jeremy Rodi ([@redjazz96](https://github.com/redjazz96))
 - Alisson Cavalcante Agiani ([@thelinuxlich](https://github.com/thelinuxlich))
+- Łukasz Niemier ([@hauleth](https://github.com/hauleth))
 
 
 Build Status
