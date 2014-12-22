@@ -1,5 +1,15 @@
 ### Unreleased
 
+### Curly 2.3.0 (December 22, 2014)
+
+* Add support for Rails 4.2.
+
+  *Łukasz Niemier*
+
+* Allow spaces within components.
+
+  *Łukasz Niemier*
+
 ### Curly 2.2.0 (December 4, 2014)
 
 * Allow configuring arbitrary cache options.
