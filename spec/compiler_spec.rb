@@ -130,6 +130,13 @@ describe Curly::Compiler do
       evaluate("test{{^false?}}bar{{/false?}}").should == "testbar"
     end
 
+    it "removes extra whitespace from the output" do
+      presenter.stub(:foo) { "" }
+      template = "{{^false?}}\n{{foo}}\n<a href='bar'>bar</a>\n{{foo}}\n{{/false?}}\n"
+
+      evaluate(template).should == "\n<a href='bar'>bar</a>\n"
+    end
+
     it "passes an argument to blocks" do
       evaluate("{{#hello.world?}}foo{{/hello.world?}}{{#hello.foo?}}bar{{/hello.foo?}}").should == "foo"
     end

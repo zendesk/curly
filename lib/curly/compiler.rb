@@ -179,7 +179,9 @@ module Curly
     end
 
     def compile_text(text)
-      output "buffer.safe_concat(#{text.value.inspect})"
+      if non_whitespace_text = text.value.presence
+        output "buffer.safe_concat(#{non_whitespace_text.inspect})"
+      end
     end
 
     def compile_comment(comment)
