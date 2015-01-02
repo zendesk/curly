@@ -1,16 +1,17 @@
 require 'spec_helper'
+require 'matchers/have_structure'
 
 describe "Context blocks", type: :request do
   example "A context block" do
     get '/new'
 
-    response.body.should == <<-HTML.strip_heredoc
+    response.body.should have_structure <<-HTML
       <html>
       <head>
         <title>Dummy app</title>
       </head>
       <body>
-      <form accept-charset="UTF-8" action="/new" method="post"><div style="display:none"><input name="utf8" type="hidden" value="&#x2713;" /></div>
+      <form accept-charset="UTF-8" action="/new" method="post"><input name="utf8" type="hidden" value="&#x2713;" />
         <div class="field">
           <b>Name</b> <input id="dashboard_name" name="dashboard[name]" type="text" value="test" />
         </div>
