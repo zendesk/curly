@@ -307,5 +307,10 @@ module Curly
     def method_missing(method, *args, &block)
       @_context.public_send(method, *args, &block)
     end
+
+    # Tells ruby (and developers) what methods we can accept.
+    def respond_to_missing?(method, include_private = false)
+      @_context.respond_to?(method, false)
+    end
   end
 end
