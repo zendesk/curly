@@ -56,6 +56,26 @@ describe Curly::Presenter do
     end
   end
 
+  describe "#method_missing" do
+    let(:context) { double("context") }
+    subject {
+      CircusPresenter.new(context,
+        midget: "Meek Harolson",
+        clown: "Bubbles")
+    }
+
+    it "delegates calls to the context" do
+      context.should receive(:undefined).once
+      subject.undefined
+    end
+
+    it "allows method calls on context-defined methods" do
+      context.should receive(:respond_to?).
+        with(:undefined, false).once.and_return(true)
+      subject.method(:undefined)
+    end
+  end
+
   describe ".presenter_for_path" do
     it "returns the presenter class for the given path" do
       presenter = double("presenter")
