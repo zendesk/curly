@@ -8,6 +8,6 @@ platform :ruby do
   gem 'redcarpet'
   gem 'github-markup'
   gem 'coveralls', require: false
-  gem 'rails', '~> 4.1.0', require: false
+  gem 'rails', '~> 4.2.0', require: false
   gem 'rspec-rails', require: false
 end
