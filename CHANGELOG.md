@@ -1,5 +1,15 @@
 ### Unreleased
 
+### Curly 2.3.1 (January 7, 2015)
+
+* Fix an issue with nested context blocks.
+
+  *Daniel Schierbeck*
+
+* Make `respond_to_missing?` work with presenter objects.
+
+  *Jeremy Rodi*
+
 ### Curly 2.3.0 (December 22, 2014)
 
 * Add support for Rails 4.2.

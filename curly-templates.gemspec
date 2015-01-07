@@ -4,8 +4,8 @@ Gem::Specification.new do |s|
   s.rubygems_version = '1.3.5'
 
   s.name              = 'curly-templates'
-  s.version           = '2.3.0'
-  s.date              = '2014-12-22'
+  s.version           = '2.3.1'
+  s.date              = '2015-01-07'
 
   s.summary     = "Free your views!"
   s.description = "A view layer for your Rails apps that separates structure and logic."
@@ -33,6 +33,7 @@ Gem::Specification.new do |s|
     Gemfile
     README.md
     Rakefile
+    circle.yml
     curly-templates.gemspec
     lib/curly-templates.rb
     lib/curly.rb
@@ -92,6 +93,7 @@ Gem::Specification.new do |s|
     spec/integration/collection_blocks_spec.rb
     spec/integration/context_blocks_spec.rb
     spec/integration/partials_spec.rb
+    spec/matchers/have_structure.rb
     spec/parser_spec.rb
     spec/presenter_spec.rb
     spec/scanner_spec.rb

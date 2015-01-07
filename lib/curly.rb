@@ -25,7 +25,7 @@
 #
 # See Curly::Presenter for more information on presenters.
 module Curly
-  VERSION = "2.3.0"
+  VERSION = "2.3.1"
 
   # Compiles a Curly template to Ruby code.
   #
