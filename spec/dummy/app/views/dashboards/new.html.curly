@@ -3,3 +3,5 @@
     <b>{{label}}</b> {{input}}
   {{/name_field}}
 {{/form}}
+
+<p>Thank you!</p>

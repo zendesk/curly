@@ -65,6 +65,7 @@ module Curly
     def code
       <<-RUBY
         buffer = ActiveSupport::SafeBuffer.new
+        buffers = []
         presenters = []
         #{@parts.join("\n")}
         buffer
@@ -151,9 +152,10 @@ module Curly
 
       output <<-RUBY
         presenters << presenter
-        old_buffer, buffer = buffer, ActiveSupport::SafeBuffer.new
-        old_buffer << #{method_call} do |item|
+        buffers << buffer
+        buffer << #{method_call} do |item|
           options = options.merge("#{name}" => item)
+          buffer = ActiveSupport::SafeBuffer.new
           presenter = #{item_presenter_class}.new(self, options)
       RUBY
 
@@ -162,8 +164,9 @@ module Curly
       @presenter_classes.pop
 
       output <<-RUBY
+          buffer
         end
-        buffer = old_buffer
+        buffer = buffers.pop
         presenter = presenters.pop
       RUBY
     end
