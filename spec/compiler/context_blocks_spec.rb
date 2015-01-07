@@ -22,6 +22,10 @@ describe Curly::Compiler do
       def field
         %(<input type="text" value="#{@text_field.upcase}">).html_safe
       end
+
+      def value?
+        true
+      end
     end
 
     render('{{@form}}{{@text_field}}{{field}}{{/text_field}}{{/form}}').should == '<form><input type="text" value="YO"></form>'
@@ -47,5 +51,37 @@ describe Curly::Compiler do
     expect {
       render('{{@dust}}{{/dust}}')
     }.to raise_exception(Curly::Error)
+  end
+
+  it "fails if the component is not a context block" do
+    expect { render('{{@invalid}}yo{{/invalid}}') }.to raise_exception(Curly::Error)
+  end
+
+  it "compiles shorthand context components" do
+    define_presenter do
+      def tree(&block)
+        yield
+      end
+    end
+
+    define_presenter "TreePresenter" do
+      def branch(&block)
+        yield
+      end
+    end
+
+    define_presenter "BranchPresenter" do
+      def leaf
+        "leaf"
+      end
+    end
+
+    render('{{tree:branch:leaf}}').should == "leaf"
+  end
+
+  it "requires shorthand blocks to be closed with the same set of namespaces" do
+    expect do
+      render('{{#tree:branch}}{{/branch}}{{/tree}}')
+    end.to raise_exception(Curly::IncorrectEndingError)
   end
 end

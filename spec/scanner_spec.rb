@@ -2,14 +2,14 @@ describe Curly::Scanner, ".scan" do
   it "returns the tokens in the source" do
     scan("foo {{bar}} baz").should == [
       [:text, "foo "],
-      [:component, "bar", nil, {}],
+      [:component, "bar", nil, {}, []],
       [:text, " baz"]
     ]
   end
 
   it "scans components with identifiers" do
     scan("{{foo.bar}}").should == [
-      [:component, "foo", "bar", {}]
+      [:component, "foo", "bar", {}, []]
     ]
   end
 
@@ -53,44 +53,44 @@ describe Curly::Scanner, ".scan" do
 
   it "scans context block tags" do
     scan('{{@search_form}}{{query_field}}{{/search_form}}').should == [
-      [:context_block_start, "search_form", nil, {}],
-      [:component, "query_field", nil, {}],
-      [:block_end, "search_form", nil]
+      [:context_block_start, "search_form", nil, {}, []],
+      [:component, "query_field", nil, {}, []],
+      [:block_end, "search_form", nil, {}, []]
     ]
   end
 
   it "scans conditional block tags" do
     scan('foo {{#bar?}} hello {{/bar?}}').should == [
       [:text, "foo "],
-      [:conditional_block_start, "bar?", nil, {}],
+      [:conditional_block_start, "bar?", nil, {}, []],
       [:text, " hello "],
-      [:block_end, "bar?", nil]
+      [:block_end, "bar?", nil, {}, []]
     ]
   end
 
   it "scans conditional block tags with parameters and attributes" do
     scan('{{#active.test? name="test"}}yo{{/active.test?}}').should == [
-      [:conditional_block_start, "active?", "test", { "name" => "test" }],
+      [:conditional_block_start, "active?", "test", { "name" => "test" }, []],
       [:text, "yo"],
-      [:block_end, "active?", "test"]
+      [:block_end, "active?", "test", {}, []]
     ]
   end
 
   it "scans inverse block tags" do
     scan('foo {{^bar?}} hello {{/bar?}}').should == [
       [:text, "foo "],
-      [:inverse_conditional_block_start, "bar?", nil, {}],
+      [:inverse_conditional_block_start, "bar?", nil, {}, []],
       [:text, " hello "],
-      [:block_end, "bar?", nil]
+      [:block_end, "bar?", nil, {}, []]
     ]
   end
 
   it "scans collection block tags" do
     scan('foo {{*bar}} hello {{/bar}}').should == [
       [:text, "foo "],
-      [:collection_block_start, "bar", nil, {}],
+      [:collection_block_start, "bar", nil, {}, []],
       [:text, " hello "],
-      [:block_end, "bar", nil]
+      [:block_end, "bar", nil, {}, []]
     ]
   end
 

@@ -3,19 +3,30 @@ describe Curly::ComponentScanner do
     scan('hello.world weather="sunny"').should == [
       "hello",
       "world",
-      { "weather" => "sunny" }
+      { "weather" => "sunny" },
+      []
+    ]
+  end
+
+  it "allows context namespaces" do
+    scan('island:beach:hello.world').should == [
+      "hello",
+      "world",
+      {},
+      ["island", "beach"]
     ]
   end
 
   it "allows a question mark after the identifier" do
-    scan('hello.world?').should == ["hello?", "world", {}]
+    scan('hello.world?').should == ["hello?", "world", {}, []]
   end
 
   it 'allows spaces before and after component' do
     scan('  hello.world weather="sunny"   ').should == [
       "hello",
       "world",
-      { "weather" => "sunny" }
+      { "weather" => "sunny" },
+      []
     ]
   end
 
