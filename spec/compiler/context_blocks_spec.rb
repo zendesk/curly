@@ -3,38 +3,6 @@ require 'spec_helper'
 describe Curly::Compiler do
   include CompilationSupport
 
-  let(:presenter_class) do
-    Class.new(Curly::Presenter) do
-      def form(&block)
-        "<form>".html_safe + block.call("yo") + "</form>".html_safe
-      end
-
-      def invalid
-        "uh oh!"
-      end
-    end
-  end
-
-  let(:context_presenter_class) do
-    Class.new(Curly::Presenter) do
-      presents :form
-
-      def text_field(&block)
-        block.call(@form)
-      end
-    end
-  end
-
-  let(:inner_context_presenter_class) do
-    Class.new(Curly::Presenter) do
-      presents :text_field
-
-      def field
-        %(<input type="text" value="#{@text_field.upcase}">).html_safe
-      end
-    end
-  end
-
   it "compiles context blocks" do
     define_presenter do
       def form(&block)

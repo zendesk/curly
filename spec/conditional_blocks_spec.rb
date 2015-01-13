@@ -1,10 +1,10 @@
 require 'spec_helper'
 
 describe "Conditional block components" do
-  include RenderingSupport
+  include CompilationSupport
 
   example "with neither identifier nor attributes" do
-    presenter do
+    define_presenter do
       def high?
         true
       end
@@ -19,7 +19,7 @@ describe "Conditional block components" do
   end
 
   example "with an identifier" do
-    presenter do
+    define_presenter do
       def even?(number)
         number.to_i % 2 == 0
       end
@@ -30,7 +30,7 @@ describe "Conditional block components" do
   end
 
   example "with attributes" do
-    presenter do
+    define_presenter do
       def square?(width:, height:)
         width.to_i == height.to_i
       end

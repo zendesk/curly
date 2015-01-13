@@ -1,10 +1,10 @@
 require 'spec_helper'
 
 describe "Collection block components" do
-  include RenderingSupport
+  include CompilationSupport
 
   before do
-    item_presenter do
+    define_presenter "ItemPresenter" do
       presents :item
 
       def name
@@ -14,7 +14,7 @@ describe "Collection block components" do
   end
 
   example "with neither identifier nor attributes" do
-    presenter do
+    define_presenter do
       def items
         ["one", "two", "three"]
       end
@@ -24,7 +24,7 @@ describe "Collection block components" do
   end
 
   example "with an identifier" do
-    presenter do
+    define_presenter do
       def items(filter = nil)
         if filter == "even"
           ["two"]
@@ -42,7 +42,7 @@ describe "Collection block components" do
   end
 
   example "with attributes" do
-    presenter do
+    define_presenter do
       def items(length: "1")
         ["x"] * length.to_i
       end
@@ -53,13 +53,13 @@ describe "Collection block components" do
   end
 
   example "with nested collection blocks" do
-    presenter do
+    define_presenter do
       def items
         [{ parts: [1, 2] }, { parts: [3, 4] }]
       end
     end
 
-    item_presenter do
+    define_presenter "ItemPresenter" do
       presents :item
 
       def parts
@@ -67,7 +67,7 @@ describe "Collection block components" do
       end
     end
 
-    part_presenter do
+    define_presenter "PartPresenter" do
       presents :part
 
       def number
@@ -76,13 +76,5 @@ describe "Collection block components" do
     end
 
     render("{{*items}}<{{*parts}}[{{number}}]{{/parts}}>{{/items}}").should == "<[1][2]><[3][4]>"
-  end
-
-  def item_presenter(&block)
-    stub_const("ItemPresenter", Class.new(Curly::Presenter, &block))
-  end
-
-  def part_presenter(&block)
-    stub_const("ItemPresenter::PartPresenter", Class.new(Curly::Presenter, &block))
   end
 end

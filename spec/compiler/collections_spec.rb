@@ -4,77 +4,6 @@ describe Curly::Compiler do
   include CompilationSupport
 
   context "normal rendering" do
-    let(:presenter_class) do
-      Class.new(Curly::Presenter) do
-        presents :list
-
-        def title
-          @list.title
-        end
-
-        def items(status: nil)
-          if status
-            @list.items.select {|item| item.status == status }
-          else
-            @list.items
-          end
-        end
-
-        def companies
-          "Nike, Adidas"
-        end
-
-        def numbers
-          "one, two, three"
-        end
-      end
-    end
-
-    let(:simple_presenter_class) do
-      Class.new(Curly::Presenter) do
-        presents :company
-
-        def name
-          @company
-        end
-      end
-    end
-
-    let(:inner_presenter_class) do
-      Class.new(Curly::Presenter) do
-        presents :item, :item_counter
-        presents :list, default: nil
-
-        attr_reader :item_counter
-
-        def name
-          @item.name
-        end
-
-        def list_title
-          @list.title
-        end
-
-        def parts
-          @item.parts
-        end
-      end
-    end
-
-    let(:inner_inner_presenter_class) do
-      Class.new(Curly::Presenter) do
-        presents :part
-
-        def identifier
-          @part.identifier
-        end
-      end
-    end
-
-    let(:list) { double("list", title: "Inventory") }
-    let(:context) { double("context") }
-    let(:presenter) { presenter_class.new(context, "list" => list) }
-
     before do
       define_presenter "ItemPresenter" do
         presents :item
@@ -232,7 +161,7 @@ describe Curly::Compiler do
 
   context "re-using assign names" do
     before do
-      define_presenter "ShowPresenter" do
+      define_presenter do
         presents :comment
 
         attr_reader :comment

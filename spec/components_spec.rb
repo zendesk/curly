@@ -1,10 +1,10 @@
 require 'spec_helper'
 
 describe "Components" do
-  include RenderingSupport
+  include CompilationSupport
 
   example "with neither identifier nor attributes" do
-    presenter do
+    define_presenter do
       def title
         "A Clockwork Orange"
       end
@@ -14,7 +14,7 @@ describe "Components" do
   end
 
   example "with an identifier" do
-    presenter do
+    define_presenter do
       def reverse(str)
         str.reverse
       end
@@ -24,7 +24,7 @@ describe "Components" do
   end
 
   example "with attributes" do
-    presenter do
+    define_presenter do
       def double(number:)
         number.to_i * 2
       end
@@ -34,7 +34,7 @@ describe "Components" do
   end
 
   example "with both identifier and attributes" do
-    presenter do
+    define_presenter do
       def a(href:, title:)
         content_tag :a, nil, href: href, title: title
       end
