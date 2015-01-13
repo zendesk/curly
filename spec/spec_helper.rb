@@ -3,15 +3,6 @@ ENV["RAILS_ENV"] = "test"
 require 'dummy/config/environment'
 require 'rspec/rails'
 
-if ENV['CI']
-  begin
-    require 'coveralls'
-    Coveralls.wear!
-  rescue LoadError
-    STDERR.puts "Failed to load Coveralls"
-  end
-end
-
 RSpec.configure do |config|
   config.infer_spec_type_from_file_location!
 end
