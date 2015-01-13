@@ -1,5 +1,15 @@
 ### Unreleased
 
+### Curly 2.3.2 (January 13, 2015)
+
+* Fix an issue that caused presenter parameters to get mixed up.
+
+  *Cristian Planas*
+
+* Clean up the testing code.
+
+  *Daniel Schierbeck*
+
 ### Curly 2.3.1 (January 7, 2015)
 
 * Fix an issue with nested context blocks.
