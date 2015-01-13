@@ -76,88 +76,161 @@ describe Curly::Compiler do
     let(:presenter) { presenter_class.new(context, "list" => list) }
 
     before do
-      stub_const("ItemPresenter", inner_presenter_class)
-      stub_const("PartPresenter", inner_inner_presenter_class)
+      define_presenter "ItemPresenter" do
+        presents :item
+        delegate :name, to: :@item
+      end
     end
 
     it "compiles collection blocks" do
+      define_presenter do
+        presents :items
+        attr_reader :items
+      end
+
       item1 = double("item1", name: "foo")
       item2 = double("item2", name: "bar")
 
-      list.stub(:items) { [item1, item2] }
-
       template = "<ul>{{*items}}<li>{{name}}</li>{{/items}}</ul>"
-      expect(evaluate(template)).to eql "<ul><li>foo</li><li>bar</li></ul>"
+      expect(render(template, items: [item1, item2])).to eql "<ul><li>foo</li><li>bar</li></ul>"
     end
 
     it "allows attributes on collection blocks" do
+      define_presenter do
+        presents :items
+
+        def items(status: nil)
+          if status
+            @items.select {|item| item.status == status }
+          else
+            @items
+          end
+        end
+      end
+
       item1 = double("item1", name: "foo", status: "active")
       item2 = double("item2", name: "bar", status: "inactive")
 
-      list.stub(:items) { [item1, item2] }
-
       template = "<ul>{{*items status=active}}<li>{{name}}</li>{{/items}}</ul>"
-      expect(evaluate(template)).to eql "<ul><li>foo</li></ul>"
-    end
-
-    it "fails if the component isn't available" do
-      template = "<ul>{{*doodads}}<li>{{name}}</li>{{/doodads}}</ul>"
-      expect { evaluate(template) }.to raise_exception(Curly::Error)
+      expect(render(template, items: [item1, item2])).to eql "<ul><li>foo</li></ul>"
     end
 
     it "fails if the component doesn't support enumeration" do
       template = "<ul>{{*numbers}}<li>{{name}}</li>{{/numbers}}</ul>"
-      expect { evaluate(template) }.to raise_exception(Curly::Error)
+      expect { render(template) }.to raise_exception(Curly::Error)
     end
 
     it "works even if the component method doesn't return an Array" do
-      stub_const("CompanyPresenter", simple_presenter_class)
+      define_presenter do
+        def companies
+          "Arla"
+        end
+      end
+
+      define_presenter "CompanyPresenter" do
+        presents :company
+
+        def name
+          @company
+        end
+      end
+
       template = "<ul>{{*companies}}<li>{{name}}</li>{{/companies}}</ul>"
-      expect(evaluate(template)).to eql "<ul><li>Nike, Adidas</li></ul>"
+      expect(render(template)).to eql "<ul><li>Arla</li></ul>"
     end
 
     it "passes the index of the current item to the nested presenter" do
+      define_presenter do
+        presents :items
+        attr_reader :items
+      end
+
+      define_presenter "ItemPresenter" do
+        presents :item_counter
+
+        def index
+          @item_counter
+        end
+      end
+
       item1 = double("item1")
       item2 = double("item2")
 
-      list.stub(:items) { [item1, item2] }
-
-      template = "<ul>{{*items}}<li>{{item_counter}}</li>{{/items}}</ul>"
-      expect(evaluate(template)).to eql "<ul><li>1</li><li>2</li></ul>"
+      template = "<ul>{{*items}}<li>{{index}}</li>{{/items}}</ul>"
+      expect(render(template, items: [item1, item2])).to eql "<ul><li>1</li><li>2</li></ul>"
     end
 
     it "restores the previous scope after exiting the collection block" do
+      define_presenter do
+        presents :items
+        attr_reader :items
+
+        def title
+          "Inventory"
+        end
+      end
+
+      define_presenter "ItemPresenter" do
+        presents :item
+        delegate :name, :parts, to: :@item
+      end
+
+      define_presenter "PartPresenter" do
+        presents :part
+        delegate :identifier, to: :@part
+      end
+
       part = double("part", identifier: "X")
       item = double("item", name: "foo", parts: [part])
-      list.stub(:items) { [item] }
 
       template = "{{*items}}{{*parts}}{{identifier}}{{/parts}}{{name}}{{/items}}{{title}}"
-      expect(evaluate(template)).to eql "XfooInventory"
+      expect(render(template, items: [item])).to eql "XfooInventory"
     end
 
     it "passes the parent presenter's options to the nested presenter" do
-      list.stub(:items) { [double(name: "foo"), double(name: "bar")] }
+      define_presenter do
+        presents :items, :prefix
+        attr_reader :items
+      end
 
-      template = "{{*items}}{{list_title}}: {{name}}. {{/items}}"
-      expect(evaluate(template, list: list)).to eql "Inventory: foo. Inventory: bar. "
+      define_presenter "ItemPresenter" do
+        presents :item, :prefix
+        delegate :name, to: :@item
+        attr_reader :prefix
+      end
+
+      item1 = double(name: "foo")
+      item2 = double(name: "bar")
+
+      template = "{{*items}}{{prefix}}: {{name}}; {{/items}}"
+      expect(render(template, prefix: "SKU", items: [item1, item2])).to eql "SKU: foo; SKU: bar; "
     end
 
     it "compiles nested collection blocks" do
+      define_presenter do
+        presents :items
+        attr_reader :items
+      end
+
+      define_presenter "ItemPresenter" do
+        presents :item
+        delegate :name, :parts, to: :@item
+      end
+
+      define_presenter "PartPresenter" do
+        presents :part
+        delegate :identifier, to: :@part
+      end
+
       item1 = double("item1", name: "item1", parts: [double(identifier: "A"), double(identifier: "B")])
       item2 = double("item2", name: "item2", parts: [double(identifier: "C"), double(identifier: "D")])
 
-      list.stub(:items) { [item1, item2] }
-
-      template = "{{title}}: {{*items}}{{name}} - {{*parts}}{{identifier}}{{/parts}}. {{/items}}"
-      expect(evaluate(template)).to eql "Inventory: item1 - AB. item2 - CD. "
+      template = "{{*items}}{{name}}: {{*parts}}{{identifier}}{{/parts}}; {{/items}}"
+      expect(render(template, items: [item1, item2])).to eql "item1: AB; item2: CD; "
     end
   end
 
   context "re-using assign names" do
-    let(:context) { double("context") }
-    let(:options) { Hash.new }
-    let(:presenter) { ShowPresenter.new(context, options) }
-
     before do
       define_presenter "ShowPresenter" do
         presents :comment
@@ -188,16 +261,15 @@ describe Curly::Compiler do
     end
 
     it "allows re-using assign names in collection blocks" do
-      options.update("comment" => "first post!")
+      options = { "comment" => "first post!" }
       template = "{{*comments}}{{/comments}}{{@form}}{{comment}}{{/form}}"
-      expect(evaluate(template, options)).to eql "first post!"
+      expect(render(template, options)).to eql "first post!"
     end
 
     it "allows re-using assign names in context blocks" do
-      options.update("comment" => "first post!")
+      options = { "comment" => "first post!" }
       template = "{{@comment}}{{/comment}}{{@form}}{{comment}}{{/form}}"
-      expect(evaluate(template, options)).to eql "first post!"
+      expect(render(template, options)).to eql "first post!"
     end
-
   end
 end

@@ -3,67 +3,7 @@ require 'spec_helper'
 describe Curly::Compiler do
   include CompilationSupport
 
-  let :presenter_class do
-    Class.new do
-      def foo
-        "FOO"
-      end
-
-      def high_yield
-        "#{yield}, motherfucker!"
-      end
-
-      def yield_value
-        "#{yield :foo}, please?"
-      end
-
-      def hello?(value)
-        value == "world"
-      end
-
-      def unicorns
-        "UNICORN"
-      end
-
-      def dirty
-        nil
-      end
-
-      def square?(width:, height:)
-        width.to_i == height.to_i
-      end
-
-      def false?
-        false
-      end
-
-      def true?
-        true
-      end
-
-      def self.component_available?(method)
-        %w[foo high_yield yield_value dirty false? true? hello? square?].include?(method)
-      end
-
-      def self.available_components
-        public_instance_methods
-      end
-
-      private
-
-      def method_missing(*args)
-        "BAR"
-      end
-    end
-  end
-
-  let(:presenter) { presenter_class.new }
-
   describe ".compile" do
-    it "compiles Curly templates to Ruby code" do
-      evaluate("{{foo}}").should == "FOO"
-    end
-
     it "raises ArgumentError if the presenter class is nil" do
       expect do
         Curly::Compiler.compile("foo", nil)
@@ -71,12 +11,12 @@ describe Curly::Compiler do
     end
 
     it "makes sure only public methods are called on the presenter object" do
-      expect { evaluate("{{bar}}") }.to raise_exception(Curly::InvalidComponent)
+      expect { render("{{bar}}") }.to raise_exception(Curly::InvalidComponent)
     end
 
     it "includes the invalid component when failing to compile" do
       begin
-        evaluate("{{bar}}")
+        render("{{bar}}")
         fail
       rescue Curly::InvalidComponent => e
         e.component.should == "bar"
@@ -84,107 +24,171 @@ describe Curly::Compiler do
     end
 
     it "propagates yields to the caller" do
-      evaluate("{{high_yield}}") { "$$$" }.should == "$$$, motherfucker!"
+      define_presenter do
+        def i_want
+          "I want #{yield}!"
+        end
+      end
+
+      render("{{i_want}}") { "$$$" }.should == "I want $$$!"
     end
 
     it "sends along arguments passed to yield" do
-      evaluate("{{yield_value}}") {|v| v.upcase }.should == "FOO, please?"
+      define_presenter do
+        def hello(&block)
+          "Hello, #{block.call('world')}!"
+        end
+      end
+
+      render("{{hello}}") {|v| v.upcase }.should == "Hello, WORLD!"
     end
 
     it "escapes non HTML safe strings returned from the presenter" do
-      presenter.stub(:dirty) { "<p>dirty</p>" }
-      evaluate("{{dirty}}").should == "&lt;p&gt;dirty&lt;/p&gt;"
+      define_presenter do
+        def dirty
+          "<p>dirty</p>"
+        end
+      end
+
+      render("{{dirty}}").should == "&lt;p&gt;dirty&lt;/p&gt;"
     end
 
     it "does not escape HTML safe strings returned from the presenter" do
-      presenter.stub(:dirty) { "<p>dirty</p>".html_safe }
-      evaluate("{{dirty}}").should == "<p>dirty</p>"
+      define_presenter do
+        def dirty
+          "<p>dirty</p>".html_safe
+        end
+      end
+
+      render("{{dirty}}").should == "<p>dirty</p>"
     end
 
     it "does not escape HTML in the template itself" do
-      evaluate("<div>").should == "<div>"
+      render("<div>").should == "<div>"
     end
 
     it "treats all values returned from the presenter as strings" do
-      presenter.stub(:foo) { 42 }
-      evaluate("{{foo}}").should == "42"
+      define_presenter do
+        def foo; 42; end
+      end
+
+      render("{{foo}}").should == "42"
     end
 
     it "removes comments from the output" do
-      evaluate("HELO{{! I'm a comment, yo }}WORLD").should == "HELOWORLD"
+      render("hello{{! I'm a comment, yo }}world").should == "helloworld"
     end
 
     it "removes text in false blocks" do
-      evaluate("test{{#false?}}bar{{/false?}}").should == "test"
+      define_presenter do
+        def false?
+          false
+        end
+      end
+
+      render("{{#false?}}wut{{/false?}}").should == ""
     end
 
     it "keeps text in true blocks" do
-      evaluate("test{{#true?}}bar{{/true?}}").should == "testbar"
+      define_presenter do
+        def true?
+          true
+        end
+      end
+
+      render("{{#true?}}yello{{/true?}}").should == "yello"
     end
 
     it "removes text in inverse true blocks" do
-      evaluate("test{{^true?}}bar{{/true?}}").should == "test"
+      define_presenter do
+        def true?
+          true
+        end
+      end
+
+      render("{{^true?}}bar{{/true?}}").should == ""
     end
 
-    it "keeps kext in inverse false blocks" do
-      evaluate("test{{^false?}}bar{{/false?}}").should == "testbar"
+    it "keeps text in inverse false blocks" do
+      define_presenter do
+        def false?
+          false
+        end
+      end
+
+      render("{{^false?}}yeah!{{/false?}}").should == "yeah!"
     end
 
     it "passes an argument to blocks" do
-      evaluate("{{#hello.world?}}foo{{/hello.world?}}{{#hello.foo?}}bar{{/hello.foo?}}").should == "foo"
+      define_presenter do
+        def hello?(value)
+          value == "world"
+        end
+      end
+
+      render("{{#hello.world?}}foo{{/hello.world?}}").should == "foo"
+      render("{{#hello.mars?}}bar{{/hello.mars?}}").should == ""
     end
 
     it "passes attributes to blocks" do
-      evaluate("{{#square? width=2 height=2}}yeah!{{/square?}}").should == "yeah!"
-    end
+      define_presenter do
+        def square?(width:, height:)
+          width.to_i == height.to_i
+        end
+      end
 
-    it "gives an error on mismatching blocks" do
-      expect do
-        evaluate("test{{#false?}}bar{{/true?}}")
-      end.to raise_exception(Curly::IncorrectEndingError)
+      render("{{#square? width=2 height=2}}yeah!{{/square?}}").should == "yeah!"
     end
 
     it "gives an error on incomplete blocks" do
       expect do
-        evaluate("test{{#false?}}bar")
+        render("{{#hello?}}")
       end.to raise_exception(Curly::IncompleteBlockError)
+    end
+
+    it "gives an error when closing unopened blocks" do
+      expect do
+        render("{{/goodbye?}}")
+      end.to raise_exception(Curly::IncorrectEndingError)
     end
 
     it "gives an error on mismatching block ends" do
       expect do
-        evaluate("{{#true?}}test{{#false?}}bar{{/true?}}{{/false?}}")
+        render("{{#x?}}{{#y?}}{{/x?}}{{/y?}}")
       end.to raise_exception(Curly::IncorrectEndingError)
     end
 
     it "does not execute arbitrary Ruby code" do
-      evaluate('#{foo}').should == '#{foo}'
+      render('#{foo}').should == '#{foo}'
     end
   end
 
   describe ".valid?" do
     it "returns true if only available methods are referenced" do
+      define_presenter do
+        def foo; end
+      end
+
       validate("Hello, {{foo}}!").should == true
     end
 
     it "returns false if a missing method is referenced" do
+      define_presenter
       validate("Hello, {{i_am_missing}}").should == false
     end
 
     it "returns false if an unavailable method is referenced" do
-      presenter_class.stub(:available_components) { [:foo] }
+      define_presenter do
+        def self.available_components
+          []
+        end
+      end
+
       validate("Hello, {{inspect}}").should == false
     end
 
-    it "returns true with a block" do
-      validate("Hello {{#true?}}world{{/true?}}").should == true
-    end
-
-    it "returns false with an incomplete block" do
-      validate("Hello {{#true?}}world").should == false
-    end
-
     def validate(template)
-      Curly.valid?(template, presenter_class)
+      Curly.valid?(template, ShowPresenter)
     end
   end
 end

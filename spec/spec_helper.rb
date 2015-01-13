@@ -31,12 +31,22 @@ module RenderingSupport
 end
 
 module CompilationSupport
-  def define_presenter(name, &block)
-    stub_const(name, Class.new(Curly::Presenter, &block))
+  def define_presenter(name = "ShowPresenter", &block)
+    presenter_class = Class.new(Curly::Presenter, &block)
+    stub_const(name, presenter_class)
+    presenter_class
   end
 
-  def evaluate(template, options = {}, &block)
-    code = Curly::Compiler.compile(template, presenter.class)
+  def render(template, options = {}, presenter_class = nil, &block)
+    if presenter_class.nil?
+      unless defined?(ShowPresenter)
+        define_presenter("ShowPresenter")
+      end
+
+      presenter_class = ShowPresenter
+    end
+
+    code = Curly::Compiler.compile(template, presenter_class)
     context = double("context")
 
     context.instance_eval(<<-RUBY)
@@ -45,6 +55,7 @@ module CompilationSupport
       end
     RUBY
 
+    presenter = presenter_class.new(context, options)
     context.render(presenter, options, &block)
   end
 end
