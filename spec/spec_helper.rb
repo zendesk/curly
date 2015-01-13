@@ -12,6 +12,10 @@ if ENV['CI']
   end
 end
 
+RSpec.configure do |config|
+  config.infer_spec_type_from_file_location!
+end
+
 module CompilationSupport
   def define_presenter(name = "ShowPresenter", &block)
     presenter_class = Class.new(Curly::Presenter, &block)
