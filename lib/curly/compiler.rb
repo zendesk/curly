@@ -67,6 +67,7 @@ module Curly
         buffer = ActiveSupport::SafeBuffer.new
         buffers = []
         presenters = []
+        options_stack = []
         #{@parts.join("\n")}
         buffer
       RUBY
@@ -102,6 +103,7 @@ module Curly
 
       output <<-RUBY
         presenters << presenter
+        options_stack << options
         items = Array(#{method_call})
         items.each_with_index do |item, index|
           options = options.merge("#{name}" => item, "#{counter}" => index + 1)
@@ -114,6 +116,7 @@ module Curly
 
       output <<-RUBY
         end
+        options = options_stack.pop
         presenter = presenters.pop
       RUBY
     end
@@ -151,6 +154,7 @@ module Curly
       end
 
       output <<-RUBY
+        options_stack << options
         presenters << presenter
         buffers << buffer
         buffer << #{method_call} do |item|
@@ -168,6 +172,7 @@ module Curly
         end
         buffer = buffers.pop
         presenter = presenters.pop
+        options = options_stack.pop
       RUBY
     end
 
