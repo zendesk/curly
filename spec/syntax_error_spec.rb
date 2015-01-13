@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe Curly::SyntaxError, "#message" do
   it "includes the context of the error in the message" do
     source = "I am a very bad error that has snuck in"

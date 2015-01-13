@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe Curly::Presenter do
   class CircusPresenter < Curly::Presenter
     module MonkeyComponents

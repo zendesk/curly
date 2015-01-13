@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe Curly::ComponentCompiler do
   describe ".compile" do
     let(:presenter_class) do

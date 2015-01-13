@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe Curly::Compiler do
   include CompilationSupport
 

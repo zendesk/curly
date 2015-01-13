@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe Curly::ComponentScanner do
   it "scans the component name, identifier, and attributes" do
     scan('hello.world weather="sunny"').should == [

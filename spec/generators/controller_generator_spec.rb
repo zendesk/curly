@@ -1,4 +1,3 @@
-require 'spec_helper'
 require 'genspec'
 require 'generators/curly/controller/controller_generator'
 

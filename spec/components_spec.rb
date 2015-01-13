@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe "Components" do
   include CompilationSupport
 

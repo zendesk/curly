@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe "Collection block components" do
   include CompilationSupport
 

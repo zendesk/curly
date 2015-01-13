@@ -1,4 +1,3 @@
-require 'spec_helper'
 require 'matchers/have_structure'
 
 describe "Context blocks", type: :request do

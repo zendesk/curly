@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe "Conditional block components" do
   include CompilationSupport
 

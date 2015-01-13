@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe Curly::TemplateHandler do
   let :presenter_class do
     Class.new do

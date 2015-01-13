@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe Curly::AttributeScanner do
   it "scans attributes" do
     scan("width=10px height=20px").should == {

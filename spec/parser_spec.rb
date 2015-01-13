@@ -1,6 +1,3 @@
-require 'spec_helper'
-require 'curly/parser'
-
 describe Curly::Parser do
   it "parses component tokens" do
     tokens = [

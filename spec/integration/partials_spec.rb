@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe "Using Curly for Rails partials", type: :request do
   example "Rendering a partial" do
     get '/partials'

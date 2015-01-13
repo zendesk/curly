@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe "Collection blocks", type: :request do
   example "Rendering collections" do
     get '/collection'
