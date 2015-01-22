@@ -151,6 +151,15 @@ class Curly::Parser
     @stack.push(block)
   end
 
+  def parse_conditional_block_end(*args)
+    block = @stack.pop
+
+    unless block.type == :conditional
+      raise Curly::IncorrectEndingError,
+        "block `#{block}` cannot be closed by a conditional block end"
+    end
+  end
+
   def parse_block_end(*args)
     component = Component.new(*args)
     block = @stack.pop

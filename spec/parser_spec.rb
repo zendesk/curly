@@ -21,6 +21,18 @@ describe Curly::Parser do
     ]
   end
 
+  it "parses conditional blocks with the if syntax" do
+    tokens = [
+      [:conditional_block_start, "a?", nil, {}],
+      [:component, "hello", nil, {}],
+      [:conditional_block_end, nil, nil],
+    ]
+
+    parse(tokens).should == [
+      conditional_block(component("a?"), [component("hello")])
+    ]
+  end
+
   it "parses inverse conditional blocks" do
     tokens = [
       [:inverse_conditional_block_start, "a?", nil, {}],
