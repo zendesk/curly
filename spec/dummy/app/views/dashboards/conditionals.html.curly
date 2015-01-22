@@ -1,0 +1,12 @@
+{{#bar?}}
+  foo 1
+{{/bar?}}
+{{#if bar?}}
+  foo 2
+{{/if}}
+{{#if bar?}}
+  foo 3
+{{/bar?}}
+{{#bar?}}
+  foo 4
+{{/if}}
