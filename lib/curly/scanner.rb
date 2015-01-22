@@ -16,9 +16,10 @@ module Curly
 
     COMMENT_MARKER = /!/
     CONTEXT_BLOCK_MARKER = /@/
-    CONDITIONAL_BLOCK_MARKER = /#/
+    CONDITIONAL_BLOCK_MARKER = /(#if |#)/
     INVERSE_BLOCK_MARKER = /\^/
     COLLECTION_BLOCK_MARKER = /\*/
+    CONDITIONAL_END_BLOCK_MARKER = /\/if/
     END_BLOCK_MARKER = /\//
 
 
@@ -80,6 +81,8 @@ module Curly
         scan_inverse_block_start
       elsif @scanner.scan(COLLECTION_BLOCK_MARKER)
         scan_collection_block_start
+      elsif @scanner.scan(CONDITIONAL_END_BLOCK_MARKER)
+        scan_conditional_block_end
       elsif @scanner.scan(END_BLOCK_MARKER)
         scan_block_end
       else
@@ -120,6 +123,12 @@ module Curly
       if value = scan_until_end_of_curly
         name, identifier, attributes = ComponentScanner.scan(value)
         [:inverse_conditional_block_start, name, identifier, attributes]
+      end
+    end
+
+    def scan_conditional_block_end
+      if scan_until_end_of_curly
+        [:conditional_block_end, nil, nil]
       end
     end
 
