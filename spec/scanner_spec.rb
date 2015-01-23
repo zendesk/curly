@@ -77,6 +77,17 @@ describe Curly::Scanner, ".scan" do
     ]
   end
 
+  it "scans conditional block tags with the else token" do
+    scan('foo {{#if bar?}} hello {{else}} bye {{/if}}').should == [
+      [:text, "foo "],
+      [:conditional_block_start, "bar?", nil, {}],
+      [:text, " hello "],
+      [:else_block_start, nil, nil],
+      [:text, " bye "],
+      [:conditional_block_end, nil, nil]
+    ]
+  end
+
   it "scans conditional block tags with parameters and attributes" do
     scan('{{#active.test? name="test"}}yo{{/active.test?}}').should == [
       [:conditional_block_start, "active?", "test", { "name" => "test" }],
