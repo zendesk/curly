@@ -17,7 +17,7 @@ module Curly
     COMMENT_MARKER = /!/
     CONTEXT_BLOCK_MARKER = /@/
     CONDITIONAL_BLOCK_MARKER = /(#if |#)/
-    ELSE_BLOCK_MARKER = /else/
+    ELSE_BLOCK_MARKER = /else}}/
     INVERSE_BLOCK_MARKER = /\^/
     COLLECTION_BLOCK_MARKER = /\*/
     CONDITIONAL_END_BLOCK_MARKER = /\/if/
@@ -108,9 +108,7 @@ module Curly
     end
 
     def scan_else_marker
-      if scan_until_end_of_curly
-        [:else_block_start, nil, nil]
-      end
+      [:else_block_start, nil, nil]
     end
 
     def scan_context_block_start
