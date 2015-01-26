@@ -18,3 +18,10 @@
 {{else}}
   invisible
 {{/if}}
+{{#bar?}}
+  foo 5
+  {{ifmethod}}
+  {{methodif}}
+  {{elsemethod}}
+  {{methodelse}}
+{{/if}}
