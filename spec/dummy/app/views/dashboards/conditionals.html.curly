@@ -1,12 +1,20 @@
 {{#bar?}}
   foo 1
+{{else}}
+  invisible
 {{/bar?}}
 {{#if bar?}}
   foo 2
+{{else}}
+  invisible
 {{/if}}
 {{#if bar?}}
   foo 3
+{{else}}
+  invisible
 {{/bar?}}
 {{#bar?}}
   foo 4
+{{else}}
+  invisible
 {{/if}}
