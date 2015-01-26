@@ -139,17 +139,15 @@ class Curly::Parser
   def parse_else_block_start(*args)
     block = @stack.pop
 
-    if block.nil?
-      raise Curly::Error, "An else needs to be in a block"
-    end
-
-    unless block.type == :conditional
-      raise Curly::Error, "An else needs to be in a conditional block"
+    if block.nil? || ![:conditional, :inverse_conditional].include?(block.type)
+      raise Curly::Error, "An else needs to be in a proper block"
     end
 
     component = block.component
 
-    parse_block(:inverse_conditional, *[component.name, component.identifier, component.attributes])
+    reversed_block_type = block.type == :conditional ? :inverse_conditional : :conditional
+
+    parse_block(reversed_block_type, *[component.name, component.identifier, component.attributes])
   end
 
   def parse_collection_block_start(*args)

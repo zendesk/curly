@@ -60,6 +60,21 @@ describe Curly::Parser do
     ].flatten
   end
 
+  it "parses elses in inverse conditionals" do
+    tokens = [
+      [:inverse_conditional_block_start, "bar?", nil, {}],
+      [:component, "hello", nil, {}],
+      [:else_block_start, "bar?", nil, {}],
+      [:component, "bye", nil, {}],
+      [:block_end, "bar?", nil],
+    ]
+
+    parse(tokens).should == [
+      inverse_conditional_block(component("bar?"), [component("hello")]), 
+      conditional_block(component("bar?"), [component("bye")])
+    ].flatten
+  end
+
   it "parses collection blocks" do
     tokens = [
       [:collection_block_start, "mice", nil, {}],

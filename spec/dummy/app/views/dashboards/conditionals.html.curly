@@ -27,7 +27,11 @@
 {{/if}}
 {{#unless bar?}}
   invisible
+{{else}}
+  foo 10
 {{/unless}}
 {{#unless nobar?}}
-  foo 10
+  foo 11
+{{else}}
+  invisible
 {{/unless}}

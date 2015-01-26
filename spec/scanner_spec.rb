@@ -114,6 +114,17 @@ describe Curly::Scanner, ".scan" do
     ]
   end
 
+  it "scans inverse conditional block tags with the else token" do
+    scan('foo {{#unless bar?}} hello {{else}} bye {{/if}}').should == [
+      [:text, "foo "],
+      [:inverse_conditional_block_start, "bar?", nil, {}],
+      [:text, " hello "],
+      [:else_block_start, nil, nil],
+      [:text, " bye "],
+      [:conditional_block_end, nil, nil]
+    ]
+  end
+
   it "scans collection block tags" do
     scan('foo {{*bar}} hello {{/bar}}').should == [
       [:text, "foo "],
