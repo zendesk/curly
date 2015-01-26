@@ -28,6 +28,10 @@ describe "Using Curly for Rails partials", type: :request do
         foo 9
 
 
+
+        foo 10
+
+
       </body>
       </html>
     HTML

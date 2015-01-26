@@ -25,3 +25,9 @@
   {{elsemethod}}
   {{methodelse}}
 {{/if}}
+{{#unless bar?}}
+  invisible
+{{/unless}}
+{{#unless nobar?}}
+  foo 10
+{{/unless}}

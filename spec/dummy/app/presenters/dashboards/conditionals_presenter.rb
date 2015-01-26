@@ -5,6 +5,10 @@ class Dashboards::ConditionalsPresenter < Curly::Presenter
     true
   end
 
+  def nobar?
+    false
+  end
+
   def ifmethod
     "foo 6"
   end
