@@ -170,7 +170,7 @@ class Curly::Parser
   def parse_conditional_block_end(*args)
     block = @stack.pop
 
-    unless block.type == :conditional
+    unless block.type == :conditional || block.type == :inverse_conditional
       raise Curly::IncorrectEndingError,
         "block `#{block}` cannot be closed by a conditional block end"
     end
