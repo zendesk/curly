@@ -135,6 +135,14 @@ module Curly
 
       compile(block.nodes)
 
+      if block.inverse_nodes.any?
+        output <<-RUBY
+          else
+        RUBY
+
+        compile(block.inverse_nodes)
+      end
+
       output <<-RUBY
         end
       RUBY

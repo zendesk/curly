@@ -69,10 +69,12 @@ class Curly::Parser
   end
 
   class Block
-    attr_reader :type, :component, :nodes
+    attr_reader :type, :component, :nodes, :inverse_nodes
 
-    def initialize(type, component, nodes = [])
-      @type, @component, @nodes = type, component, nodes
+    def initialize(type, component, nodes = [], inverse_nodes = [])
+      @type, @component, @nodes, @inverse_nodes = type, component, nodes, inverse_nodes
+
+      @mode = :normal
     end
 
     def closed_by?(component)
@@ -85,7 +87,15 @@ class Curly::Parser
     end
 
     def <<(node)
-      @nodes << node
+      if @mode == :inverse
+        @inverse_nodes << node
+      else
+        @nodes << node
+      end
+    end
+
+    def inverse!
+      @mode = :inverse
     end
 
     def ==(other)
@@ -137,17 +147,13 @@ class Curly::Parser
   end
 
   def parse_else_block_start(*args)
-    block = @stack.pop
+    block = @stack.last
 
     if block.nil? || ![:conditional, :inverse_conditional].include?(block.type)
       raise Curly::Error, "An else needs to be in a proper block"
     end
 
-    component = block.component
-
-    reversed_block_type = block.type == :conditional ? :inverse_conditional : :conditional
-
-    parse_block(reversed_block_type, *[component.name, component.identifier, component.attributes])
+    block.inverse!
   end
 
   def parse_collection_block_start(*args)

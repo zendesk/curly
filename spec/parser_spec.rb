@@ -55,9 +55,8 @@ describe Curly::Parser do
     ]
 
     parse(tokens).should == [
-      conditional_block(component("bar?"), [component("hello")]), 
-      inverse_conditional_block(component("bar?"), [component("bye")])
-    ].flatten
+      conditional_block(component("bar?"), [component("hello")], [component("bye")])
+    ]
   end
 
   it "parses elses in inverse conditionals" do
@@ -70,9 +69,8 @@ describe Curly::Parser do
     ]
 
     parse(tokens).should == [
-      inverse_conditional_block(component("bar?"), [component("hello")]), 
-      conditional_block(component("bar?"), [component("bye")])
-    ].flatten
+      inverse_conditional_block(component("bar?"), [component("hello")], [component("bye")])
+    ]
   end
 
   it "parses collection blocks" do
