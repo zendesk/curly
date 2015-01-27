@@ -35,3 +35,16 @@
 {{else}}
   invisible
 {{/unless}}
+{{#bar?}}
+  foo 12
+{{/bar?}}
+{{#if nobar?}}
+  invisible
+{{else}}
+  foo 13
+{{#bar?}}
+  foo 14
+{{else}}
+  invisible
+{{/bar?}}
+{{/if}}
