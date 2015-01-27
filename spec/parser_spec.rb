@@ -102,6 +102,15 @@ describe Curly::Parser do
     expect { parse(tokens) }.to raise_exception(Curly::IncorrectEndingError)
   end
 
+  it "fails if a conditional-type block is closed with the wrong component" do
+    tokens = [
+      [:inverse_conditional_block_start, "mice", nil, {}],
+      [:conditional_block_end, nil, nil],
+    ]
+
+    expect { parse(tokens) }.to raise_exception(Curly::IncorrectEndingError)
+  end
+
   it "fails if there is a closing component too many" do
     tokens = [
       [:block_end, "world", nil, {}],

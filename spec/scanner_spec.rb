@@ -110,7 +110,7 @@ describe Curly::Scanner, ".scan" do
       [:text, "foo "],
       [:inverse_conditional_block_start, "bar?", nil, {}],
       [:text, " hello "],
-      [:conditional_block_end, nil, nil]
+      [:inverse_conditional_block_end, nil, nil]
     ]
   end
 

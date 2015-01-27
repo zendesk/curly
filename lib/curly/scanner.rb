@@ -20,7 +20,8 @@ module Curly
     ELSE_BLOCK_MARKER = /else}}/
     INVERSE_BLOCK_MARKER = /(#unless |\^)/
     COLLECTION_BLOCK_MARKER = /\*/
-    CONDITIONAL_END_BLOCK_MARKER = /(\/if|\/unless)/
+    CONDITIONAL_END_BLOCK_MARKER = /\/if/
+    INVERSE_CONDITIONAL_END_BLOCK_MARKER = /\/unless/
     END_BLOCK_MARKER = /\//
 
 
@@ -86,6 +87,8 @@ module Curly
         scan_collection_block_start
       elsif @scanner.scan(CONDITIONAL_END_BLOCK_MARKER)
         scan_conditional_block_end
+      elsif @scanner.scan(INVERSE_CONDITIONAL_END_BLOCK_MARKER)
+        scan_inverse_conditional_block_end
       elsif @scanner.scan(END_BLOCK_MARKER)
         scan_block_end
       else
@@ -136,6 +139,12 @@ module Curly
     def scan_conditional_block_end
       if scan_until_end_of_curly
         [:conditional_block_end, nil, nil]
+      end
+    end
+
+    def scan_inverse_conditional_block_end
+      if scan_until_end_of_curly
+        [:inverse_conditional_block_end, nil, nil]
       end
     end
 
