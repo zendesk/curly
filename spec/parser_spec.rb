@@ -85,6 +85,18 @@ describe Curly::Parser do
     ]
   end
 
+  it "parses collection blocks with the each syntax" do
+    tokens = [
+      [:collection_block_start, "mice", nil, {}],
+      [:component, "hello", nil, {}],
+      [:collection_block_end, nil, nil],
+    ]
+
+    parse(tokens).should == [
+      collection_block(component("mice"), [component("hello")])
+    ]
+  end
+
   it "fails if a block is not closed" do
     tokens = [
       [:collection_block_start, "mice", nil, {}],

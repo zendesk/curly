@@ -134,6 +134,15 @@ describe Curly::Scanner, ".scan" do
     ]
   end
 
+  it "scans collection block tags with the each syntax" do
+    scan('foo {{#each bar}} hello {{/each}}').should == [
+      [:text, "foo "],
+      [:collection_block_start, "bar", nil, {}],
+      [:text, " hello "],
+      [:collection_block_end, nil, nil]
+    ]
+  end
+
   it "treats quotes as text" do
     scan('"').should == [
       [:text, '"']

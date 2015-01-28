@@ -189,6 +189,15 @@ class Curly::Parser
     end
   end
 
+  def parse_collection_block_end(*args)
+    block = @stack.pop
+
+    unless block.type == :collection
+      raise Curly::IncorrectEndingError,
+        "block `#{block}` cannot be closed by a collection block end"
+    end
+  end
+
   def parse_block_end(*args)
     component = Component.new(*args)
     block = @stack.pop
