@@ -113,7 +113,6 @@ module Curly
 
       @presenter_classes.push(item_presenter_class)
       compile(block.nodes)
-      @presenter_classes.pop
       
       output <<-RUBY
         end
@@ -124,10 +123,10 @@ module Curly
           else
         RUBY
 
-        @presenter_classes.push(item_presenter_class)
         compile(block.inverse_nodes)
-        @presenter_classes.pop
       end
+
+      @presenter_classes.pop
 
       output <<-RUBY
         end
