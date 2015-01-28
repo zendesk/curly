@@ -149,7 +149,7 @@ class Curly::Parser
   def parse_else_block_start(*args)
     block = @stack.last
 
-    if block.nil? || ![:conditional, :inverse_conditional].include?(block.type)
+    if block.nil? || ![:conditional, :inverse_conditional, :collection].include?(block.type)
       raise Curly::Error, "An else needs to be in a proper block"
     end
 

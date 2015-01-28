@@ -105,14 +105,29 @@ module Curly
         presenters << presenter
         options_stack << options
         items = Array(#{method_call})
-        items.each_with_index do |item, index|
-          options = options.merge("#{name}" => item, "#{counter}" => index + 1)
-          presenter = #{item_presenter_class}.new(self, options)
+        if items.any?
+          items.each_with_index do |item, index|
+            options = options.merge("#{name}" => item, "#{counter}" => index + 1)
+            presenter = #{item_presenter_class}.new(self, options)
       RUBY
 
       @presenter_classes.push(item_presenter_class)
       compile(block.nodes)
       @presenter_classes.pop
+      
+      output <<-RUBY
+        end
+      RUBY
+
+      if block.inverse_nodes.any?
+        output <<-RUBY
+          else
+        RUBY
+
+        @presenter_classes.push(item_presenter_class)
+        compile(block.inverse_nodes)
+        @presenter_classes.pop
+      end
 
       output <<-RUBY
         end
