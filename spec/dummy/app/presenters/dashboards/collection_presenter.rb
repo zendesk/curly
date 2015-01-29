@@ -4,4 +4,8 @@ class Dashboards::CollectionPresenter < Curly::Presenter
   def items
     @items
   end
+
+  def empty_objects
+    []
+  end
 end

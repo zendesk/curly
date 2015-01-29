@@ -11,4 +11,8 @@ class DashboardsController < ApplicationController
   def new
     @name = "test"
   end
+
+  def conditionals
+    @name = "test"
+  end
 end

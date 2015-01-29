@@ -6,3 +6,7 @@
   </ul>
 {{/items}}
 </ul>
+{{#each empty_objects}}
+{{else}}
+foo
+{{/each}}

@@ -27,6 +27,9 @@ describe "Collection blocks", type: :request do
 
       </ul>
 
+      foo
+
+
       </body>
       </html>
     HTML

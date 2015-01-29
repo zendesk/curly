@@ -68,6 +68,26 @@ describe Curly::Scanner, ".scan" do
     ]
   end
 
+  it "scans conditional block tags with the if syntax" do
+    scan('foo {{#if bar?}} hello {{/if}}').should == [
+      [:text, "foo "],
+      [:conditional_block_start, "bar?", nil, {}],
+      [:text, " hello "],
+      [:conditional_block_end, nil, nil]
+    ]
+  end
+
+  it "scans conditional block tags with the else token" do
+    scan('foo {{#if bar?}} hello {{else}} bye {{/if}}').should == [
+      [:text, "foo "],
+      [:conditional_block_start, "bar?", nil, {}],
+      [:text, " hello "],
+      [:else_block_start, nil, nil],
+      [:text, " bye "],
+      [:conditional_block_end, nil, nil]
+    ]
+  end
+
   it "scans conditional block tags with parameters and attributes" do
     scan('{{#active.test? name="test"}}yo{{/active.test?}}').should == [
       [:conditional_block_start, "active?", "test", { "name" => "test" }],
@@ -85,12 +105,41 @@ describe Curly::Scanner, ".scan" do
     ]
   end
 
+  it "scans inverse block tags using the unless syntax" do
+    scan('foo {{#unless bar?}} hello {{/unless}}').should == [
+      [:text, "foo "],
+      [:inverse_conditional_block_start, "bar?", nil, {}],
+      [:text, " hello "],
+      [:inverse_conditional_block_end, nil, nil]
+    ]
+  end
+
+  it "scans inverse conditional block tags with the else token" do
+    scan('foo {{#unless bar?}} hello {{else}} bye {{/if}}').should == [
+      [:text, "foo "],
+      [:inverse_conditional_block_start, "bar?", nil, {}],
+      [:text, " hello "],
+      [:else_block_start, nil, nil],
+      [:text, " bye "],
+      [:conditional_block_end, nil, nil]
+    ]
+  end
+
   it "scans collection block tags" do
     scan('foo {{*bar}} hello {{/bar}}').should == [
       [:text, "foo "],
       [:collection_block_start, "bar", nil, {}],
       [:text, " hello "],
       [:block_end, "bar", nil]
+    ]
+  end
+
+  it "scans collection block tags with the each syntax" do
+    scan('foo {{#each bar}} hello {{/each}}').should == [
+      [:text, "foo "],
+      [:collection_block_start, "bar", nil, {}],
+      [:text, " hello "],
+      [:collection_block_end, nil, nil]
     ]
   end
 
