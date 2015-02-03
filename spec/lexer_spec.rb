@@ -1,5 +1,3 @@
-require 'curly/lexer'
-
 describe Curly::Lexer, ".lex" do
   it 'is an RLTK lexer' do
     subject.should be_a(RLTK::Lexer)
