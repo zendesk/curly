@@ -69,10 +69,12 @@ class Curly::Parser
   end
 
   class Block
-    attr_reader :type, :component, :nodes
+    attr_reader :type, :component, :nodes, :inverse_nodes
 
-    def initialize(type, component, nodes = [])
-      @type, @component, @nodes = type, component, nodes
+    def initialize(type, component, nodes = [], inverse_nodes = [])
+      @type, @component, @nodes, @inverse_nodes = type, component, nodes, inverse_nodes
+
+      @mode = :normal
     end
 
     def closed_by?(component)
@@ -85,7 +87,15 @@ class Curly::Parser
     end
 
     def <<(node)
-      @nodes << node
+      if @mode == :inverse
+        @inverse_nodes << node
+      else
+        @nodes << node
+      end
+    end
+
+    def inverse!
+      @mode = :inverse
     end
 
     def ==(other)
@@ -136,6 +146,16 @@ class Curly::Parser
     parse_block(:inverse_conditional, *args)
   end
 
+  def parse_else_block_start(*args)
+    block = @stack.last
+
+    if block.nil? || ![:conditional, :inverse_conditional, :collection].include?(block.type)
+      raise Curly::Error, "An else needs to be in a proper block"
+    end
+
+    block.inverse!
+  end
+
   def parse_collection_block_start(*args)
     parse_block(:collection, *args)
   end
@@ -149,6 +169,33 @@ class Curly::Parser
     block = Block.new(type, component)
     tree << block
     @stack.push(block)
+  end
+
+  def parse_conditional_block_end(*args)
+    block = @stack.pop
+
+    unless block.type == :conditional
+      raise Curly::IncorrectEndingError,
+        "block `#{block}` cannot be closed by a conditional block end"
+    end
+  end
+
+  def parse_inverse_conditional_block_end(*args)
+    block = @stack.pop
+
+    unless block.type == :inverse_conditional
+      raise Curly::IncorrectEndingError,
+        "block `#{block}` cannot be closed by a inverse conditional block end"
+    end
+  end
+
+  def parse_collection_block_end(*args)
+    block = @stack.pop
+
+    unless block.type == :collection
+      raise Curly::IncorrectEndingError,
+        "block `#{block}` cannot be closed by a collection block end"
+    end
   end
 
   def parse_block_end(*args)
