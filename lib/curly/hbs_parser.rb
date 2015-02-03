@@ -109,6 +109,21 @@ module Curly
       clause('OUT') { |t| Text.new(t) }
     end
 
+    production(:template) do
+      clause('template_items') { |i| i }
+    end
+
+    production(:template_items) do
+      clause('template_item') { |i| [i] }
+      clause('template_items template_item') { |i0,i1| i0 << i1 }
+    end
+
+    production(:template_item) do
+      clause('output') { |e| e }
+      clause('expression') { |e| e }
+      clause('block_expression') { |e| e }
+    end
+
     production(:expression) do
       clause('EXPRST object EXPRE') { |_,e,_| e }
     end
