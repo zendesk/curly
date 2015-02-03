@@ -40,10 +40,6 @@ module Curly
       [ :IDENT, name ]
     end
 
-    rule /\./, :expression do
-      :DOT
-    end
-
     rule /\s+/, :expression do
       :WHITE
     end
