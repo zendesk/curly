@@ -49,6 +49,7 @@ module Curly
 end
 
 require 'curly/compiler'
+require 'curly/lexer'
 require 'curly/presenter'
 require 'curly/template_handler'
 require 'curly/railtie' if defined?(Rails)
