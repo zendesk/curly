@@ -20,6 +20,7 @@ Gem::Specification.new do |s|
   s.rdoc_options = ["--charset=UTF-8"]
 
   s.add_dependency("actionpack", [">= 3.1", "< 5.0"])
+  s.add_dependency 'rltk', '~> 2.2.0'
 
   s.add_development_dependency("railties", [">= 3.1", "< 5.0"])
   s.add_development_dependency("rake")
