@@ -5,6 +5,8 @@ describe Curly::Presenter do
       end
     end
 
+    exposes_helper :foo
+
     include MonkeyComponents
 
     presents :midget, :clown, default: nil
@@ -71,6 +73,29 @@ describe Curly::Presenter do
       context.should receive(:respond_to?).
         with(:undefined, false).once.and_return(true)
       subject.method(:undefined)
+    end
+  end
+
+  describe ".exposes_helper" do
+    let(:context) { double("context") }
+    subject {
+      CircusPresenter.new(context,
+        midget: "Meek Harolson",
+        clown: "Bubbles")
+    }
+
+    it "allows a method as a component" do
+      CircusPresenter.component_available?(:foo)
+    end
+
+    it "delegates the call to the context" do
+      context.should receive(:foo).once
+      subject.should_not receive(:method_missing)
+      subject.foo
+    end
+
+    it "doesn't delegate other calls to the context" do
+      expect { subject.bar }.to raise_error
     end
   end
 
