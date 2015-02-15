@@ -3,6 +3,9 @@
   <title>{{title}}</title>
 </head>
 <body>
+{{@header}}<header>
+  <h1>{{title}}</h1>
+</header>{{/header}}
 {{content}}
 </body>
 </html>

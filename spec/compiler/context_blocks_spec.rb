@@ -27,6 +27,25 @@ describe Curly::Compiler do
     render('{{@form}}{{@text_field}}{{field}}{{/text_field}}{{/form}}').should == '<form><input type="text" value="YO"></form>'
   end
 
+  it "compiles using the right presenter" do
+    define_presenter "Layouts::SomePresenter" do
+
+      def contents(&block)
+        block.call("hello, world")
+      end
+    end
+
+    define_presenter "Layouts::SomePresenter::ContentsPresenter" do
+      presents :contents
+
+      def contents
+        @contents
+      end
+    end
+
+    render("foo: {{@contents}}{{contents}}{{/contents}}", presenter: "Layouts::SomePresenter").should == 'foo: hello, world'
+  end
+
   it "fails if the component is not a context block" do
     define_presenter do
       def form

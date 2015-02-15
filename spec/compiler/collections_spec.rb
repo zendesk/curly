@@ -19,7 +19,8 @@ describe Curly::Compiler do
       item2 = double("item2", name: "bar")
 
       template = "<ul>{{*items}}<li>{{name}}</li>{{/items}}</ul>"
-      expect(render(template, items: [item1, item2])).to eql "<ul><li>foo</li><li>bar</li></ul>"
+      expect(render(template, locals: { items: [item1, item2] })).
+        to eql "<ul><li>foo</li><li>bar</li></ul>"
     end
 
     it "allows attributes on collection blocks" do
@@ -39,7 +40,8 @@ describe Curly::Compiler do
       item2 = double("item2", name: "bar", status: "inactive")
 
       template = "<ul>{{*items status=active}}<li>{{name}}</li>{{/items}}</ul>"
-      expect(render(template, items: [item1, item2])).to eql "<ul><li>foo</li></ul>"
+      expect(render(template, locals: { items: [item1, item2] })).
+        to eql "<ul><li>foo</li></ul>"
     end
 
     it "fails if the component doesn't support enumeration" do
@@ -84,7 +86,8 @@ describe Curly::Compiler do
       item2 = double("item2")
 
       template = "<ul>{{*items}}<li>{{index}}</li>{{/items}}</ul>"
-      expect(render(template, items: [item1, item2])).to eql "<ul><li>1</li><li>2</li></ul>"
+      expect(render(template, locals: { items: [item1, item2] })).
+        to eql "<ul><li>1</li><li>2</li></ul>"
     end
 
     it "restores the previous scope after exiting the collection block" do
@@ -111,7 +114,8 @@ describe Curly::Compiler do
       item = double("item", name: "foo", parts: [part])
 
       template = "{{*items}}{{*parts}}{{identifier}}{{/parts}}{{name}}{{/items}}{{title}}"
-      expect(render(template, items: [item])).to eql "XfooInventory"
+      expect(render(template, locals: { items: [item] })).
+        to eql "XfooInventory"
     end
 
     it "passes the parent presenter's options to the nested presenter" do
@@ -130,7 +134,8 @@ describe Curly::Compiler do
       item2 = double(name: "bar")
 
       template = "{{*items}}{{prefix}}: {{name}}; {{/items}}"
-      expect(render(template, prefix: "SKU", items: [item1, item2])).to eql "SKU: foo; SKU: bar; "
+      expect(render(template, locals: { prefix: "SKU", items: [item1, item2] })).
+        to eql "SKU: foo; SKU: bar; "
     end
 
     it "compiles nested collection blocks" do
@@ -153,7 +158,8 @@ describe Curly::Compiler do
       item2 = double("item2", name: "item2", parts: [double(identifier: "C"), double(identifier: "D")])
 
       template = "{{*items}}{{name}}: {{*parts}}{{identifier}}{{/parts}}; {{/items}}"
-      expect(render(template, items: [item1, item2])).to eql "item1: AB; item2: CD; "
+      expect(render(template, locals: { items: [item1, item2] })).
+        to eql "item1: AB; item2: CD; "
     end
   end
 
@@ -169,7 +175,7 @@ describe Curly::Compiler do
         end
 
         def comment(&block)
-          block.call("viagra!")
+          block.call("foo!")
         end
 
         def form(&block)
@@ -190,13 +196,35 @@ describe Curly::Compiler do
     it "allows re-using assign names in collection blocks" do
       options = { "comment" => "first post!" }
       template = "{{*comments}}{{/comments}}{{@form}}{{comment}}{{/form}}"
-      expect(render(template, options)).to eql "first post!"
+      expect(render(template, locals: options)).to eql "first post!"
     end
 
     it "allows re-using assign names in context blocks" do
       options = { "comment" => "first post!" }
       template = "{{@comment}}{{/comment}}{{@form}}{{comment}}{{/form}}"
-      expect(render(template, options)).to eql "first post!"
+      expect(render(template, locals: options)).to eql "first post!"
+    end
+  end
+
+  context "using namespaced names" do
+    before do
+      define_presenter "Layouts::ShowPresenter" do
+        def comments
+          ["hello", "world"]
+        end
+      end
+
+      define_presenter "Layouts::ShowPresenter::CommentPresenter" do
+        presents :comment
+
+        attr_reader :comment
+      end
+    end
+
+    it "renders correctly" do
+      template = "{{*comments}}{{comment}} {{/comments}}"
+      expect(render(template, presenter: "Layouts::ShowPresenter")).
+        to eql "hello world "
     end
   end
 end

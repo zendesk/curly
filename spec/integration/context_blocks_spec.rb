@@ -10,6 +10,9 @@ describe "Context blocks", type: :request do
         <title>Dummy app</title>
       </head>
       <body>
+      <header>
+        <h1>Dummy app</h1>
+      </header>
       <form accept-charset="UTF-8" action="/new" method="post"><input name="utf8" type="hidden" value="&#x2713;" />
         <div class="field">
           <b>Name</b> <input id="dashboard_name" name="dashboard[name]" type="text" value="test" />
