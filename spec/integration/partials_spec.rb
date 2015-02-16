@@ -8,6 +8,9 @@ describe "Using Curly for Rails partials", type: :request do
         <title>Dummy app</title>
       </head>
       <body>
+      <header>
+        <h1>Dummy app</h1>
+      </header>
       <ul>
         <li>One (yo)</li>
         <li>Two (yo)</li>

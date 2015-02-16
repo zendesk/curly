@@ -8,6 +8,9 @@ describe "Collection blocks", type: :request do
         <title>Dummy app</title>
       </head>
       <body>
+      <header>
+        <h1>Dummy app</h1>
+      </header>
       <ul>
 
         <li>uno</li>

@@ -107,7 +107,7 @@ module Curly
         items = Array(#{method_call})
         items.each_with_index do |item, index|
           options = options.merge("#{name}" => item, "#{counter}" => index + 1)
-          presenter = #{item_presenter_class}.new(self, options)
+          presenter = ::#{item_presenter_class}.new(self, options)
       RUBY
 
       @presenter_classes.push(item_presenter_class)
@@ -160,7 +160,7 @@ module Curly
         buffer << #{method_call} do |item|
           options = options.merge("#{name}" => item)
           buffer = ActiveSupport::SafeBuffer.new
-          presenter = #{item_presenter_class}.new(self, options)
+          presenter = ::#{item_presenter_class}.new(self, options)
       RUBY
 
       @presenter_classes.push(item_presenter_class)
