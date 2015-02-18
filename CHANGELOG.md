@@ -1,5 +1,15 @@
 ### Unreleased
 
+* Add an `exposes_helper` class methods to Curly::Presenter. This allows exposing
+  helper methods as components.
+
+  *Jeremy Rodi*
+
+* Add a shorthand syntax for using components within a context. This allows you
+  to write `{{author:name}}` rather than `{{@author}}{{name}}{{/author}}`.
+
+  *Daniel Schierbeck*
+
 ### Curly 2.3.2 (January 13, 2015)
 
 * Fix an issue that caused presenter parameters to get mixed up.
