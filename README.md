@@ -327,6 +327,22 @@ def author(&block)
 end
 ```
 
+#### Context shorthand syntax
+
+If you find yourself opening a context block just in order to use a single component,
+e.g. `{{@author}}{{name}}{{/author}}`, you can use the _shorthand syntax_ instead:
+`{{author:name}}`. This works for all component types, e.g.
+
+```html
+{{#author:admin?}}
+  <p>The author is an admin!</p>
+{{/author:admin?}}
+```
+
+The syntax works for nested contexts as well, e.g. `{{comment:author:name}}`. Any
+identifier and attributes are passed to the target component, which in this example
+would be `{{name}}`.
+
 
 ### Setting up state
 
