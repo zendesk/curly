@@ -19,7 +19,7 @@ to a presenter class.
     2. [Escaping Curly syntax](#escaping-curly-syntax)
     2. [Comments](#comments)
 3. [Presenters](#presenters)
-    1. [Layouts and Content Blocks](#layouts-and-content-blocks)
+    1. [Layouts and content blocks](#layouts-and-content-blocks)
     2. [Rails helper methods](#rails-helper-methods)
     2. [Examples](#examples)
 4. [Caching](#caching)
@@ -456,7 +456,7 @@ have any side effects, though, as an important part of Curly is the idempotence 
 templates.
 
 
-### Layouts and Content Blocks
+### Layouts and content blocks
 
 Both layouts and content blocks (see [`content_for`](http://api.rubyonrails.org/classes/ActionView/Helpers/CaptureHelper.html#method-i-content_for))
 use `yield` to signal that content can be inserted. Curly works just like ERB, so calling
