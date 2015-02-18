@@ -20,6 +20,7 @@ to a presenter class.
     2. [Comments](#comments)
 3. [Presenters](#presenters)
     1. [Layouts and Content Blocks](#layouts-and-content-blocks)
+    2. [Rails helper methods](#rails-helper-methods)
     2. [Examples](#examples)
 4. [Caching](#caching)
 
@@ -494,7 +495,7 @@ end
 ```
 
 
-### Rails Helper Methods
+### Rails helper methods
 
 In order to make a Rails helper method available as a component in your template,
 use the `exposes_helper` method:
