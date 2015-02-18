@@ -494,6 +494,19 @@ end
 ```
 
 
+### Rails Helper Methods
+
+In order to make a Rails helper method available as a component in your template,
+use the `exposes_helper` method:
+
+```ruby
+class Layouts::ApplicationPresenter < Curly::Presenter
+  # The components {{sign_in_path}} and {{root_path}} are made available.
+  exposes_helper :sign_in_path, :root_path
+end
+```
+
+
 ### Examples
 
 Here is a simple Curly template – it will be looked up by Rails automatically.
