@@ -95,45 +95,45 @@ module Curly
 
     def scan_conditional_block_start
       if value = scan_until_end_of_curly
-        name, identifier, attributes = ComponentScanner.scan(value)
+        name, identifier, attributes, contexts = ComponentScanner.scan(value)
 
-        [:conditional_block_start, name, identifier, attributes]
+        [:conditional_block_start, name, identifier, attributes, contexts]
       end
     end
 
     def scan_context_block_start
       if value = scan_until_end_of_curly
-        name, identifier, attributes = ComponentScanner.scan(value)
+        name, identifier, attributes, contexts = ComponentScanner.scan(value)
 
-        [:context_block_start, name, identifier, attributes]
+        [:context_block_start, name, identifier, attributes, contexts]
       end
     end
 
     def scan_collection_block_start
       if value = scan_until_end_of_curly
-        name, identifier, attributes = ComponentScanner.scan(value)
-        [:collection_block_start, name, identifier, attributes]
+        name, identifier, attributes, contexts = ComponentScanner.scan(value)
+        [:collection_block_start, name, identifier, attributes, contexts]
       end
     end
 
     def scan_inverse_block_start
       if value = scan_until_end_of_curly
-        name, identifier, attributes = ComponentScanner.scan(value)
-        [:inverse_conditional_block_start, name, identifier, attributes]
+        name, identifier, attributes, contexts = ComponentScanner.scan(value)
+        [:inverse_conditional_block_start, name, identifier, attributes, contexts]
       end
     end
 
     def scan_block_end
       if value = scan_until_end_of_curly
-        name, identifier, attributes = ComponentScanner.scan(value)
-        [:block_end, name, identifier]
+        name, identifier, attributes, contexts = ComponentScanner.scan(value)
+        [:block_end, name, identifier, {}, contexts]
       end
     end
 
     def scan_component
       if value = scan_until_end_of_curly
-        name, identifier, attributes = ComponentScanner.scan(value)
-        [:component, name, identifier, attributes]
+        name, identifier, attributes, contexts = ComponentScanner.scan(value)
+        [:component, name, identifier, attributes, contexts]
       end
     end
 

@@ -3,20 +3,21 @@ require 'curly/incorrect_ending_error'
 
 class Curly::Parser
   class Component
-    attr_reader :name, :identifier, :attributes
+    attr_reader :name, :identifier, :attributes, :contexts
 
-    def initialize(name, identifier = nil, attributes = {})
-      @name, @identifier, @attributes = name, identifier, attributes
+    def initialize(name, identifier = nil, attributes = {}, contexts = [])
+      @name, @identifier, @attributes, @contexts = name, identifier, attributes, contexts
     end
 
     def to_s
-      [name, identifier].compact.join(".")
+      contexts.map {|c| c + ":" }.join << [name, identifier].compact.join(".")
     end
 
     def ==(other)
       other.name == name &&
         other.identifier == identifier &&
-        other.attributes == attributes
+        other.attributes == attributes &&
+        other.contexts == contexts
     end
 
     def type
@@ -77,7 +78,8 @@ class Curly::Parser
 
     def closed_by?(component)
       self.component.name == component.name &&
-        self.component.identifier == component.identifier
+        self.component.identifier == component.identifier &&
+        self.component.contexts == component.contexts
     end
 
     def to_s
@@ -125,7 +127,20 @@ class Curly::Parser
   end
 
   def parse_component(*args)
-    tree << Component.new(*args)
+    component = Component.new(*args)
+
+    # If the component is namespaced by a list of context names, open a context
+    # block for each.
+    component.contexts.each do |context|
+      parse_context_block_start(context)
+    end
+
+    tree << component
+
+    # Close each context block in the namespace.
+    component.contexts.reverse.each do |context|
+      parse_block_end(context)
+    end
   end
 
   def parse_conditional_block_start(*args)
@@ -146,6 +161,11 @@ class Curly::Parser
 
   def parse_block(type, *args)
     component = Component.new(*args)
+
+    component.contexts.each do |context|
+      parse_context_block_start(context)
+    end
+
     block = Block.new(type, component)
     tree << block
     @stack.push(block)
@@ -158,6 +178,10 @@ class Curly::Parser
     unless block.closed_by?(component)
       raise Curly::IncorrectEndingError,
         "block `#{block}` cannot be closed by `#{component}`"
+    end
+
+    component.contexts.reverse.each do |context|
+      parse_block_end(context)
     end
   end
 
