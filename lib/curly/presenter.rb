@@ -292,6 +292,16 @@ module Curly
           self.default_values = self.default_values.merge(default_values)
         end
       end
+
+      def exposes_helper(*methods)
+        methods.each do |method_name|
+          define_method(method_name) do |*args|
+            @_context.public_send(method_name, *args)
+          end
+        end
+      end
+
+      alias_method :exposes_helpers, :exposes_helper
     end
 
     private
