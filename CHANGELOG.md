@@ -1,5 +1,7 @@
 ### Unreleased
 
+### Curly 2.4.0 (February 24, 2015)
+
 * Add an `exposes_helper` class methods to Curly::Presenter. This allows exposing
   helper methods as components.
 
