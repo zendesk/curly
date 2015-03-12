@@ -311,6 +311,8 @@ module Curly
     self.presented_names = [].freeze
     self.default_values = {}.freeze
 
+    delegate :render, to: :@_context
+
     # Delegates private method calls to the current view context.
     #
     # The view context, an instance of ActionView::Base, is set by Rails.
