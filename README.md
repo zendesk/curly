@@ -101,6 +101,10 @@ render comment
 render collection: post.comments
 ```
 
+Curly _components_ are surrounded by curly brackets, e.g. `{{hello}}`. They always map to a
+public method on the presenter class, in this case `#hello`. Methods ending in a question mark
+can be used for [conditional blocks](#conditional-blocks), e.g. `{{#admin?}} ... {{/admin?}}`.
+
 ### Identifiers
 
 Curly components can specify an _identifier_ using the so-called dot notation: `{{x.y.z}}`.
