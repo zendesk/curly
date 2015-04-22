@@ -9,4 +9,5 @@ platform :ruby do
   gem 'github-markup'
   gem 'rails', '~> 4.2.0', require: false
   gem 'rspec-rails', require: false
+  gem 'benchmark-ips', require: false
 end
