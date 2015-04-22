@@ -56,6 +56,13 @@ module Curly
       end
     end
 
+    def self.inherited(subclass)
+      subclass.class_eval do
+        @@delegates = Module.new
+        include @@delegates
+      end
+    end
+
     # Sets up the view.
     #
     # Override this method in your presenter in order to do setup before the
@@ -317,7 +324,16 @@ module Curly
     #
     # The view context, an instance of ActionView::Base, is set by Rails.
     def method_missing(method, *args, &block)
-      @_context.public_send(method, *args, &block)
+      define_context_delegate_method(method)
+      send(method, *args, &block)
+    end
+
+    def define_context_delegate_method(method)
+      @@delegates.module_eval <<-RUBY
+        private def #{method}(*args, &block)
+          @_context.#{method}(*args, &block)
+        end
+      RUBY
     end
 
     # Tells ruby (and developers) what methods we can accept.
