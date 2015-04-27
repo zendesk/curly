@@ -211,8 +211,10 @@ module Curly
       #
       # Returns an Array of String component names.
       def available_components
-        methods = public_instance_methods - Curly::Presenter.public_instance_methods
-        methods.map(&:to_s)
+        @_available_components ||= begin
+          methods = public_instance_methods - Curly::Presenter.public_instance_methods
+          methods.map(&:to_s)
+        end
       end
 
       # The set of view paths that the presenter depends on.
