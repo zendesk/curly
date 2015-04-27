@@ -51,4 +51,5 @@ end
 require 'curly/compiler'
 require 'curly/presenter'
 require 'curly/template_handler'
+require 'curly/configuration'
 require 'curly/railtie' if defined?(Rails)
