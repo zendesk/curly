@@ -15,7 +15,19 @@ class Curly::TemplateHandler
     # Returns a String containing the Ruby code representing the template.
     def call(template)
       instrument(template) do
-        compile(template)
+        if Curly.configuration.cache_store
+          cache_key = [
+            "CurlyCompilation",
+            template.virtual_path,
+            template.cache_key,
+          ].join("/")
+
+          Curly.configuration.cache_store.fetch(cache_key) do
+            compile(template)
+          end
+        else
+          compile(template)
+        end
       end
     end
 
