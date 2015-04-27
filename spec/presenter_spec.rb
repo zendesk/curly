@@ -13,6 +13,26 @@ describe Curly::Presenter do
     presents :elephant, default: "Dumbo"
 
     attr_reader :midget, :clown, :elephant
+
+    def alpha(name, age: 12)
+      name
+    end
+
+    def beta(test:, this: "thing")
+      test + this
+    end
+
+    def charlie(&test)
+    end
+
+    def delta?
+      false
+    end
+
+    def cats
+    end
+
+    class CatPresenter < Curly::Presenter; end
   end
 
   class FrenchCircusPresenter < CircusPresenter
@@ -152,6 +172,72 @@ describe Curly::Presenter do
 
     it "returns false if the method is not available" do
       CircusPresenter.component_available?("bear").should == false
+    end
+  end
+
+  describe ".description" do
+    it "gives a hash" do
+      CircusPresenter.description.should be_a Hash
+    end
+
+    it "describes the components" do
+      description = CircusPresenter.description
+
+      description[:components].should have(9).items
+      description[:components].should == [
+        { name: "midget",
+          type: "value",
+          attributes: [],
+          identifier: nil,
+          block: false },
+        { name: "clown",
+          type: "value",
+          attributes: [],
+          identifier: nil,
+          block: false },
+        { name: "elephant",
+          type: "value",
+          attributes: [],
+          identifier: nil,
+          block: false },
+
+        { name: "alpha",
+          type: "value",
+          attributes: [
+            { name: "age", required: false }],
+          identifier: { name: "name", required: true },
+          block: false },
+
+        { name: "beta",
+          type: "value",
+          attributes: [
+            { name: "test", required: true },
+            { name: "this", required: false }],
+          identifier: nil,
+          block: false },
+
+        { name: "charlie",
+          type: "value",
+          attributes: [],
+          identifier: nil,
+          block: "test" },
+
+        { name: "delta?",
+          type: "conditional",
+          attributes: [],
+          identifier: nil,
+          block: false },
+        { name: "cats",
+          type: "collection",
+          attributes: [],
+          identifier: nil,
+          block: false },
+        { name: "monkey",
+          type: "context",
+          attributes: [],
+          identifier: nil,
+          block: false }
+      ]
     end
   end
 

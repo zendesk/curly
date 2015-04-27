@@ -188,6 +188,13 @@ module Curly
         end
       end
 
+      def presenter_for?(name)
+        presenter_for_name(name)
+        true
+      rescue NameError
+        false
+      end
+
       # Whether a component is available to templates rendered with the
       # presenter.
       #
@@ -215,6 +222,64 @@ module Curly
           methods = public_instance_methods - Curly::Presenter.public_instance_methods
           methods.map(&:to_s)
         end
+      end
+
+      # Gives a description of the presenter.  Gives information about its
+      # components, and what parameters they are allowed.
+      #
+      # Returns a Hash.
+      def description
+        result = {}
+        components = result[:components] = []
+
+        available_components.each do |component|
+          data = { name: component,
+                   type: "",
+                   attributes: [],
+                   identifier: nil,
+                   block: false }
+
+          if component.end_with?("?")
+            data[:type] = "conditional"
+          elsif presenter_for?(component)
+            data[:type] = "context"
+          elsif presenter_for?(component.singularize)
+            data[:type] = "collection"
+          else
+            data[:type] = "value"
+          end
+
+          instance_method(component.intern).parameters.each do |param|
+            add = {}
+            add[:name] = param[1].to_s
+
+            case param[0]
+            when :keyreq
+              add[:required] = true
+            when :key
+              add[:required] = false
+            when :req
+              data[:identifier] = add
+              add[:required]    = true
+              add = nil
+            when :opt
+              data[:identifier] = add
+              add[:required]    = false
+              add = nil
+            when :block
+              data[:block] = add[:name]
+              add = nil
+            else
+              raise ArgumentError, "Unknown parameter #{param[0]}"
+            end
+
+            data[:attributes] << add if add
+          end
+
+          components << data
+        end
+
+        result
       end
 
       # The set of view paths that the presenter depends on.
