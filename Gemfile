@@ -10,4 +10,5 @@ platform :ruby do
   gem 'rails', '~> 4.2.0', require: false
   gem 'rspec-rails', require: false
   gem 'benchmark-ips', require: false
+  gem 'stackprof', require: false
 end
