@@ -11,8 +11,9 @@ describe Curly::Presenter do
 
     presents :midget, :clown, default: nil
     presents :elephant, default: "Dumbo"
+    presents :lion, default: -> { 'Tamer' }
 
-    attr_reader :midget, :clown, :elephant
+    attr_reader :midget, :clown, :elephant, :lion
   end
 
   class FrenchCircusPresenter < CircusPresenter
@@ -53,6 +54,7 @@ describe Curly::Presenter do
       # The subclass shouldn't change the superclass' defaults, though.
       presenter = CircusPresenter.new(context)
       presenter.elephant.should == "Dumbo"
+      presenter.lion.should == 'Tamer'
     end
   end
 
