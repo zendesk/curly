@@ -52,6 +52,10 @@ module Curly
           end
         end
 
+        if value.respond_to?(:call)
+          value = value.call
+        end
+
         instance_variable_set("@#{name}", value)
       end
     end
