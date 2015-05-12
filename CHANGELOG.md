@@ -1,5 +1,16 @@
 ### Unreleased
 
+* Allow passing a block as the `default:` option to `presents`.
+
+  ```ruby
+  class CommentPresenter < Curly::Presenter
+    presents :comment
+    presents :author, default: -> { @comment.author }
+  end
+  ```
+  
+  *Steven Davidovitz*
+
 ### Curly 2.4.0 (February 24, 2015)
 
 * Add an `exposes_helper` class methods to Curly::Presenter. This allows exposing
