@@ -47,13 +47,16 @@ module Curly
 
       self.class.presented_names.each do |name|
         value = options.fetch(name) do
-          default_values.fetch(name) do
+          default = default_values.fetch(name) do
             raise ArgumentError.new("required identifier `#{name}` missing")
           end
-        end
 
-        if value.respond_to?(:call)
-          value = value.call
+          case default.first
+          when :value
+            default.last
+          when :block
+            instance_exec(name, &default.last)
+          end
         end
 
         instance_variable_set("@#{name}", value)
@@ -285,18 +288,18 @@ module Curly
         [name, version, dependency_cache_keys].flatten.join("/")
       end
 
-      def presents(*args)
-        options = args.extract_options!
+      def presents(*args, **options, &block)
+        if options.key?(:default) && block_given?
+          raise ArgumentError,  "Cannot provide both `default:` and block"
+        end
 
         self.presented_names += args.map(&:to_s)
 
-        if options.key?(:default)
-          default_values = args.each_with_object(Hash.new) do |arg, hash|
-            hash[arg.to_s] = options.fetch(:default)
-          end
-
-          self.default_values = self.default_values.merge(default_values)
-        end
+        args.each do |arg|
+          self.default_values = self.default_values.
+          merge(arg.to_s => options.key?(:default) ?
+            [:value, options[:default]] : [:block, block])
+        end if options.key?(:default) || block_given?
       end
 
       def exposes_helper(*methods)

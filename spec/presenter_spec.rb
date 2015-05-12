@@ -11,9 +11,11 @@ describe Curly::Presenter do
 
     presents :midget, :clown, default: nil
     presents :elephant, default: "Dumbo"
-    presents :lion, default: -> { 'Tamer' }
+    presents :puma, default: -> { 'block' }
+    presents(:lion) { 'Tamer' }
+    presents(:something) { self }
 
-    attr_reader :midget, :clown, :elephant, :lion
+    attr_reader :midget, :clown, :elephant, :puma, :lion, :something
   end
 
   class FrenchCircusPresenter < CircusPresenter
@@ -50,11 +52,25 @@ describe Curly::Presenter do
       # Make sure subclasses can change default values.
       french_presenter = FrenchCircusPresenter.new(context)
       french_presenter.elephant.should == "Babar"
+      french_presenter.lion.should == 'Tamer'
+      french_presenter.puma.should be_a Proc
 
       # The subclass shouldn't change the superclass' defaults, though.
       presenter = CircusPresenter.new(context)
       presenter.elephant.should == "Dumbo"
       presenter.lion.should == 'Tamer'
+      presenter.puma.should be_a Proc
+    end
+
+    it "doesn't call a block if given as a value for identifiers" do
+      lion = proc { 'Simba' }
+      presenter = CircusPresenter.new(context, lion: lion)
+      presenter.lion.should be lion
+    end
+
+    it "calls default blocks in the instance of the presenter" do
+      presenter = CircusPresenter.new(context)
+      presenter.something.should be presenter
     end
   end
 
