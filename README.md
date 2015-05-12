@@ -702,6 +702,7 @@ Thanks to [Zendesk](http://zendesk.com/) for sponsoring the work on Curly.
 - Alisson Cavalcante Agiani ([@thelinuxlich](https://github.com/thelinuxlich))
 - Łukasz Niemier ([@hauleth](https://github.com/hauleth))
 - Cristian Planas ([@Gawyn](https://github.com/Gawyn))
+- Steven Davidovitz ([@steved](https://github.com/steved))
 
 
 Build Status
