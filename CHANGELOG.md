@@ -5,7 +5,7 @@
   ```ruby
   class CommentPresenter < Curly::Presenter
     presents :comment
-    presents :author, default: -> { @comment.author }
+    presents(:author) { @comment.author }
   end
   ```
   
