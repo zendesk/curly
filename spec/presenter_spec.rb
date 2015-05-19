@@ -12,7 +12,7 @@ describe Curly::Presenter do
     presents :midget, :clown, default: nil
     presents :elephant, default: "Dumbo"
     presents :puma, default: -> { 'block' }
-    presents(:lion) { 'Tamer' }
+    presents(:lion) { @elephant.upcase }
     presents(:something) { self }
 
     attr_reader :midget, :clown, :elephant, :puma, :lion, :something
@@ -52,13 +52,13 @@ describe Curly::Presenter do
       # Make sure subclasses can change default values.
       french_presenter = FrenchCircusPresenter.new(context)
       french_presenter.elephant.should == "Babar"
-      french_presenter.lion.should == 'Tamer'
+      french_presenter.lion.should == 'BABAR'
       french_presenter.puma.should be_a Proc
 
       # The subclass shouldn't change the superclass' defaults, though.
       presenter = CircusPresenter.new(context)
       presenter.elephant.should == "Dumbo"
-      presenter.lion.should == 'Tamer'
+      presenter.lion.should == 'DUMBO'
       presenter.puma.should be_a Proc
     end
 
