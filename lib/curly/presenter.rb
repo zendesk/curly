@@ -47,15 +47,12 @@ module Curly
 
       self.class.presented_names.each do |name|
         value = options.fetch(name) do
-          default = default_values.fetch(name) do
-            raise ArgumentError.new("required identifier `#{name}` missing")
-          end
+          default_values.fetch(name) do
+            block = default_blocks.fetch(name) do
+              raise ArgumentError.new("required identifier `#{name}` missing")
+            end
 
-          case default.first
-          when :value
-            default.last
-          when :block
-            instance_exec(name, &default.last)
+            instance_exec(name, &block)
           end
         end
 
@@ -295,11 +292,17 @@ module Curly
 
         self.presented_names += args.map(&:to_s)
 
-        args.each do |arg|
-          self.default_values = self.default_values.
-          merge(arg.to_s => options.key?(:default) ?
-            [:value, options[:default]] : [:block, block])
-        end if options.key?(:default) || block_given?
+        if options.key?(:default)
+          args.each do |arg|
+            self.default_values = default_values.merge(arg.to_s => options[:default]).freeze
+          end
+        end
+
+        if block_given?
+          args.each do |arg|
+            self.default_blocks = default_blocks.merge(arg.to_s => block).freeze
+          end
+        end
       end
 
       def exposes_helper(*methods)
@@ -315,10 +318,11 @@ module Curly
 
     private
 
-    class_attribute :presented_names, :default_values
+    class_attribute :presented_names, :default_values, :default_blocks
 
     self.presented_names = [].freeze
     self.default_values = {}.freeze
+    self.default_blocks = {}.freeze
 
     delegate :render, to: :@_context
 
