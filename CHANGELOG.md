@@ -1,5 +1,7 @@
 ### Unreleased
 
+### Curly 2.5.0 (May 19, 2015)
+
 * Allow passing a block as the `default:` option to `presents`.
 
   ```ruby
@@ -9,7 +11,7 @@
   end
   ```
   
-  *Steven Davidovitz*
+  *Steven Davidovitz & Jeremy Rodi*
 
 ### Curly 2.4.0 (February 24, 2015)
 
