@@ -94,12 +94,7 @@ module Curly
       name = component.name.singularize
       counter = "#{name}_counter"
 
-      begin
-        item_presenter_class = presenter_class.presenter_for_name(name)
-      rescue NameError
-        raise Curly::Error,
-          "cannot enumerate `#{name}`, could not find matching presenter class"
-      end
+      item_presenter_class = presenter_class.presenter_for_name(name)
 
       output <<-RUBY
         presenters << presenter
@@ -146,12 +141,7 @@ module Curly
 
       name = component.name
 
-      begin
-        item_presenter_class = presenter_class.presenter_for_name(name)
-      rescue NameError
-        raise Curly::Error,
-          "cannot use context `#{name}`, could not find matching presenter class"
-      end
+      item_presenter_class = presenter_class.presenter_for_name(name)
 
       output <<-RUBY
         options_stack << options
