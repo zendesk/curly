@@ -29,6 +29,15 @@ describe Curly::Presenter do
   class CircusPresenter::MonkeyPresenter < Curly::Presenter
   end
 
+  module PresenterContainer
+    class NestedPresenter < Curly::Presenter
+    end
+    module PresenterSubcontainer
+      class SubNestedPresenter < Curly::Presenter
+      end
+    end
+  end
+
   describe "#initialize" do
     let(:context) { double("context") }
 
@@ -128,18 +137,17 @@ describe Curly::Presenter do
     it "returns nil if there is no presenter for the given path" do
       Curly::Presenter.presenter_for_path("foo/bar").should be_nil
     end
-
-    it "does not swallow exceptions" do
-      error = NameError.new("omg!", :baz)
-      String.any_instance.stub(:constantize).and_raise(error)
-
-      expect do
-        Curly::Presenter.presenter_for_path("foo/bar")
-      end.to raise_error(NameError)
-    end
   end
 
   describe ".presenter_for_name" do
+    it 'looks through the container namespaces' do
+      PresenterContainer::PresenterSubcontainer::SubNestedPresenter.presenter_for_name('nested') == PresenterContainer::NestedPresenter
+    end
+
+    it 'looks through the container namespaces' do
+      Curly::Presenter.presenter_for_name('presenter_container/presenter_subcontainer/nested') == PresenterContainer::NestedPresenter
+    end
+
     it "returns the presenter class for the given name" do
       CircusPresenter.presenter_for_name("monkey").should == CircusPresenter::MonkeyPresenter
     end
@@ -148,8 +156,8 @@ describe Curly::Presenter do
       CircusPresenter.presenter_for_name("french_circus").should == FrenchCircusPresenter
     end
 
-    it "returns NameError if the presenter class doesn't exist" do
-      expect { CircusPresenter.presenter_for_name("clown") }.to raise_exception(NameError)
+    it "returns Curly::PresenterNameError if the presenter class doesn't exist" do
+      expect { CircusPresenter.presenter_for_name("clown") }.to raise_exception(Curly::PresenterNameError)
     end
   end
 

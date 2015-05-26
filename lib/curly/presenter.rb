@@ -1,3 +1,5 @@
+require 'curly/presenter_name_error'
+
 module Curly
 
   # A base class that can be subclassed by concrete presenters.
@@ -154,28 +156,25 @@ module Curly
       #
       # Returns the Class or nil if the constant cannot be found.
       def presenter_for_path(path)
-        name = presenter_name_for_path(path)
-
         begin
-          name.constantize
-        rescue NameError => e
-          missing_name = e.name.to_s
-
-          # Since we only want to return nil when the constant matching the
-          # path could not be found, we need to do same hacky matching. If
-          # the constant's name is Foo::BarPresenter and Foo does not exist,
-          # we consider that a match. If Foo exists but Foo::BarPresenter does
-          # not, NameError#name will return :BarPresenter, so we need to match
-          # that as well.
-          unless name.start_with?(missing_name) || name.end_with?(missing_name)
-            raise # The NameError was due to something else, re-raise.
-          end
+          # Assume that the path can be derived without a prefix; In other words
+          # from the given path we can look up objects by namespace.
+          presenter_for_name(path.camelize, [])
+        rescue Curly::PresenterNameError
+          nil
         end
       end
 
-      def presenter_for_name(name)
-        namespace = to_s.split("::")
-        class_name = name.camelcase << "Presenter"
+      # Retrieve the named presenter with consideration for object scope.
+      # The namespace_prefixes are to acknowledge that sometimes we will have
+      # a subclass of Curly::Presenter receiving the .presenter_for_name
+      # and other times we will not (when we are receiving this message by
+      # way of the .presenter_for_path method).
+      def presenter_for_name(name, namespace_prefixes = to_s.split('::'))
+        full_class_name = name.camelcase << "Presenter"
+        relative_namespace = full_class_name.split("::")
+        class_name = relative_namespace.pop
+        namespace = namespace_prefixes + relative_namespace
 
         # Because Rails' autoloading mechanism doesn't work properly with
         # namespace we need to loop through the namespace ourselves. Ideally,
@@ -185,8 +184,10 @@ module Curly
         begin
           full_name = namespace.join("::") << "::" << class_name
           const_get(full_name)
-        rescue NameError
-          raise if namespace.empty?
+        rescue NameError => e
+          if namespace.empty?
+            raise Curly::PresenterNameError.new(e, name)
+          end
           namespace.pop
           retry
         end
