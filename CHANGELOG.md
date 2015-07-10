@@ -1,5 +1,23 @@
 ### Unreleased
 
+* Add support for testing presenters with RSpec:
+
+  ```ruby\
+  require 'curly/rspec'
+
+  # spec/presenters/posts/show_presenter_spec.rb
+  describe Posts::ShowPresenter, type: :presenter do
+    describe "#body" do
+      it "renders the post's body as Markdown" do
+        assign(:post, double(:post, body: "**hello!**"))
+        expect(presenter.body).to eq "<strong>hello!</strong>"
+      end
+    end
+  end
+  ```
+  
+  *Daniel Schierbeck*
+
 ### Curly 2.5.0 (May 19, 2015)
 
 * Allow passing a block as the `default:` option to `presents`.
