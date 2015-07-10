@@ -21,7 +21,8 @@ to a presenter class.
 3. [Presenters](#presenters)
     1. [Layouts and content blocks](#layouts-and-content-blocks)
     2. [Rails helper methods](#rails-helper-methods)
-    3. [Examples](#examples)
+    3. [Testing](#testing)
+    4. [Examples](#examples)
 4. [Caching](#caching)
 
 
@@ -510,6 +511,57 @@ class Layouts::ApplicationPresenter < Curly::Presenter
   exposes_helper :sign_in_path, :root_path
 end
 ```
+
+
+### Testing
+
+Presenters can be tested directly, but sometimes it makes sense to integrate with
+Rails on some levels. Currently, only RSpec is directly supported, but you can
+easily instantiate a presenter:
+
+```ruby
+SomePresenter.new(context, assigns)
+```
+
+`context` is a view context, i.e. an object that responds to `render`, has all
+the helper methods you expect, etc. You can pass in a test double and see what
+you need to stub out. `assigns` is the hash containing the controller and local
+assigns. You need to pass in a key for each argument the presenter expects.
+
+#### Testing with RSpec
+
+In order to test presenters with RSpec, make sure you have `rspec-rails` in your
+Gemfile. Given the following presenter:
+
+```ruby
+# app/presenters/posts/show_presenter.rb
+class Posts::ShowPresenter < Curly::Presenter
+  presents :post
+  
+  def body
+    Markdown.render(@post.body)
+  end
+end
+```
+
+You can test the presenter methods like this:
+
+```ruby
+# You can put this in your `spec_helper.rb`.
+require 'curly/rspec'
+
+# spec/presenters/posts/show_presenter_spec.rb
+describe Posts::ShowPresenter, type: :presenter do
+  describe "#body" do
+    it "renders the post's body as Markdown" do
+      assign(:post, double(:post, body: "**hello!**"))
+      expect(presenter.body).to eq "<strong>hello!</strong>"
+    end
+  end
+end
+```
+
+Note that your spec *must* be tagged with `type: :presenter`.
 
 
 ### Examples
