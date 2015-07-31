@@ -35,6 +35,9 @@ module CompilationSupport
     template = ActionView::Template.new(source, identifier, handler, details)
     view = ActionView::Base.new
     view.lookup_context.stub(:find_template) { source }
+    view.stub(:view_cache_dependencies) { [] }
+    view.controller = ActionView::TestCase::TestController.new
+    view.controller.perform_caching = true
 
     begin
       template.render(view, options.fetch(:locals, {}), &block)
