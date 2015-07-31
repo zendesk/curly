@@ -103,6 +103,8 @@ module Curly
         items.each_with_index do |item, index|
           options = options.merge("#{name}" => item, "#{counter}" => index + 1)
           presenter = ::#{item_presenter_class}.new(self, options)
+
+          Curly::TemplateHandler.cache_if_key_is_not_nil(self, presenter) do
       RUBY
 
       @presenter_classes.push(item_presenter_class)
@@ -110,6 +112,7 @@ module Curly
       @presenter_classes.pop
 
       output <<-RUBY
+          end
         end
         options = options_stack.pop
         presenter = presenters.pop
