@@ -13,6 +13,10 @@ describe Curly::ComponentCompiler do
           end
         end
 
+        def collected(**options)
+          options.to_a.map { |(k, v)| "#{k}: #{v}" }.join("\n")
+        end
+
         def summary(length = "long")
           case length
           when "long" then "This is a long summary"
@@ -50,6 +54,10 @@ describe Curly::ComponentCompiler do
 
     it "compiles components with attributes" do
       evaluate("widget size=100px").should == "Widget (100px)"
+    end
+
+    it "compiles components with collected attributes" do
+      evaluate("collected class=test for=you").should == "class: test\nfor: you"
     end
 
     it "compiles components with optional attributes" do
