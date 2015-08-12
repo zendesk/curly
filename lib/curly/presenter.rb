@@ -293,6 +293,13 @@ module Curly
 
         self.presented_names += args.map(&:to_s)
 
+        args.each do |arg|
+          define_method arg do
+            instance_variable_get("@#{arg}")
+          end
+          protected arg
+        end
+
         if options.key?(:default)
           args.each do |arg|
             self.default_values = default_values.merge(arg.to_s => options[:default]).freeze
