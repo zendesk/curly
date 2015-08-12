@@ -750,7 +750,7 @@ Thanks to [Zendesk](http://zendesk.com/) for sponsoring the work on Curly.
 
 - Daniel Schierbeck ([@dasch](https://github.com/dasch))
 - Benjamin Quorning ([@bquorning](https://github.com/bquorning))
-- Jeremy Rodi ([@redjazz96](https://github.com/redjazz96))
+- Jeremy Rodi ([@medcat](https://github.com/medcat))
 - Alisson Cavalcante Agiani ([@thelinuxlich](https://github.com/thelinuxlich))
 - Łukasz Niemier ([@hauleth](https://github.com/hauleth))
 - Cristian Planas ([@Gawyn](https://github.com/Gawyn))
