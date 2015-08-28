@@ -50,5 +50,6 @@ end
 
 require 'curly/compiler'
 require 'curly/presenter'
+require 'curly/delegate_presenter'
 require 'curly/template_handler'
 require 'curly/railtie' if defined?(Rails)
