@@ -170,9 +170,10 @@ bob: hi!
 ```
 
 Note that since keyword arguments in Ruby are represented as Symbol objects, which are
-not garbage collected, accepting arbitrary attributes represents a security
-vulnerability if your application allows untrusted Curly templates to be rendered. Only
-use this feature with trusted templates.
+not garbage collected in Ruby versions less than 2.2, accepting arbitrary attributes
+represents a security vulnerability if your application allows untrusted Curly templates
+to be rendered. Only use this feature with trusted templates if you're not on Ruby 2.2
+yet.
 
 
 ### Conditional blocks
