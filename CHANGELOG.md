@@ -1,5 +1,11 @@
 ### Unreleased
 
+* Add support for arbitrary component attributes. If the presenter method accepts
+  arbitrary keyword arguments, the corresponding component is allowed to pass
+  any attribute it wants.
+
+  *Jeremy Rodi*
+
 * Add support for testing presenters with RSpec:
 
   ```ruby\
