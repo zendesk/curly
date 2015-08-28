@@ -152,7 +152,28 @@ All argument values will be strings. A compilation error will be raised if
 - a required keyword argument in the method definition is not set as an attribute in the
   component.
 
-You can define default values using Ruby's own syntax.
+You can define default values using Ruby's own syntax. Additionally, if the presenter
+method accepts arbitrary keyword arguments using the `**doublesplat` syntax then all
+attributes will be valid for the component, e.g.
+
+```ruby
+def greetings(**names)
+  names.map {|name, greeting| "#{name}: #{greeting}!" }.join("\n")
+end
+```
+
+```html
+{{greetings alice=hello bob=hi}}
+<!-- The above would be rendered as: -->
+alice: hello!
+bob: hi!
+```
+
+Note that since keyword arguments in Ruby are represented as Symbol objects, which are
+not garbage collected in Ruby versions less than 2.2, accepting arbitrary attributes
+represents a security vulnerability if your application allows untrusted Curly templates
+to be rendered. Only use this feature with trusted templates if you're not on Ruby 2.2
+yet.
 
 
 ### Conditional blocks
