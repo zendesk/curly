@@ -64,8 +64,7 @@ module Curly
     end
 
     def invalid_signature?
-      positional_params = param_types.select {|type| [:req, :opt].include?(type) }
-      positional_params.size > 1
+      param_types.count { |type| [:req, :opt].include?(type) } > 1
     end
 
     def required_identifier?
@@ -89,7 +88,7 @@ module Curly
     end
 
     def validate_attributes!
-      attributes.keys.each do |key|
+      attributes_collected? || attributes.keys.each do |key|
         unless attribute_names.include?(key)
           raise Curly::Error, "`#{method}` does not allow attribute `#{key}`"
         end
@@ -114,6 +113,10 @@ module Curly
       @attribute_names ||= params.
         select {|type, name| [:key, :keyreq].include?(type) }.
         map {|type, name| name.to_s }
+    end
+
+    def attributes_collected?
+      param_types.include?(:keyrest)
     end
 
     def required_attribute_names
