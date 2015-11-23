@@ -185,6 +185,7 @@ module Curly
           full_name = namespace.join("::") << "::" << class_name
           const_get(full_name)
         rescue NameError => e
+          raise unless e.class == NameError
           if namespace.empty?
             raise Curly::PresenterNameError.new(e, name)
           end
