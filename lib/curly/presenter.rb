@@ -185,6 +185,16 @@ module Curly
           full_name = namespace.join("::") << "::" << class_name
           const_get(full_name)
         rescue NameError => e
+          # Due to the way the exception hirearchy works, we need to check
+          # that this exception is actually a `NameError` - since other
+          # classes can inherit `NameError`, rescue will actually rescue
+          # those classes as being under `NameError`, causing this block to
+          # be executed for classes that aren't `NameError`s (but are rather
+          # subclasses of it), which isn't the desired behavior.  This
+          # prevents anything but `NameError`s from triggering the resulting
+          # code.  `NoMethodError` is actually a subclass of `NameError`,
+          # so a typo in a file (e.g. `present` instead of `presents`) can
+          # cause the library to act as if the class was never defined.
           raise unless e.class == NameError
           if namespace.empty?
             raise Curly::PresenterNameError.new(e, name)
