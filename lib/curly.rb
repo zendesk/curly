@@ -25,7 +25,6 @@
 #
 # See Curly::Presenter for more information on presenters.
 module Curly
-  VERSION = "2.5.0"
 
   # Compiles a Curly template to Ruby code.
   #
@@ -52,3 +51,4 @@ require 'curly/compiler'
 require 'curly/presenter'
 require 'curly/template_handler'
 require 'curly/railtie' if defined?(Rails)
+require 'curly/version'
