@@ -39,7 +39,7 @@ module CompilationSupport
     begin
       template.render(view, options.fetch(:locals, {}), &block)
     rescue ActionView::Template::Error => e
-      raise e.original_exception
+      raise e.respond_to?(:cause) ? e.cause : e.original_exception
     end
   end
 end
