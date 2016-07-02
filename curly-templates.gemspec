@@ -26,7 +26,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency("railties", [">= 3.1", "< 5.1"])
   s.add_development_dependency("rake")
   s.add_development_dependency("rspec", "~> 2.12")
-  s.add_development_dependency("genspec")
+  s.add_development_dependency("genspec", ">= 0.3.0")
 
   s.files      = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(perf|spec)/}) }
   s.test_files = s.files.select { |path| path =~ /^spec\/.*_spec\.rb/ }
