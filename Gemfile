@@ -12,5 +12,3 @@ platform :ruby do
   gem 'benchmark-ips', require: false
   gem 'stackprof', require: false
 end
-
-gem 'genspec', github: "bquorning/genspec", ref: "rails-5-support"
