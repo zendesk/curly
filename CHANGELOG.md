@@ -1,5 +1,9 @@
 ### Unreleased
 
+### Curly 2.6.0 (July 4, 2016)
+
+* Add support for Rails 5.
+
 * Add support for arbitrary component attributes. If the presenter method accepts
   arbitrary keyword arguments, the corresponding component is allowed to pass
   any attribute it wants.
