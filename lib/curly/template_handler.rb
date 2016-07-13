@@ -29,10 +29,16 @@ class Curly::TemplateHandler
 
         cache_options = presenter.cache_options || {}
         cache_options[:expires_in] ||= presenter.cache_duration
+        controller = context.controller
+        fragment_name = context.cache_fragment_name([key, presenter_key].compact, cache_options)
+        fragment = controller.read_fragment(fragment_name, cache_options)
 
-        context.cache([key, presenter_key].compact, cache_options) do
-          yield
+        if fragment.nil?
+          fragment = yield
+          controller.write_fragment(fragment_name, fragment, cache_options)
         end
+
+        fragment
       else
         yield
       end

@@ -138,6 +138,37 @@ describe Curly::Compiler do
       render("{{#square? width=2 height=2}}yeah!{{/square?}}").should == "yeah!"
     end
 
+    it "caches context blocks" do
+      define_presenter do
+        presents :author
+
+        def author(&block)
+          block.call(@author)
+        end
+      end
+
+      define_presenter "AuthorPresenter" do
+        presents :author
+
+        def name
+          @author.name
+        end
+
+        def cache_key
+          "static"
+        end
+      end
+
+      author = double("author", name: "john")
+      template = "{{@author}}{{name}}{{/author}}"
+
+      expect(render(template, locals: { author: author })).to eq "john"
+
+      author.stub(:name) { "jane" }
+
+      expect(render(template, locals: { author: author })).to eq "john"
+    end
+
     it "gives an error on incomplete blocks" do
       expect do
         render("{{#hello?}}")
