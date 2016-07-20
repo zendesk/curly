@@ -141,11 +141,11 @@ describe Curly::Presenter do
 
   describe ".presenter_for_name" do
     it 'looks through the container namespaces' do
-      PresenterContainer::PresenterSubcontainer::SubNestedPresenter.presenter_for_name('nested') == PresenterContainer::NestedPresenter
+      PresenterContainer::PresenterSubcontainer::SubNestedPresenter.presenter_for_name('nested').should == PresenterContainer::NestedPresenter
     end
 
     it 'looks through the container namespaces' do
-      Curly::Presenter.presenter_for_name('presenter_container/presenter_subcontainer/nested', []) == PresenterContainer::NestedPresenter
+      Curly::Presenter.presenter_for_name('presenter_container/presenter_subcontainer/nested', []).should == (PresenterContainer::NestedPresenter)
     end
 
     it "returns the presenter class for the given name" do
