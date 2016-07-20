@@ -183,7 +183,7 @@ module Curly
         # solution in the future.
         begin
           full_name = namespace.join("::") << "::" << class_name
-          const_get(full_name)
+          full_name.constantize
         rescue NameError => e
           # Due to the way the exception hirearchy works, we need to check
           # that this exception is actually a `NameError` - since other
