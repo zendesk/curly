@@ -44,32 +44,32 @@ describe Curly::ComponentCompiler do
     end
 
     it "compiles components with identifiers" do
-      evaluate("i18n.home.welcome").should == "Welcome to our lovely place!"
+      expect(evaluate("i18n.home.welcome")).to eq "Welcome to our lovely place!"
     end
 
     it "compiles components with optional identifiers" do
-      evaluate("summary").should == "This is a long summary"
-      evaluate("summary.short").should == "This is a short summary"
+      expect(evaluate("summary")).to eq "This is a long summary"
+      expect(evaluate("summary.short")).to eq "This is a short summary"
     end
 
     it "compiles components with attributes" do
-      evaluate("widget size=100px").should == "Widget (100px)"
+      expect(evaluate("widget size=100px")).to eq "Widget (100px)"
     end
 
     it "compiles components with collected attributes" do
-      evaluate("collected class=test for=you").should == "class: test\nfor: you"
+      expect(evaluate("collected class=test for=you")).to eq "class: test\nfor: you"
     end
 
     it "compiles components with optional attributes" do
-      evaluate("widget color=blue size=50px").should == "Widget (50px) - blue"
+      expect(evaluate("widget color=blue size=50px")).to eq "Widget (50px) - blue"
     end
 
     it "compiles context block components" do
-      evaluate("form", type: :context).should == "some form"
+      expect(evaluate("form", type: :context)).to eq "some form"
     end
 
     it "allows both identifier and attributes" do
-      evaluate("i18n.hello fallback=yolo").should == "yolo"
+      expect(evaluate("i18n.hello fallback=yolo")).to eq "yolo"
     end
 
     it "fails when an invalid attribute is used" do

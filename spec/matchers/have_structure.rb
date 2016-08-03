@@ -3,15 +3,15 @@ require 'nokogiri'
 
 RSpec::Matchers.define(:have_structure) do |expected|
   match do |actual|
-    normalized(actual).should == normalized(expected)
+    expect(normalized(actual)).to eq normalized(expected)
   end
 
-  failure_message_for_should do |actual|
+  failure_message do |actual|
     "Expected\n\n#{actual}\n\n" \
       "to have the same structure as\n\n#{expected}"
   end
 
-  failure_message_for_should_not do |actual|
+  failure_message_when_negated do |actual|
     "Expected\n\n#{actual}\n\n" \
       "to NOT have the same canonicalized structure as\n\n#{expected}"
   end

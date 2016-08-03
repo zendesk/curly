@@ -4,7 +4,7 @@ describe Curly::Parser do
       [:component, "a", nil, {}],
     ]
 
-    parse(tokens).should == [
+    expect(parse(tokens)).to eq [
       component("a")
     ]
   end
@@ -16,7 +16,7 @@ describe Curly::Parser do
       [:block_end, "a?", nil],
     ]
 
-    parse(tokens).should == [
+    expect(parse(tokens)).to eq [
       conditional_block(component("a?"), [component("hello")])
     ]
   end
@@ -28,7 +28,7 @@ describe Curly::Parser do
       [:block_end, "a?", nil],
     ]
 
-    parse(tokens).should == [
+    expect(parse(tokens)).to eq [
       inverse_conditional_block(component("a?"), [component("hello")])
     ]
   end
@@ -40,7 +40,7 @@ describe Curly::Parser do
       [:block_end, "mice", nil],
     ]
 
-    parse(tokens).should == [
+    expect(parse(tokens)).to eq [
       collection_block(component("mice"), [component("hello")])
     ]
   end

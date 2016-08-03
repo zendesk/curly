@@ -100,104 +100,104 @@ describe Curly::TemplateHandler do
   end
 
   it "passes in the presenter context to the presenter class" do
-    context.stub(:bar) { "BAR" }
-    template.stub(:source) { "{{bar}}" }
-    output.should == "BAR"
+    allow(context).to receive(:bar) { "BAR" }
+    allow(template).to receive(:source) { "{{bar}}" }
+    expect(output).to eq "BAR"
   end
 
   it "should fail if there's no matching presenter class" do
-    template.stub(:virtual_path) { "missing" }
-    template.stub(:source) { " FOO " }
+    allow(template).to receive(:virtual_path) { "missing" }
+    allow(template).to receive(:source) { " FOO " }
     expect { output }.to raise_exception(Curly::PresenterNotFound)
   end
 
   it "allows calling public methods on the presenter" do
-    template.stub(:source) { "{{foo}}" }
-    output.should == "FOO"
+    allow(template).to receive(:source) { "{{foo}}" }
+    expect(output).to eq "FOO"
   end
 
   it "marks its output as HTML safe" do
-    template.stub(:source) { "{{foo}}" }
-    output.should be_html_safe
+    allow(template).to receive(:source) { "{{foo}}" }
+    expect(output).to be_html_safe
   end
 
   it "calls the #setup! method before rendering the view" do
-    template.stub(:source) { "{{foo}}" }
+    allow(template).to receive(:source) { "{{foo}}" }
     output
-    context.content_for(:foo).should == "bar"
+    expect(context.content_for(:foo)).to eq "bar"
   end
 
   context "caching" do
     before do
-      template.stub(:source) { "{{bar}}" }
-      context.stub(:bar) { "BAR" }
+      allow(template).to receive(:source) { "{{bar}}" }
+      allow(context).to receive(:bar) { "BAR" }
     end
 
     it "caches the result with the #cache_key from the presenter" do
       context.assigns[:cache_key] = "x"
-      output.should == "BAR"
+      expect(output).to eq "BAR"
 
-      context.stub(:bar) { "BAZ" }
-      output.should == "BAR"
+      allow(context).to receive(:bar) { "BAZ" }
+      expect(output).to eq "BAR"
 
       context.assigns[:cache_key] = "y"
-      output.should == "BAZ"
+      expect(output).to eq "BAZ"
     end
 
     it "doesn't cache when the cache key is nil" do
       context.assigns[:cache_key] = nil
-      output.should == "BAR"
+      expect(output).to eq "BAR"
 
-      context.stub(:bar) { "BAZ" }
-      output.should == "BAZ"
+      allow(context).to receive(:bar) { "BAZ" }
+      expect(output).to eq "BAZ"
     end
 
     it "adds the presenter class' cache key to the instance's cache key" do
       # Make sure caching is enabled
       context.assigns[:cache_key] = "x"
 
-      presenter_class.stub(:cache_key) { "foo" }
+      allow(presenter_class).to receive(:cache_key) { "foo" }
 
-      output.should == "BAR"
+      expect(output).to eq "BAR"
 
-      presenter_class.stub(:cache_key) { "bar" }
+      allow(presenter_class).to receive(:cache_key) { "bar" }
 
-      context.stub(:bar) { "FOOBAR" }
-      output.should == "FOOBAR"
+      allow(context).to receive(:bar) { "FOOBAR" }
+      expect(output).to eq "FOOBAR"
     end
 
     it "expires the cache keys after #cache_duration" do
       context.assigns[:cache_key] = "x"
       context.assigns[:cache_duration] = 42
 
-      output.should == "BAR"
+      expect(output).to eq "BAR"
 
-      context.stub(:bar) { "FOO" }
+      allow(context).to receive(:bar) { "FOO" }
 
       # Cached fragment has not yet expired.
       context.advance_clock(41)
-      output.should == "BAR"
+      expect(output).to eq "BAR"
 
       # Now it has! Huzzah!
       context.advance_clock(1)
-      output.should == "FOO"
+      expect(output).to eq "FOO"
     end
 
     it "passes #cache_options to the cache backend" do
       context.assigns[:cache_key] = "x"
       context.assigns[:cache_options] = { expires_in: 42 }
 
-      output.should == "BAR"
+      expect(output).to eq "BAR"
 
-      context.stub(:bar) { "FOO" }
+      allow(context).to receive(:bar) { "FOO" }
 
       # Cached fragment has not yet expired.
       context.advance_clock(41)
-      output.should == "BAR"
+      expect(output).to eq "BAR"
 
       # Now it has! Huzzah!
       context.advance_clock(1)
-      output.should == "FOO"
+      expect(output).to eq "FOO"
     end
   end
 

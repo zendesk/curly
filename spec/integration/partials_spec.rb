@@ -2,7 +2,7 @@ describe "Using Curly for Rails partials", type: :request do
   example "Rendering a partial" do
     get '/partials'
 
-    response.body.should == <<-HTML.strip_heredoc
+    expect(response.body).to eq <<-HTML.strip_heredoc
       <html>
       <head>
         <title>Dummy app</title>

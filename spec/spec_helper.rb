@@ -34,7 +34,7 @@ module CompilationSupport
     handler = Curly::TemplateHandler
     template = ActionView::Template.new(source, identifier, handler, details)
     view = ActionView::Base.new
-    view.lookup_context.stub(:find_template) { source }
+    allow(view.lookup_context).to receive(:find_template) { source }
 
     begin
       template.render(view, options.fetch(:locals, {}), &block)
