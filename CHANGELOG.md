@@ -1,5 +1,13 @@
 ### Unreleased
 
+### Curly 2.6.1 (August 3, 2016)
+
+* Use Rails' `constantize` method instead of `get_const` when looking up
+  presenter classes, so that Rails has a chance to autoload missing classes.
+
+  *Creighton Long*
+
+
 ### Curly 2.6.0 (July 4, 2016)
 
 * Add support for Rails 5.
@@ -25,7 +33,7 @@
     end
   end
   ```
-  
+
   *Daniel Schierbeck*
 
 ### Curly 2.5.0 (May 19, 2015)
@@ -38,7 +46,7 @@
     presents(:author) { @comment.author }
   end
   ```
-  
+
   *Steven Davidovitz & Jeremy Rodi*
 
 ### Curly 2.4.0 (February 24, 2015)
