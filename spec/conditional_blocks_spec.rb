@@ -12,8 +12,8 @@ describe "Conditional block components" do
       end
     end
 
-    render("{{#high?}}yup{{/high?}}").should == "yup"
-    render("{{#low?}}nah{{/low?}}").should == ""
+    expect(render("{{#high?}}yup{{/high?}}")).to eq "yup"
+    expect(render("{{#low?}}nah{{/low?}}")).to eq ""
   end
 
   example "with an identifier" do
@@ -23,8 +23,8 @@ describe "Conditional block components" do
       end
     end
 
-    render("{{#even.42?}}even{{/even.42?}}").should == "even"
-    render("{{#even.13?}}even{{/even.13?}}").should == ""
+    expect(render("{{#even.42?}}even{{/even.42?}}")).to eq "even"
+    expect(render("{{#even.13?}}even{{/even.13?}}")).to eq ""
   end
 
   example "with attributes" do
@@ -34,7 +34,7 @@ describe "Conditional block components" do
       end
     end
 
-    render("{{#square? width=2 height=2}}square{{/square?}}").should == "square"
-    render("{{#square? width=3 height=2}}square{{/square?}}").should == ""
+    expect(render("{{#square? width=2 height=2}}square{{/square?}}")).to eq "square"
+    expect(render("{{#square? width=3 height=2}}square{{/square?}}")).to eq ""
   end
 end

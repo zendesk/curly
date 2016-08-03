@@ -28,7 +28,7 @@ describe Curly::Compiler do
       end
     end
 
-    render('{{@form}}{{@text_field}}{{field}}{{/text_field}}{{/form}}').should == '<form><input type="text" value="YO"></form>'
+    expect(render('{{@form}}{{@text_field}}{{field}}{{/text_field}}{{/form}}')).to eq '<form><input type="text" value="YO"></form>'
   end
 
   it "compiles using the right presenter" do
@@ -47,7 +47,7 @@ describe Curly::Compiler do
       end
     end
 
-    render("foo: {{@contents}}{{contents}}{{/contents}}", presenter: "Layouts::SomePresenter").should == 'foo: hello, world'
+    expect(render("foo: {{@contents}}{{contents}}{{/contents}}", presenter: "Layouts::SomePresenter")).to eq 'foo: hello, world'
   end
 
   it "fails if the component is not a context block" do
@@ -95,7 +95,7 @@ describe Curly::Compiler do
       end
     end
 
-    render('{{tree:branch:leaf}}').should == "leaf"
+    expect(render('{{tree:branch:leaf}}')).to eq "leaf"
   end
 
   it "requires shorthand blocks to be closed with the same set of namespaces" do

@@ -17,7 +17,7 @@ describe Curly::Compiler do
         render("{{bar}}")
         fail
       rescue Curly::InvalidComponent => e
-        e.component.should == "bar"
+        expect(e.component).to eq "bar"
       end
     end
 
@@ -28,7 +28,7 @@ describe Curly::Compiler do
         end
       end
 
-      render("{{i_want}}") { "$$$" }.should == "I want $$$!"
+      expect(render("{{i_want}}") { "$$$" }).to eq "I want $$$!"
     end
 
     it "sends along arguments passed to yield" do
@@ -38,7 +38,7 @@ describe Curly::Compiler do
         end
       end
 
-      render("{{hello}}") {|v| v.upcase }.should == "Hello, WORLD!"
+      expect(render("{{hello}}") {|v| v.upcase }).to eq "Hello, WORLD!"
     end
 
     it "escapes non HTML safe strings returned from the presenter" do
@@ -48,7 +48,7 @@ describe Curly::Compiler do
         end
       end
 
-      render("{{dirty}}").should == "&lt;p&gt;dirty&lt;/p&gt;"
+      expect(render("{{dirty}}")).to eq "&lt;p&gt;dirty&lt;/p&gt;"
     end
 
     it "does not escape HTML safe strings returned from the presenter" do
@@ -58,11 +58,11 @@ describe Curly::Compiler do
         end
       end
 
-      render("{{dirty}}").should == "<p>dirty</p>"
+      expect(render("{{dirty}}")).to eq "<p>dirty</p>"
     end
 
     it "does not escape HTML in the template itself" do
-      render("<div>").should == "<div>"
+      expect(render("<div>")).to eq "<div>"
     end
 
     it "treats all values returned from the presenter as strings" do
@@ -70,11 +70,11 @@ describe Curly::Compiler do
         def foo; 42; end
       end
 
-      render("{{foo}}").should == "42"
+      expect(render("{{foo}}")).to eq "42"
     end
 
     it "removes comments from the output" do
-      render("hello{{! I'm a comment, yo }}world").should == "helloworld"
+      expect(render("hello{{! I'm a comment, yo }}world")).to eq "helloworld"
     end
 
     it "removes text in false blocks" do
@@ -84,7 +84,7 @@ describe Curly::Compiler do
         end
       end
 
-      render("{{#false?}}wut{{/false?}}").should == ""
+      expect(render("{{#false?}}wut{{/false?}}")).to eq ""
     end
 
     it "keeps text in true blocks" do
@@ -94,7 +94,7 @@ describe Curly::Compiler do
         end
       end
 
-      render("{{#true?}}yello{{/true?}}").should == "yello"
+      expect(render("{{#true?}}yello{{/true?}}")).to eq "yello"
     end
 
     it "removes text in inverse true blocks" do
@@ -104,7 +104,7 @@ describe Curly::Compiler do
         end
       end
 
-      render("{{^true?}}bar{{/true?}}").should == ""
+      expect(render("{{^true?}}bar{{/true?}}")).to eq ""
     end
 
     it "keeps text in inverse false blocks" do
@@ -114,7 +114,7 @@ describe Curly::Compiler do
         end
       end
 
-      render("{{^false?}}yeah!{{/false?}}").should == "yeah!"
+      expect(render("{{^false?}}yeah!{{/false?}}")).to eq "yeah!"
     end
 
     it "passes an argument to blocks" do
@@ -124,8 +124,8 @@ describe Curly::Compiler do
         end
       end
 
-      render("{{#hello.world?}}foo{{/hello.world?}}").should == "foo"
-      render("{{#hello.mars?}}bar{{/hello.mars?}}").should == ""
+      expect(render("{{#hello.world?}}foo{{/hello.world?}}")).to eq "foo"
+      expect(render("{{#hello.mars?}}bar{{/hello.mars?}}")).to eq ""
     end
 
     it "passes attributes to blocks" do
@@ -135,7 +135,7 @@ describe Curly::Compiler do
         end
       end
 
-      render("{{#square? width=2 height=2}}yeah!{{/square?}}").should == "yeah!"
+      expect(render("{{#square? width=2 height=2}}yeah!{{/square?}}")).to eq "yeah!"
     end
 
     it "gives an error on incomplete blocks" do
@@ -157,7 +157,7 @@ describe Curly::Compiler do
     end
 
     it "does not execute arbitrary Ruby code" do
-      render('#{foo}').should == '#{foo}'
+      expect(render('#{foo}')).to eq '#{foo}'
     end
   end
 
@@ -167,12 +167,12 @@ describe Curly::Compiler do
         def foo; end
       end
 
-      validate("Hello, {{foo}}!").should == true
+      expect(validate("Hello, {{foo}}!")).to eq true
     end
 
     it "returns false if a missing method is referenced" do
       define_presenter
-      validate("Hello, {{i_am_missing}}").should == false
+      expect(validate("Hello, {{i_am_missing}}")).to eq false
     end
 
     it "returns false if an unavailable method is referenced" do
@@ -182,7 +182,7 @@ describe Curly::Compiler do
         end
       end
 
-      validate("Hello, {{inspect}}").should == false
+      expect(validate("Hello, {{inspect}}")).to eq false
     end
 
     def validate(template)

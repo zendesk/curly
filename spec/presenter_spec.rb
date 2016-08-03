@@ -47,8 +47,8 @@ describe Curly::Presenter do
         clown: "Bubbles"
       )
 
-      presenter.midget.should == "Meek Harolson"
-      presenter.clown.should == "Bubbles"
+      expect(presenter.midget).to eq "Meek Harolson"
+      expect(presenter.clown).to eq "Bubbles"
     end
 
     it "raises an exception if a required identifier is not specified" do
@@ -60,26 +60,26 @@ describe Curly::Presenter do
     it "allows specifying default values for identifiers" do
       # Make sure subclasses can change default values.
       french_presenter = FrenchCircusPresenter.new(context)
-      french_presenter.elephant.should == "Babar"
-      french_presenter.lion.should == 'BABAR'
-      french_presenter.puma.should be_a Proc
+      expect(french_presenter.elephant).to eq "Babar"
+      expect(french_presenter.lion).to eq 'BABAR'
+      expect(french_presenter.puma).to be_a Proc
 
       # The subclass shouldn't change the superclass' defaults, though.
       presenter = CircusPresenter.new(context)
-      presenter.elephant.should == "Dumbo"
-      presenter.lion.should == 'DUMBO'
-      presenter.puma.should be_a Proc
+      expect(presenter.elephant).to eq "Dumbo"
+      expect(presenter.lion).to eq 'DUMBO'
+      expect(presenter.puma).to be_a Proc
     end
 
     it "doesn't call a block if given as a value for identifiers" do
       lion = proc { 'Simba' }
       presenter = CircusPresenter.new(context, lion: lion)
-      presenter.lion.should be lion
+      expect(presenter.lion).to be lion
     end
 
     it "calls default blocks in the instance of the presenter" do
       presenter = CircusPresenter.new(context)
-      presenter.something.should be presenter
+      expect(presenter.something).to be presenter
     end
   end
 
@@ -92,12 +92,12 @@ describe Curly::Presenter do
     }
 
     it "delegates calls to the context" do
-      context.should receive(:undefined).once
+      expect(context).to receive(:undefined).once
       subject.undefined
     end
 
     it "allows method calls on context-defined methods" do
-      context.should receive(:respond_to?).
+      expect(context).to receive(:respond_to?).
         with(:undefined, false).once.and_return(true)
       subject.method(:undefined)
     end
@@ -116,8 +116,8 @@ describe Curly::Presenter do
     end
 
     it "delegates the call to the context" do
-      context.should receive(:foo).once
-      subject.should_not receive(:method_missing)
+      expect(context).to receive(:foo).once
+      expect(subject).not_to receive(:method_missing)
       subject.foo
     end
 
@@ -131,29 +131,29 @@ describe Curly::Presenter do
       presenter = double("presenter")
       stub_const("Foo::BarPresenter", presenter)
 
-      Curly::Presenter.presenter_for_path("foo/bar").should == presenter
+      expect(Curly::Presenter.presenter_for_path("foo/bar")).to eq presenter
     end
 
     it "returns nil if there is no presenter for the given path" do
-      Curly::Presenter.presenter_for_path("foo/bar").should be_nil
+      expect(Curly::Presenter.presenter_for_path("foo/bar")).to be_nil
     end
   end
 
   describe ".presenter_for_name" do
     it 'looks through the container namespaces' do
-      PresenterContainer::PresenterSubcontainer::SubNestedPresenter.presenter_for_name('nested').should == PresenterContainer::NestedPresenter
+      expect(PresenterContainer::PresenterSubcontainer::SubNestedPresenter.presenter_for_name('nested')).to eq PresenterContainer::NestedPresenter
     end
 
     it 'looks through the container namespaces' do
-      Curly::Presenter.presenter_for_name('presenter_container/presenter_subcontainer/nested', []).should == (PresenterContainer::NestedPresenter)
+      expect(Curly::Presenter.presenter_for_name('presenter_container/presenter_subcontainer/nested', [])).to eq(PresenterContainer::NestedPresenter)
     end
 
     it "returns the presenter class for the given name" do
-      CircusPresenter.presenter_for_name("monkey").should == CircusPresenter::MonkeyPresenter
+      expect(CircusPresenter.presenter_for_name("monkey")).to eq CircusPresenter::MonkeyPresenter
     end
 
     it "looks in the namespace" do
-      CircusPresenter.presenter_for_name("french_circus").should == FrenchCircusPresenter
+      expect(CircusPresenter.presenter_for_name("french_circus")).to eq FrenchCircusPresenter
     end
 
     it "returns Curly::PresenterNameError if the presenter class doesn't exist" do
@@ -163,21 +163,21 @@ describe Curly::Presenter do
 
   describe ".available_components" do
     it "includes the methods on the presenter" do
-      CircusPresenter.available_components.should include("midget")
+      expect(CircusPresenter.available_components).to include("midget")
     end
 
     it "does not include methods on the Curly::Presenter base class" do
-      CircusPresenter.available_components.should_not include("cache_key")
+      expect(CircusPresenter.available_components).not_to include("cache_key")
     end
   end
 
   describe ".component_available?" do
     it "returns true if the method is available" do
-      CircusPresenter.component_available?("midget").should == true
+      expect(CircusPresenter.component_available?("midget")).to eq true
     end
 
     it "returns false if the method is not available" do
-      CircusPresenter.component_available?("bear").should == false
+      expect(CircusPresenter.component_available?("bear")).to eq false
     end
   end
 
@@ -191,13 +191,13 @@ describe Curly::Presenter do
         version 1337
       end
 
-      presenter1.version.should == 42
-      presenter2.version.should == 1337
+      expect(presenter1.version).to eq 42
+      expect(presenter2.version).to eq 1337
     end
 
     it "returns 0 if no version has been set" do
       presenter = Class.new(Curly::Presenter)
-      presenter.version.should == 0
+      expect(presenter.version).to eq 0
     end
   end
 
@@ -206,7 +206,7 @@ describe Curly::Presenter do
       presenter = Class.new(Curly::Presenter) { version 42 }
       stub_const("Foo::BarPresenter", presenter)
 
-      Foo::BarPresenter.cache_key.should == "Foo::BarPresenter/42"
+      expect(Foo::BarPresenter.cache_key).to eq "Foo::BarPresenter/42"
     end
 
     it "includes the cache keys of presenters in the dependency list" do
@@ -223,7 +223,7 @@ describe Curly::Presenter do
       stub_const("Foo::BumPresenter", dependency)
 
       cache_key = Foo::BarPresenter.cache_key
-      cache_key.should == "Foo::BarPresenter/42/Foo::BumPresenter/1337"
+      expect(cache_key).to eq "Foo::BarPresenter/42/Foo::BumPresenter/1337"
     end
 
     it "uses the view path of a dependency if there is no presenter for it" do
@@ -235,21 +235,21 @@ describe Curly::Presenter do
       stub_const("Foo::BarPresenter", presenter)
 
       cache_key = Foo::BarPresenter.cache_key
-      cache_key.should == "Foo::BarPresenter/42/foo/bum"
+      expect(cache_key).to eq "Foo::BarPresenter/42/foo/bum"
     end
   end
 
   describe ".dependencies" do
     it "returns the dependencies defined for the presenter" do
       presenter = Class.new(Curly::Presenter) { depends_on 'foo' }
-      presenter.dependencies.to_a.should == ['foo']
+      expect(presenter.dependencies.to_a).to eq ['foo']
     end
 
     it "includes the dependencies defined for parent classes" do
       Curly::Presenter.dependencies
       parent = Class.new(Curly::Presenter) { depends_on 'foo' }
       presenter = Class.new(parent) { depends_on 'bar' }
-      presenter.dependencies.to_a.should =~ ['foo', 'bar']
+      expect(presenter.dependencies.to_a).to match_array ['foo', 'bar']
     end
   end
 end

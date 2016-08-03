@@ -2,7 +2,7 @@ describe "Collection blocks", type: :request do
   example "Rendering collections" do
     get '/collection'
 
-    response.body.should == <<-HTML.strip_heredoc
+    expect(response.body).to eq <<-HTML.strip_heredoc
       <html>
       <head>
         <title>Dummy app</title>

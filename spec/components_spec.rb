@@ -8,7 +8,7 @@ describe "Components" do
       end
     end
 
-    render("{{title}}").should == "A Clockwork Orange"
+    expect(render("{{title}}")).to eq "A Clockwork Orange"
   end
 
   example "with an identifier" do
@@ -18,7 +18,7 @@ describe "Components" do
       end
     end
 
-    render("{{reverse.123}}").should == "321"
+    expect(render("{{reverse.123}}")).to eq "321"
   end
 
   example "with attributes" do
@@ -28,7 +28,7 @@ describe "Components" do
       end
     end
 
-    render("{{double number=3}}").should == "6"
+    expect(render("{{double number=3}}")).to eq "6"
   end
 
   example "with both identifier and attributes" do
@@ -38,6 +38,6 @@ describe "Components" do
       end
     end
 
-    render(%({{a href="/welcome.html" title="Welcome!"}})).should == %(<a href="/welcome.html" title="Welcome!"></a>)
+    expect(render(%({{a href="/welcome.html" title="Welcome!"}}))).to eq %(<a href="/welcome.html" title="Welcome!"></a>)
   end
 end

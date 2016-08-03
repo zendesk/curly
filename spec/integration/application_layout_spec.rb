@@ -2,7 +2,7 @@ describe "Using Curly for the application layout", type: :request do
   example "A simple layout view" do
     get '/'
 
-    response.body.should == <<-HTML.strip_heredoc
+    expect(response.body).to eq <<-HTML.strip_heredoc
       <html>
       <head>
         <title>Dummy app</title>

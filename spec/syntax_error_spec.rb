@@ -3,7 +3,7 @@ describe Curly::SyntaxError, "#message" do
     source = "I am a very bad error that has snuck in"
     error = Curly::SyntaxError.new(13, source)
 
-    error.message.should == <<-MESSAGE.strip_heredoc
+    expect(error.message).to eq <<-MESSAGE.strip_heredoc
       invalid syntax near `a very bad error` on line 1 in template:
 
       I am a very bad error that has snuck in

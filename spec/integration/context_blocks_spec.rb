@@ -4,7 +4,7 @@ describe "Context blocks", type: :request do
   example "A context block" do
     get '/new'
 
-    response.body.should have_structure <<-HTML.strip_heredoc
+    expect(response.body).to have_structure <<-HTML.strip_heredoc
       <html>
       <head>
         <title>Dummy app</title>

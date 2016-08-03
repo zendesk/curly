@@ -18,7 +18,7 @@ describe "Collection block components" do
       end
     end
 
-    render("{{*items}}<{{name}}>{{/items}}").should == "<one><two><three>"
+    expect(render("{{*items}}<{{name}}>{{/items}}")).to eq "<one><two><three>"
   end
 
   example "with an identifier" do
@@ -34,9 +34,9 @@ describe "Collection block components" do
       end
     end
 
-    render("{{*items.even}}<{{name}}>{{/items.even}}").should == "<two>"
-    render("{{*items.odd}}<{{name}}>{{/items.odd}}").should == "<one><three>"
-    render("{{*items}}<{{name}}>{{/items}}").should == "<one><two><three>"
+    expect(render("{{*items.even}}<{{name}}>{{/items.even}}")).to eq "<two>"
+    expect(render("{{*items.odd}}<{{name}}>{{/items.odd}}")).to eq "<one><three>"
+    expect(render("{{*items}}<{{name}}>{{/items}}")).to eq "<one><two><three>"
   end
 
   example "with attributes" do
@@ -46,8 +46,8 @@ describe "Collection block components" do
       end
     end
 
-    render("{{*items length=3}}<{{name}}>{{/items}}").should == "<x><x><x>"
-    render("{{*items}}<{{name}}>{{/items}}").should == "<x>"
+    expect(render("{{*items length=3}}<{{name}}>{{/items}}")).to eq "<x><x><x>"
+    expect(render("{{*items}}<{{name}}>{{/items}}")).to eq "<x>"
   end
 
   example "with nested collection blocks" do
@@ -73,6 +73,6 @@ describe "Collection block components" do
       end
     end
 
-    render("{{*items}}<{{*parts}}[{{number}}]{{/parts}}>{{/items}}").should == "<[1][2]><[3][4]>"
+    expect(render("{{*items}}<{{*parts}}[{{number}}]{{/parts}}>{{/items}}")).to eq "<[1][2]><[3][4]>"
   end
 end

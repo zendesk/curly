@@ -1,6 +1,6 @@
 describe Curly::Scanner, ".scan" do
   it "returns the tokens in the source" do
-    scan("foo {{bar}} baz").should == [
+    expect(scan("foo {{bar}} baz")).to eq [
       [:text, "foo "],
       [:component, "bar", nil, {}, []],
       [:text, " baz"]
@@ -8,13 +8,13 @@ describe Curly::Scanner, ".scan" do
   end
 
   it "scans components with identifiers" do
-    scan("{{foo.bar}}").should == [
+    expect(scan("{{foo.bar}}")).to eq [
       [:component, "foo", "bar", {}, []]
     ]
   end
 
   it "scans comments in the source" do
-    scan("foo {{!bar}} baz").should == [
+    expect(scan("foo {{!bar}} baz")).to eq [
       [:text, "foo "],
       [:comment, "bar"],
       [:text, " baz"]
@@ -22,29 +22,29 @@ describe Curly::Scanner, ".scan" do
   end
 
   it "allows newlines in comments" do
-    scan("{{!\nfoo\n}}").should == [
+    expect(scan("{{!\nfoo\n}}")).to eq [
       [:comment, "\nfoo\n"]
     ]
   end
 
   it "scans to the end of the source" do
-    scan("foo\n").should == [
+    expect(scan("foo\n")).to eq [
       [:text, "foo\n"]
     ]
   end
 
   it "allows escaping Curly quotes" do
-    scan('foo {{{ bar').should == [
+    expect(scan('foo {{{ bar')).to eq [
       [:text, "foo "],
       [:text, "{{"],
       [:text, " bar"]
     ]
 
-    scan('foo }} bar').should == [
+    expect(scan('foo }} bar')).to eq [
       [:text, "foo }} bar"]
     ]
 
-    scan('foo {{{ lala! }} bar').should == [
+    expect(scan('foo {{{ lala! }} bar')).to eq [
       [:text, "foo "],
       [:text, "{{"],
       [:text, " lala! }} bar"]
@@ -52,7 +52,7 @@ describe Curly::Scanner, ".scan" do
   end
 
   it "scans context block tags" do
-    scan('{{@search_form}}{{query_field}}{{/search_form}}').should == [
+    expect(scan('{{@search_form}}{{query_field}}{{/search_form}}')).to eq [
       [:context_block_start, "search_form", nil, {}, []],
       [:component, "query_field", nil, {}, []],
       [:block_end, "search_form", nil, {}, []]
@@ -60,7 +60,7 @@ describe Curly::Scanner, ".scan" do
   end
 
   it "scans conditional block tags" do
-    scan('foo {{#bar?}} hello {{/bar?}}').should == [
+    expect(scan('foo {{#bar?}} hello {{/bar?}}')).to eq [
       [:text, "foo "],
       [:conditional_block_start, "bar?", nil, {}, []],
       [:text, " hello "],
@@ -69,7 +69,7 @@ describe Curly::Scanner, ".scan" do
   end
 
   it "scans conditional block tags with parameters and attributes" do
-    scan('{{#active.test? name="test"}}yo{{/active.test?}}').should == [
+    expect(scan('{{#active.test? name="test"}}yo{{/active.test?}}')).to eq [
       [:conditional_block_start, "active?", "test", { "name" => "test" }, []],
       [:text, "yo"],
       [:block_end, "active?", "test", {}, []]
@@ -77,7 +77,7 @@ describe Curly::Scanner, ".scan" do
   end
 
   it "scans inverse block tags" do
-    scan('foo {{^bar?}} hello {{/bar?}}').should == [
+    expect(scan('foo {{^bar?}} hello {{/bar?}}')).to eq [
       [:text, "foo "],
       [:inverse_conditional_block_start, "bar?", nil, {}, []],
       [:text, " hello "],
@@ -86,7 +86,7 @@ describe Curly::Scanner, ".scan" do
   end
 
   it "scans collection block tags" do
-    scan('foo {{*bar}} hello {{/bar}}').should == [
+    expect(scan('foo {{*bar}} hello {{/bar}}')).to eq [
       [:text, "foo "],
       [:collection_block_start, "bar", nil, {}, []],
       [:text, " hello "],
@@ -95,13 +95,13 @@ describe Curly::Scanner, ".scan" do
   end
 
   it "treats quotes as text" do
-    scan('"').should == [
+    expect(scan('"')).to eq [
       [:text, '"']
     ]
   end
 
   it "treats Ruby interpolation as text" do
-    scan('#{foo}').should == [
+    expect(scan('#{foo}')).to eq [
       [:text, '#{foo}']
     ]
   end
