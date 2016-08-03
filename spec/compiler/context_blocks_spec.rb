@@ -99,8 +99,8 @@ describe Curly::Compiler do
   end
 
   it "requires shorthand blocks to be closed with the same set of namespaces" do
-    expect do
+    expect {
       render('{{#tree:branch}}{{/branch}}{{/tree}}')
-    end.to raise_exception(Curly::IncorrectEndingError)
+    }.to raise_exception(Curly::IncorrectEndingError)
   end
 end

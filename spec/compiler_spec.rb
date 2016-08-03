@@ -3,9 +3,9 @@ describe Curly::Compiler do
 
   describe ".compile" do
     it "raises ArgumentError if the presenter class is nil" do
-      expect do
+      expect {
         Curly::Compiler.compile("foo", nil)
-      end.to raise_exception(ArgumentError)
+      }.to raise_exception(ArgumentError)
     end
 
     it "makes sure only public methods are called on the presenter object" do
@@ -139,21 +139,21 @@ describe Curly::Compiler do
     end
 
     it "gives an error on incomplete blocks" do
-      expect do
+      expect {
         render("{{#hello?}}")
-      end.to raise_exception(Curly::IncompleteBlockError)
+      }.to raise_exception(Curly::IncompleteBlockError)
     end
 
     it "gives an error when closing unopened blocks" do
-      expect do
+      expect {
         render("{{/goodbye?}}")
-      end.to raise_exception(Curly::IncorrectEndingError)
+      }.to raise_exception(Curly::IncorrectEndingError)
     end
 
     it "gives an error on mismatching block ends" do
-      expect do
+      expect {
         render("{{#x?}}{{#y?}}{{/x?}}{{/y?}}")
-      end.to raise_exception(Curly::IncorrectEndingError)
+      }.to raise_exception(Curly::IncorrectEndingError)
     end
 
     it "does not execute arbitrary Ruby code" do
