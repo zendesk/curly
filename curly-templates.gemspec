@@ -25,6 +25,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency("railties", [">= 3.1", "< 5.1"])
   s.add_development_dependency("rake")
   s.add_development_dependency("rspec", ">= 3")
+  s.add_development_dependency("rspec_junit_formatter")
   s.add_development_dependency("genspec", ">= 0.3.0")
 
   s.files      = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(perf|spec)/}) }
