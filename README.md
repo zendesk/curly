@@ -781,7 +781,7 @@ Thanks to [Zendesk](http://zendesk.com/) for sponsoring the work on Curly.
 Build Status
 ------------
 
-[![Build Status](https://travis-ci.org/zendesk/curly.png?branch=master)](https://travis-ci.org/zendesk/curly)
+[![Build Status](https://circleci.com/gh/zendesk/curly.png?circle-token=:circle-tok)](https://circleci.com/gh/zendesk/curly.png)
 
 
 Copyright and License
