@@ -1,12 +1,18 @@
 ### Unreleased
 
+### Curly 2.6.2 (December 22, 2016)
+
+* Change `DependencyTracker.call` to returns array, for compatibility with
+  Rails 5.0.
+
+  *Benjamin Quorning*
+
 ### Curly 2.6.1 (August 3, 2016)
 
 * Use Rails' `constantize` method instead of `get_const` when looking up
   presenter classes, so that Rails has a chance to autoload missing classes.
 
   *Creighton Long*
-
 
 ### Curly 2.6.0 (July 4, 2016)
 
