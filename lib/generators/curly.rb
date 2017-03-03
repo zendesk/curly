@@ -5,10 +5,6 @@ module Curly # :nodoc:
     class Base < Rails::Generators::NamedBase #:nodoc:
       private
 
-        def formats
-          [format]
-        end
-
         def format
           :html
         end
