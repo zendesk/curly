@@ -1,0 +1,31 @@
+<p id="notice">{{ notice_text }}</p>
+
+<h1><%= plural_table_name.titleize %></h1>
+
+<table>
+  <thead>
+    <tr>
+<% attributes.reject(&:password_digest?).each do |attribute| -%>
+      <th><%= attribute.human_name %></th>
+<% end -%>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    {{*<%= plural_table_name %>}}
+      <tr>
+<% attributes.reject(&:password_digest?).each do |attribute| -%>
+        <td>{{ <%= attribute.name %> }}</td>
+<% end -%>
+        <td>{{ show_link }}</td>
+        <td>{{ edit_link }}</td>
+        <td>{{ destroy_link }}</td>
+      </tr>
+    {{/<%= plural_table_name %>}}
+  </tbody>
+</table>
+
+<br>
+
+{{ create_link }}

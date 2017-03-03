@@ -1,0 +1,23 @@
+module <%= plural_table_name.capitalize %>
+  class PresenterBase < Curly::Presenter
+    # If you need to assign variables to the presenter, you can use the
+    # `presents` method.
+    #
+    #   presents :foo, :bar
+    #
+    # Any public method defined in a presenter class will be available
+    # to the Curly template as a variable. Consider making these methods
+    # idempotent.
+    def notice_text
+      notice
+    end
+
+    def create_link
+      link_to 'New <%= singular_table_name.titleize %>', new_<%= singular_table_name %>_path
+    end
+
+    def <%= index_helper %>_link
+      link_to 'Back', <%= index_helper %>_path
+    end
+  end
+end

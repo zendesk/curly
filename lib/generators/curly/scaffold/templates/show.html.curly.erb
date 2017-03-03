@@ -1,0 +1,12 @@
+<p id="notice">{{ notice_text }}</p>
+
+{{*<%= singular_table_name %>}}
+  <% attributes.reject(&:password_digest?).each do |attribute| -%>
+    <p>
+      <strong><%= attribute.human_name %>:</strong>
+      {{ <%= attribute.name %> }}
+    </p>
+  <% end -%>
+  {{ edit_link }}
+{{/<%= singular_table_name %>}}
+{{ <%= index_helper %>_link }}
