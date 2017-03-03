@@ -1,22 +1,20 @@
-module <%= plural_table_name.capitalize %>
-  class <%= @view_name.capitalize %>Presenter < Curly::Presenter
-    # If you need to assign variables to the presenter, you can use the
-    # `presents` method.
-    #
-    #   presents :foo, :bar
-    #
-    # Any public method defined in a presenter class will be available
-    # to the Curly template as a variable. Consider making these methods
-    # idempotent.
-    presents :<%= singular_table_name %>
+class <%= plural_table_name.capitalize %>::<%= @view_name.capitalize %>Presenter < Curly::Presenter
+  # If you need to assign variables to the presenter, you can use the
+  # `presents` method.
+  #
+  #   presents :foo, :bar
+  #
+  # Any public method defined in a presenter class will be available
+  # to the Curly template as a variable. Consider making these methods
+  # idempotent.
+  presents :<%= singular_table_name %>
 
-    def <%= singular_table_name %>_form
-      render 'form', <%= singular_table_name %>: @<%= singular_table_name %>
-    end
-
-    def <%= index_helper %>_link
-      link_to 'Back', <%= index_helper %>_path
-    end
-
+  def <%= singular_table_name %>_form
+    render 'form', <%= singular_table_name %>: @<%= singular_table_name %>
   end
+
+  def <%= index_helper %>_link
+    link_to 'Back', <%= index_helper %>_path
+  end
+
 end

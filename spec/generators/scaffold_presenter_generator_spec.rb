@@ -6,8 +6,7 @@ describe Curly::Generators::ScaffoldGenerator do
 
   it "generates a Curly presenter for the index view" do
     expect(subject).to generate("app/presenters/posts/index_presenter.rb") {|content|
-      expect(content).to include "module Posts" 
-      expect(content).to include "class IndexPresenter < Curly::Presenter" 
+      expect(content).to include "class Posts::IndexPresenter < Curly::Presenter" 
       expect(content).to include "presents :posts" 
       expect(content).to include "def posts" 
       expect(content).to include "def notice_text" 
@@ -16,8 +15,7 @@ describe Curly::Generators::ScaffoldGenerator do
   end
   it "generates a Curly presenter for the show view" do
     expect(subject).to generate("app/presenters/posts/show_presenter.rb") {|content|
-      expect(content).to include "module Posts" 
-      expect(content).to include "class ShowPresenter < Curly::Presenter" 
+      expect(content).to include "class Posts::ShowPresenter < Curly::Presenter" 
       expect(content).to include "presents :post" 
       expect(content).to include "def post" 
       expect(content).to include "def notice_text" 
@@ -26,8 +24,7 @@ describe Curly::Generators::ScaffoldGenerator do
   end
   it "generates a Curly presenter for the new view" do
     expect(subject).to generate("app/presenters/posts/new_presenter.rb") {|content|
-      expect(content).to include "module Posts" 
-      expect(content).to include "class NewPresenter < Curly::Presenter" 
+      expect(content).to include "class Posts::NewPresenter < Curly::Presenter" 
       expect(content).to include "presents :post" 
       expect(content).to include "def post_form" 
       expect(content).to include "render 'form', post: @post" 
@@ -36,8 +33,7 @@ describe Curly::Generators::ScaffoldGenerator do
   end
   it "generates a Curly presenter for the edit view" do
     expect(subject).to generate("app/presenters/posts/edit_presenter.rb") {|content|
-      expect(content).to include "module Posts" 
-      expect(content).to include "class EditPresenter < Curly::Presenter" 
+      expect(content).to include "class Posts::EditPresenter < Curly::Presenter" 
       expect(content).to include "presents :post" 
       expect(content).to include "def post" 
       expect(content).to include "def post_form" 
@@ -47,8 +43,7 @@ describe Curly::Generators::ScaffoldGenerator do
   end
   it "generates a Curly presenter for the form view" do
     expect(subject).to generate("app/presenters/posts/form_presenter.rb") {|content|
-      expect(content).to include "module Posts" 
-      expect(content).to include "class FormPresenter < Curly::Presenter" 
+      expect(content).to include "class Posts::FormPresenter < Curly::Presenter" 
       expect(content).to include "presents :post" 
       expect(content).to include "def post_errors" 
       expect(content).to include "def post_form(&block)" 
