@@ -16,7 +16,7 @@ module Curly # :nodoc:
       end
 
       def copy_view_files
-        # Presenter for the singular version of th emodel.
+        # Presenter for the singular version of the model.
         template "model_presenter.rb.erb", File.join("app/presenters", controller_file_path, "#{singular_table_name}_presenter.rb")
         # Presenter with inheritable methods useful in many cases.
         template "presenter_base.rb.erb", File.join("app/presenters", controller_file_path, "presenter_base.rb")
