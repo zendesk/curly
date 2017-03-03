@@ -11,6 +11,10 @@ describe Curly::Generators::ScaffoldGenerator do
       expect(content).to include "def posts" 
       expect(content).to include "def notice_text" 
       expect(content).to include "def create_link" 
+      expect(content).to include "class PostPresenter < Curly::Presenter" 
+      expect(content).to include "def title" 
+      expect(content).to include "def body" 
+      expect(content).to include "def published" 
     }
   end
   it "generates a Curly presenter for the show view" do
@@ -20,6 +24,10 @@ describe Curly::Generators::ScaffoldGenerator do
       expect(content).to include "def post" 
       expect(content).to include "def notice_text" 
       expect(content).to include "def posts_link" 
+      expect(content).to include "class PostPresenter < Curly::Presenter" 
+      expect(content).to include "def title" 
+      expect(content).to include "def body" 
+      expect(content).to include "def published" 
     }
   end
   it "generates a Curly presenter for the new view" do
