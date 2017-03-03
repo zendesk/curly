@@ -1,7 +1,5 @@
-require '<%= plural_table_name %>/presenter_base'
-
 module <%= plural_table_name.capitalize %>
-  class <%= @view_name.capitalize %>Presenter < PresenterBase
+  class <%= @view_name.capitalize %>Presenter < Curly::Presenter
     # If you need to assign variables to the presenter, you can use the
     # `presents` method.
     #
@@ -14,6 +12,14 @@ module <%= plural_table_name.capitalize %>
 
     def <%= plural_table_name %>
       @<%= plural_table_name %>
+    end
+
+    def notice_text
+      notice
+    end
+
+    def create_link
+      link_to 'New <%= singular_table_name.titleize %>', new_<%= singular_table_name %>_path
     end
 
   end

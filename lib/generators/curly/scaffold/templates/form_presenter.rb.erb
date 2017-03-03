@@ -1,7 +1,5 @@
-require '<%= plural_table_name %>/presenter_base'
-
 module <%= plural_table_name.capitalize %>
-  class <%= @view_name.capitalize %>Presenter < PresenterBase
+  class <%= @view_name.capitalize %>Presenter < Curly::Presenter
     # If you need to assign variables to the presenter, you can use the
     # `presents` method.
     #
@@ -24,7 +22,7 @@ module <%= plural_table_name.capitalize %>
       form_for(@<%= singular_table_name %>, &block)
     end
 
-    class <%= singular_table_name.capitalize %>FormPresenter < PresenterBase
+    class <%= singular_table_name.capitalize %>FormPresenter < Curly::Presenter
       presents :<%= singular_table_name %>_form, :<%= singular_table_name %>
 
       def <%= singular_table_name %>_errors(&block)
@@ -43,7 +41,7 @@ module <%= plural_table_name.capitalize %>
         @<%= singular_table_name %>_form.submit
       end
 
-      class <%= singular_table_name.capitalize %>ErrorsPresenter < PresenterBase
+      class <%= singular_table_name.capitalize %>ErrorsPresenter < Curly::Presenter
         presents :<%= singular_table_name %>_errors
 
         def any?
@@ -58,7 +56,7 @@ module <%= plural_table_name.capitalize %>
           @<%= singular_table_name %>_errors.full_messages
         end
 
-        class ErrorMessagePresenter < PresenterBase
+        class ErrorMessagePresenter < Curly::Presenter
           presents :error_message
           def message
             @error_message
