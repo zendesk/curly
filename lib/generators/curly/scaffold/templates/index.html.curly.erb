@@ -1,4 +1,4 @@
-<p id="notice">{{ notice_text }}</p>
+<p id="notice">{{notice_text}}</p>
 
 <h1><%= plural_table_name.titleize %></h1>
 
@@ -16,11 +16,11 @@
     {{*<%= plural_table_name %>}}
       <tr>
 <% attributes.reject(&:password_digest?).each do |attribute| -%>
-        <td>{{ <%= attribute.name %> }}</td>
+        <td>{{<%= attribute.name %>}}</td>
 <% end -%>
-        <td>{{ show_link }}</td>
-        <td>{{ edit_link }}</td>
-        <td>{{ destroy_link }}</td>
+        <td>{{show_link}}</td>
+        <td>{{edit_link}}</td>
+        <td>{{destroy_link}}</td>
       </tr>
     {{/<%= plural_table_name %>}}
   </tbody>
@@ -28,4 +28,4 @@
 
 <br>
 
-{{ create_link }}
+{{create_link}}

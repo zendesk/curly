@@ -10,6 +10,14 @@ describe Curly::Generators::ScaffoldGenerator do
       expect(content).to include "<th>Title</th>"
       expect(content).to include "<th>Published</th>"
       expect(content).to include "{{*posts}}"
+      # Consistantly not have spaces between curlys.
+      expect(content).to include "{{show_link}}"
+      expect(content).to include "{{edit_link}}"
+      expect(content).to include "{{notice_text}}"
+      expect(content).to include "{{destroy_link}}"
+      expect(content).to include "{{title}}"
+      expect(content).to include "{{body}}"
+      expect(content).to include "{{published}}"
     }
   end
   it "generates an Curly template for the show view" do
