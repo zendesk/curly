@@ -1,0 +1,30 @@
+{{@<%= singular_table_name %>_form}}
+  {{#<%= singular_table_name %>_errors:any?}}
+    <div id="error_explanation">
+      <h2>{{header}}</h2>
+      <ul>
+        {{*error_messages}}
+          <li>{{message}}</li>
+        {{/error_messages}}
+      </ul>
+    </div>
+  {{/<%= singular_table_name %>_errors:any?}}
+  <% attributes.each do |attribute| -%>
+    <div class="field">
+    <% if attribute.password_digest? -%>
+        {{label.password}}
+        {{field field_type="password_field" field_name="password"}}
+      </div>
+
+      <div class="field">
+        {{label field_name="password_confirmation"}}
+        {{field field_type="password_field" field_name="password_confirmation"}}
+    <% else -%>
+        {{label.<%= attribute.column_name %>}}
+        {{field field_type="<%= attribute.field_type %>" field_name="<%= attribute.column_name %>"}}
+    <% end -%>
+      </div>
+  <% end -%>
+
+  {{submit}}
+{{/<%= singular_table_name %>_form}}

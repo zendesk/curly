@@ -1,0 +1,66 @@
+class <%= plural_table_name.capitalize %>::<%= @view_name.capitalize %>Presenter < Curly::Presenter
+  # If you need to assign variables to the presenter, you can use the
+  # `presents` method.
+  #
+  #   presents :foo, :bar
+  #
+  # Any public method defined in a presenter class will be available
+  # to the Curly template as a variable. Consider making these methods
+  # idempotent.
+  presents :<%= singular_table_name %>
+
+  def post_errors
+    @post.errors
+  end
+
+  def <%= singular_table_name %>
+    @<%= singular_table_name %>
+  end
+
+  def <%= singular_table_name %>_form(&block)
+    form_for(@<%= singular_table_name %>, &block)
+  end
+
+  class <%= singular_table_name.capitalize %>FormPresenter < Curly::Presenter
+    presents :<%= singular_table_name %>_form, :<%= singular_table_name %>
+
+    def <%= singular_table_name %>_errors(&block)
+      block.call(@post.errors)
+    end
+
+    def label(field_name)
+      @<%= singular_table_name %>_form.label field_name.to_sym
+    end
+
+    def field(field_type: nil, field_name: nil)
+      @<%= singular_table_name %>_form.send field_type.to_sym, field_name.to_sym
+    end
+
+    def submit
+      @<%= singular_table_name %>_form.submit
+    end
+
+    class <%= singular_table_name.capitalize %>ErrorsPresenter < Curly::Presenter
+      presents :<%= singular_table_name %>_errors
+
+      def any?
+        @<%= singular_table_name %>_errors.any?
+      end
+
+      def header
+        "#{pluralize(@<%= singular_table_name %>_errors.count, "error")} prohibited this <%= singular_table_name %> from being saved:"
+      end
+
+      def error_messages(&block)
+        @<%= singular_table_name %>_errors.full_messages
+      end
+
+      class ErrorMessagePresenter < Curly::Presenter
+        presents :error_message
+        def message
+          @error_message
+        end
+      end
+    end
+  end
+end

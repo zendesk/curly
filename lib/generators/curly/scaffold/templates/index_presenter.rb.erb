@@ -1,0 +1,46 @@
+class <%= plural_table_name.capitalize %>::<%= @view_name.capitalize %>Presenter < Curly::Presenter
+  # If you need to assign variables to the presenter, you can use the
+  # `presents` method.
+  #
+  #   presents :foo, :bar
+  #
+  # Any public method defined in a presenter class will be available
+  # to the Curly template as a variable. Consider making these methods
+  # idempotent.
+  presents :<%= plural_table_name %>
+
+  def <%= plural_table_name %>
+    @<%= plural_table_name %>
+  end
+
+  def notice_text
+    notice
+  end
+
+  def create_link
+    link_to 'New <%= singular_table_name.titleize %>', new_<%= singular_table_name %>_path
+  end
+
+  class <%= singular_table_name.capitalize %>Presenter < Curly::Presenter
+    presents :<%= singular_table_name %>
+
+    <% attributes.reject(&:password_digest?).each do |attribute| -%>
+      def <%= attribute.name %>
+        @<%= singular_table_name %>.<%= attribute.name %>
+      end
+    <% end -%>
+
+    def show_link
+      link_to 'Show', @<%= singular_table_name %>
+    end
+
+    def edit_link
+      link_to 'Edit', edit_<%= singular_table_name %>_path(@<%= singular_table_name %>)
+    end
+
+    def destroy_link
+      link_to 'Destroy', @<%= singular_table_name %>, method: :delete, data: { confirm: 'Are you sure?' }
+    end
+  end
+
+end
