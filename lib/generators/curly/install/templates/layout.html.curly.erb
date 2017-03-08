@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= app_name.titleize %></title>
+    {{csrf_meta_tags}}
+
+    {{stylesheet_links}}
+    {{javascript_links}}
+  </head>
+
+  <body>
+    {{yield}}
+  </body>
+</html>

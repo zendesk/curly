@@ -36,6 +36,13 @@ using Bundler to manage your dependencies, add this to your Gemfile
 gem 'curly-templates'
 ```
 
+Curly can also install an application layout file, replacing the .erb file commonly
+created by Rails.  If you wish to use this, run the `curly:install` generator.
+
+```sh
+$ rails generate curly:install
+```
+
 
 How to use Curly
 ----------------
