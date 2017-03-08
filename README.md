@@ -40,7 +40,7 @@ Curly can also install an application layout file, replacing the .erb file commo
 created by Rails.  If you wish to use this, run the `curly:install` generator.
 
 ```sh
-$ rails g curly:install
+$ rails generate curly:install
 ```
 
 
@@ -51,7 +51,7 @@ In order to use Curly for a view or partial, use the suffix `.curly` instead of
 `.erb`, e.g. `app/views/posts/_comment.html.curly`. Curly will look for a
 corresponding presenter class named `Posts::CommentPresenter`. By convention,
 these are placed in `app/presenters/`, so in this case the presenter would
-reside in `app/presenters/posts/comment_presenter.rb`. Note that presenters
+reside in `app/presenters/posts/com/ment_presenter.rb`. Note that presenters
 for partials are not prepended with an underscore.
 
 Add some HTML to the partial template along with some Curly components:
