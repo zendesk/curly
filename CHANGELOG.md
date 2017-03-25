@@ -1,5 +1,12 @@
 ### Unreleased
 
+### Curly 2.6.3 (March 24, 2017)
+
+* Added generator for Rails' built in scaffold command.
+* Added `curly:install` generator for creating layout files.
+
+  *Jack M*
+
 ### Curly 2.6.2 (December 22, 2016)
 
 * Change `DependencyTracker.call` to returns array, for compatibility with
