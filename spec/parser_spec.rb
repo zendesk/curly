@@ -21,6 +21,18 @@ describe Curly::Parser do
     ]
   end
 
+  it "parses conditional blocks with the if syntax" do
+    tokens = [
+      [:conditional_block_start, "a?", nil, {}],
+      [:component, "hello", nil, {}],
+      [:conditional_block_end, nil, nil],
+    ]
+
+    parse(tokens).should == [
+      conditional_block(component("a?"), [component("hello")])
+    ]
+  end
+
   it "parses inverse conditional blocks" do
     tokens = [
       [:inverse_conditional_block_start, "a?", nil, {}],
@@ -31,6 +43,21 @@ describe Curly::Parser do
     expect(parse(tokens)).to eq [
       inverse_conditional_block(component("a?"), [component("hello")])
     ]
+  end
+
+  it "parses elses in conditionals" do
+    tokens = [
+      [:conditional_block_start, "bar?", nil, {}],
+      [:component, "hello", nil, {}],
+      [:else_block_start, "bar?", nil, {}],
+      [:component, "bye", nil, {}],
+      [:block_end, "bar?", nil],
+    ]
+
+    parse(tokens).should == [
+      conditional_block(component("bar?"), [component("hello")]), 
+      inverse_conditional_block(component("bar?"), [component("bye")])
+    ].flatten
   end
 
   it "parses collection blocks" do

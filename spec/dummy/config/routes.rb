@@ -3,4 +3,5 @@ Rails.application.routes.draw do
   get "/collection", to: "dashboards#collection"
   get "/partials", to: "dashboards#partials"
   get "/new", to: "dashboards#new"
+  get "/conditionals", to: "dashboards#conditionals"
 end

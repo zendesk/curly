@@ -151,6 +151,22 @@ class Curly::Parser
     parse_block(:inverse_conditional, *args)
   end
 
+  def parse_else_block_start(*args)
+    block = @stack.pop
+
+    if block.nil?
+      raise Curly::Error, "An else needs to be in a block"
+    end
+
+    unless block.type == :conditional
+      raise Curly::Error, "An else needs to be in a conditional block"
+    end
+
+    component = block.component
+
+    parse_block(:inverse_conditional, *[component.name, component.identifier, component.attributes])
+  end
+
   def parse_collection_block_start(*args)
     parse_block(:collection, *args)
   end
@@ -169,6 +185,15 @@ class Curly::Parser
     block = Block.new(type, component)
     tree << block
     @stack.push(block)
+  end
+
+  def parse_conditional_block_end(*args)
+    block = @stack.pop
+
+    unless block.type == :conditional || block.type == :inverse_conditional
+      raise Curly::IncorrectEndingError,
+        "block `#{block}` cannot be closed by a conditional block end"
+    end
   end
 
   def parse_block_end(*args)
