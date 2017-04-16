@@ -92,11 +92,12 @@ describe Curly::TemplateHandler do
     end
   end
 
-  let(:template) { double("template", virtual_path: "test") }
+  let(:template) { double("template", virtual_path: "test", identifier: "test_identifier") }
   let(:context) { context_class.new }
 
   before do
     stub_const("TestPresenter", presenter_class)
+    Curly::TemplateHandler.instance_eval { @template_cache = {} }
   end
 
   it "passes in the presenter context to the presenter class" do
@@ -125,6 +126,14 @@ describe Curly::TemplateHandler do
     allow(template).to receive(:source) { "{{foo}}" }
     output
     expect(context.content_for(:foo)).to eq "bar"
+  end
+
+  it "caches the template source" do
+    template.stub(:source) { "{{foo}}" }
+    Curly::stub(:compile).with("{{foo}}", presenter_class) { "ActiveSupport::SafeBuffer.new" }
+    output
+    output
+    Curly.should have_received(:compile).once
   end
 
   context "caching" do

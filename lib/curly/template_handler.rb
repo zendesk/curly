@@ -49,7 +49,7 @@ class Curly::TemplateHandler
 
       raise Curly::PresenterNotFound.new(path) if presenter_class.nil?
 
-      source = Curly.compile(template.source, presenter_class)
+      source = source_for(template, presenter_class)
 
       <<-RUBY
       if local_assigns.empty?
@@ -70,6 +70,18 @@ class Curly::TemplateHandler
 
       @output_buffer
       RUBY
+    end
+
+    def source_for(template, presenter_class)
+      key = "#{template.identifier}_#{presenter_class}"
+      template_cache.fetch(key) do
+        source = Curly.compile(template.source, presenter_class)
+        template_cache[key] = source
+      end
+    end
+
+    def template_cache
+      @template_cache ||= {}
     end
 
     def instrument(template, &block)
