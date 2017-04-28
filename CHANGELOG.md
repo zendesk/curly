@@ -1,5 +1,11 @@
 ### Unreleased
 
+### Curly 2.6.4 (April 28, 2017)
+
+* Add support for Rails 5.1.
+
+  *Benjamin Quorning*
+
 ### Curly 2.6.3 (March 24, 2017)
 
 * Added generator for Rails' built in scaffold command.
