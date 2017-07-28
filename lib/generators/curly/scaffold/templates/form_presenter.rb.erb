@@ -9,8 +9,8 @@ class <%= plural_table_name.capitalize %>::<%= @view_name.capitalize %>Presenter
   # idempotent.
   presents :<%= singular_table_name %>
 
-  def post_errors
-    @post.errors
+  def <%= singular_table_name %>_errors
+    @<%= singular_table_name %>.errors
   end
 
   def <%= singular_table_name %>
@@ -25,7 +25,7 @@ class <%= plural_table_name.capitalize %>::<%= @view_name.capitalize %>Presenter
     presents :<%= singular_table_name %>_form, :<%= singular_table_name %>
 
     def <%= singular_table_name %>_errors(&block)
-      block.call(@post.errors)
+      block.call(@<%= singular_table_name %>.errors)
     end
 
     def label(field_name)
