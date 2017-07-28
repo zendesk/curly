@@ -122,7 +122,7 @@ describe Curly::Presenter do
     end
 
     it "doesn't delegate other calls to the context" do
-      expect { subject.bar }.to raise_error
+      expect { subject.bar }.to raise_error RSpec::Mocks::MockExpectationError
     end
   end
 
