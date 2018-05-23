@@ -1,5 +1,7 @@
 ### Unreleased
 
+### Curly 2.6.5 (May 23, 2018)
+
 * Add support for Rails 5.2.
 
   *Benjamin Quorning*
