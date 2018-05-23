@@ -1,5 +1,9 @@
 ### Unreleased
 
+* Add support for Rails 5.2.
+
+  *Benjamin Quorning*
+
 ### Curly 2.6.4 (April 28, 2017)
 
 * Add support for Rails 5.1.
