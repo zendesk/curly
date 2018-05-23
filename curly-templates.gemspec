@@ -20,9 +20,9 @@ Gem::Specification.new do |s|
 
   s.rdoc_options = ["--charset=UTF-8"]
 
-  s.add_dependency("actionpack", [">= 3.1", "< 5.2"])
+  s.add_dependency("actionpack", [">= 3.1", "< 6.0"])
 
-  s.add_development_dependency("railties", [">= 3.1", "< 5.2"])
+  s.add_development_dependency("railties", [">= 3.1", "< 6.0"])
   s.add_development_dependency("rake")
   s.add_development_dependency("rspec", ">= 3")
   s.add_development_dependency("rspec_junit_formatter")
