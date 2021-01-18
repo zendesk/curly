@@ -20,13 +20,12 @@ Gem::Specification.new do |s|
 
   s.rdoc_options = ["--charset=UTF-8"]
 
-  s.add_dependency("actionpack", [">= 3.1", "< 6.0"])
+  s.add_dependency("actionpack", [">= 3.1", "< 6.2"])
 
-  s.add_development_dependency("railties", [">= 3.1", "< 6.0"])
+  s.add_development_dependency("railties", [">= 3.1", "< 6.2"])
   s.add_development_dependency("rake")
   s.add_development_dependency("rspec", ">= 3")
   s.add_development_dependency("rspec_junit_formatter")
-  s.add_development_dependency("genspec", ">= 0.3.0")
 
   s.files      = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(perf|spec)/}) }
   s.test_files = s.files.select { |path| path =~ /^spec\/.*_spec\.rb/ }
