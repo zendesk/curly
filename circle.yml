@@ -1,9 +1,0 @@
-machine:
-  ruby:
-    version: 2.2.3
-dependencies:
-  post:
-    - bundle install
-test:
-  override:
-    - bundle exec rspec -r rspec_junit_formatter --format RspecJunitFormatter -o $CIRCLE_TEST_REPORTS/rspec/junit.xml

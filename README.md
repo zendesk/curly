@@ -565,7 +565,7 @@ Gemfile. Given the following presenter:
 # app/presenters/posts/show_presenter.rb
 class Posts::ShowPresenter < Curly::Presenter
   presents :post
-  
+
   def body
     Markdown.render(@post.body)
   end
@@ -788,8 +788,7 @@ Thanks to [Zendesk](http://zendesk.com/) for sponsoring the work on Curly.
 Build Status
 ------------
 
-[![Build Status](https://circleci.com/gh/zendesk/curly.png?circle-token=:circle-tok)](https://circleci.com/gh/zendesk/curly.png)
-
+[![Build Status](https://github.com/zendesk/curly/workflows/CI/badge.svg)](https://github.com/zendesk/curly/actions?query=workflow%3ACI)
 
 Copyright and License
 ---------------------
