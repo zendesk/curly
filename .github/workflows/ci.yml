@@ -1,0 +1,25 @@
+name: CI
+
+on: push
+
+jobs:
+  specs:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        gemfile:
+          - rails4.2
+          - rails5.1
+          - rails5.2
+    env:
+      BUNDLE_GEMFILE: gemfiles/${{ matrix.gemfile }}.gemfile
+    steps:
+      - uses: zendesk/checkout@v2
+      - name: Set up Ruby
+        uses: zendesk/setup-ruby@v1
+        with:
+          ruby-version: 2.6
+          bundler-cache: true
+      - run: bundle install
+      - run: bundle exec rspec
