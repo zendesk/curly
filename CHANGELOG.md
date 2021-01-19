@@ -1,5 +1,8 @@
 ### Unreleased
 
+* Add support for Rails 6.0 and 6.1.
+* Remove support for Rails versions below 4.2.
+
 ### Curly 2.6.5 (May 23, 2018)
 
 * Add support for Rails 5.2.
