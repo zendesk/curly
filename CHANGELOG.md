@@ -1,5 +1,7 @@
 ### Unreleased
 
+### Curly 3.0.0 (January 19, 2021)
+
 * Add support for Rails 6.0 and 6.1.
 * Remove support for Rails versions below 4.2.
 
