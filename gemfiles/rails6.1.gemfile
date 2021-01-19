@@ -1,0 +1,4 @@
+eval_gemfile 'common.rb'
+
+gem 'rails', '~> 6.1.0'
+gem 'genspec', github: 'bquorning/genspec', branch: 'rails-6'

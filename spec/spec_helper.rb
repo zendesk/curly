@@ -28,16 +28,21 @@ module CompilationSupport
       defined?(Rails.root) ? "#{Rails.root}/#{virtual_path}.html.curly" : virtual_path
     end
 
-    details = { virtual_path: virtual_path }
+    locals = options.fetch(:locals, {})
+    details = { virtual_path: virtual_path, locals: locals.keys }
     details.merge! options.fetch(:details, {})
 
     handler = Curly::TemplateHandler
     template = ActionView::Template.new(source, identifier, handler, details)
-    view = ActionView::Base.new
-    allow(view.lookup_context).to receive(:find_template) { source }
+    view = if ActionView::VERSION::MAJOR < 6
+             ActionView::Base.new
+           else
+             lookup_context = ActionView::LookupContext.new([])
+             ActionView::Base.with_empty_template_cache.new(lookup_context, {}, nil)
+           end
 
     begin
-      template.render(view, options.fetch(:locals, {}), &block)
+      template.render(view, locals, &block)
     rescue ActionView::Template::Error => e
       raise e.respond_to?(:cause) ? e.cause : e.original_exception
     end

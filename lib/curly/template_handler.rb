@@ -13,9 +13,17 @@ class Curly::TemplateHandler
     # template - The ActionView::Template template that should be compiled.
     #
     # Returns a String containing the Ruby code representing the template.
-    def call(template)
-      instrument(template) do
-        compile(template)
+    if ActionView::VERSION::MAJOR < 6
+      def call(template)
+        instrument(template) do
+          compile_for_actionview5(template)
+        end
+      end
+    else
+      def call(template, source)
+        instrument(template) do
+          compile(template, source)
+        end
       end
     end
 
@@ -40,16 +48,20 @@ class Curly::TemplateHandler
 
     private
 
-    def compile(template)
-      # Template is empty, so there's no need to initialize a presenter.
-      return %("") if template.source.empty?
+    def compile_for_actionview5(template)
+      compile(template, template.source)
+    end
+
+    def compile(template, source)
+      # Template source is empty, so there's no need to initialize a presenter.
+      return %("") if source.empty?
 
       path = template.virtual_path
       presenter_class = Curly::Presenter.presenter_for_path(path)
 
       raise Curly::PresenterNotFound.new(path) if presenter_class.nil?
 
-      source = Curly.compile(template.source, presenter_class)
+      compiled_source = Curly.compile(source, presenter_class)
 
       <<-RUBY
       if local_assigns.empty?
@@ -64,7 +76,7 @@ class Curly::TemplateHandler
       @output_buffer = output_buffer || ActiveSupport::SafeBuffer.new
 
       Curly::TemplateHandler.cache_if_key_is_not_nil(self, presenter) do
-        result = #{source}
+        result = #{compiled_source}
         safe_concat(result)
       end
 
