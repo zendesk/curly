@@ -1,4 +1,3 @@
-require 'genspec'
 require 'generators/curly/install/install_generator'
 
 describe Curly::Generators::InstallGenerator do

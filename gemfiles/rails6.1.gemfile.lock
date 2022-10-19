@@ -1,12 +1,3 @@
-GIT
-  remote: https://github.com/bquorning/genspec.git
-  revision: ff33bec9df252a6340582676a471c574153abd71
-  branch: rails-6
-  specs:
-    genspec (0.3.2)
-      rspec (>= 2, < 4)
-      thor
-
 PATH
   remote: ..
   specs:
@@ -192,7 +183,6 @@ PLATFORMS
 DEPENDENCIES
   benchmark-ips
   curly-templates!
-  genspec!
   github-markup
   rails (~> 6.1.0)
   railties (>= 4.2, < 6.2)

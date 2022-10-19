@@ -1,4 +1,3 @@
-require 'genspec'
 require 'generators/curly/controller/controller_generator'
 
 describe Curly::Generators::ControllerGenerator do

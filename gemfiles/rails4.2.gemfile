@@ -1,4 +1,3 @@
 eval_gemfile 'common.rb'
 
 gem 'rails', '~> 4.2.0'
-gem 'genspec', '>= 0.3.0'

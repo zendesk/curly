@@ -1,4 +1,3 @@
-require 'genspec'
 require 'generators/curly/scaffold/scaffold_generator'
 
 describe Curly::Generators::ScaffoldGenerator do
