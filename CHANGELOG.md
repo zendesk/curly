@@ -1,5 +1,10 @@
 ### Unreleased
 
+### Curly 3.1.0 (November, 21, 2022)
+
+* Add support for Ruby 3.0 & 3.1
+* Add support for Rails 7.0
+
 ### Curly 3.0.0 (January 19, 2021)
 
 * Add support for Rails 6.0 and 6.1.
