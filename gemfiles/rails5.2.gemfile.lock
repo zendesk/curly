@@ -2,7 +2,7 @@ PATH
   remote: ..
   specs:
     curly-templates (3.0.0)
-      actionpack (>= 4.2, < 6.2)
+      actionpack (>= 4.2, < 7.1)
 
 GEM
   remote: https://rubygems.org/
@@ -170,7 +170,7 @@ DEPENDENCIES
   genspec (>= 0.3.0)
   github-markup
   rails (~> 5.2.0)
-  railties (>= 4.2, < 6.2)
+  railties (>= 4.2, < 7.1)
   rake
   redcarpet
   rspec (>= 3)
