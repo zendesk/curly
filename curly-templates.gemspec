@@ -23,7 +23,6 @@ Gem::Specification.new do |s|
   s.add_dependency("actionpack", [">= 4.2", "< 7.1"])
   s.add_dependency("sorted_set")
 
-
   s.add_development_dependency("railties", [">= 4.2", "< 7.1"])
   s.add_development_dependency("rake")
   s.add_development_dependency("rspec", ">= 3")
