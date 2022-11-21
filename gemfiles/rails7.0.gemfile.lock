@@ -115,6 +115,10 @@ GEM
     nokogiri (1.13.9)
       mini_portile2 (~> 2.8.0)
       racc (~> 1.4)
+    nokogiri (1.13.9-x86_64-darwin)
+      racc (~> 1.4)
+    nokogiri (1.13.9-x86_64-linux)
+      racc (~> 1.4)
     racc (1.6.0)
     rack (2.2.4)
     rack-test (2.0.2)
@@ -169,8 +173,6 @@ GEM
       rspec-mocks (~> 3.11)
       rspec-support (~> 3.11)
     rspec-support (3.12.0)
-    rspec_junit_formatter (0.6.0)
-      rspec-core (>= 2, < 4, != 2.12.0)
     set (1.0.3)
     sorted_set (1.0.3)
       rbtree
@@ -194,6 +196,8 @@ GEM
 
 PLATFORMS
   ruby
+  x86_64-darwin
+  x86_64-linux
 
 DEPENDENCIES
   benchmark-ips
@@ -206,7 +210,6 @@ DEPENDENCIES
   redcarpet
   rspec (>= 3)
   rspec-rails
-  rspec_junit_formatter
   stackprof
   yard
   yard-tomdoc

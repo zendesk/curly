@@ -23,11 +23,9 @@ Gem::Specification.new do |s|
   s.add_dependency("actionpack", [">= 4.2", "< 7.1"])
   s.add_dependency("sorted_set")
 
-
   s.add_development_dependency("railties", [">= 4.2", "< 7.1"])
   s.add_development_dependency("rake")
   s.add_development_dependency("rspec", ">= 3")
-  s.add_development_dependency("rspec_junit_formatter")
 
   s.files      = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(perf|spec)/}) }
   s.test_files = s.files.select { |path| path =~ /^spec\/.*_spec\.rb/ }
