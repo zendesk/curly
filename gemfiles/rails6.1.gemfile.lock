@@ -1,7 +1,7 @@
 GIT
-  remote: https://github.com/bquorning/genspec.git
-  revision: ff33bec9df252a6340582676a471c574153abd71
-  branch: rails-6
+  remote: https://github.com/zendesk/genspec.git
+  revision: 228a684f3d4f7e1499c55feb7b022681ad1af342
+  branch: rails-7
   specs:
     genspec (0.3.2)
       rspec (>= 2, < 4)
@@ -11,7 +11,7 @@ PATH
   remote: ..
   specs:
     curly-templates (3.0.0)
-      actionpack (>= 4.2, < 6.2)
+      actionpack (>= 4.2, < 7.1)
 
 GEM
   remote: https://rubygems.org/
@@ -195,7 +195,7 @@ DEPENDENCIES
   genspec!
   github-markup
   rails (~> 6.1.0)
-  railties (>= 4.2, < 6.2)
+  railties (>= 4.2, < 7.1)
   rake
   redcarpet
   rspec (>= 3)
