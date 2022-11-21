@@ -1,7 +1,7 @@
 PATH
   remote: ..
   specs:
-    curly-templates (3.0.0)
+    curly-templates (3.1.0)
       actionpack (>= 4.2, < 7.1)
       sorted_set
 
