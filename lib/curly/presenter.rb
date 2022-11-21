@@ -1,4 +1,5 @@
 require 'curly/presenter_name_error'
+require "sorted_set"
 
 module Curly
 

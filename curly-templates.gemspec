@@ -21,6 +21,8 @@ Gem::Specification.new do |s|
   s.rdoc_options = ["--charset=UTF-8"]
 
   s.add_dependency("actionpack", [">= 4.2", "< 7.1"])
+  s.add_dependency("sorted_set")
+
 
   s.add_development_dependency("railties", [">= 4.2", "< 7.1"])
   s.add_development_dependency("rake")

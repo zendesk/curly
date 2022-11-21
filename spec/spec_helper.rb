@@ -33,7 +33,7 @@ module CompilationSupport
     details.merge! options.fetch(:details, {})
 
     handler = Curly::TemplateHandler
-    template = ActionView::Template.new(source, identifier, handler, details)
+    template = ActionView::Template.new(source, identifier, handler, **details)
     view = if ActionView::VERSION::MAJOR < 6
              ActionView::Base.new
            else
