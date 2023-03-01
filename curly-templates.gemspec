@@ -16,6 +16,8 @@ Gem::Specification.new do |s|
   s.email    = 'daniel.schierbeck@gmail.com'
   s.homepage = 'https://github.com/zendesk/curly'
 
+  s.required_ruby_version = ">= 2.7"
+
   s.require_paths = %w[lib]
 
   s.rdoc_options = ["--charset=UTF-8"]

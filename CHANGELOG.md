@@ -1,5 +1,9 @@
 ### Unreleased
 
+* Drop support for Rails 4.2
+* Drop support for Ruby 2.6
+* Add support for Ruby 3.2
+
 ### Curly 3.1.0 (November, 21, 2022)
 
 * Add support for Ruby 3.0 & 3.1
