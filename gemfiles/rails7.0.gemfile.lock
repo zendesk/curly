@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/zendesk/genspec.git
-  revision: 228a684f3d4f7e1499c55feb7b022681ad1af342
+  revision: 76116991caf40ef940076f702f70a141ced84ce2
   branch: rails-7
   specs:
     genspec (0.3.2)
