@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/zendesk/genspec.git
-  revision: 228a684f3d4f7e1499c55feb7b022681ad1af342
+  revision: 76116991caf40ef940076f702f70a141ced84ce2
   branch: rails-7
   specs:
     genspec (0.3.2)
@@ -11,7 +11,7 @@ PATH
   remote: ..
   specs:
     curly-templates (3.1.0)
-      actionpack (>= 4.2, < 7.1)
+      actionpack (>= 5.1, < 7.1)
       sorted_set
 
 GEM
@@ -95,17 +95,17 @@ GEM
     marcel (1.0.2)
     method_source (1.0.0)
     mini_mime (1.1.2)
-    mini_portile2 (2.8.0)
+    mini_portile2 (2.8.2)
     minitest (5.16.3)
     nio4r (2.5.8)
-    nokogiri (1.13.9)
-      mini_portile2 (~> 2.8.0)
+    nokogiri (1.15.2)
+      mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
-    nokogiri (1.13.9-x86_64-darwin)
+    nokogiri (1.15.2-x86_64-darwin)
       racc (~> 1.4)
-    nokogiri (1.13.9-x86_64-linux)
+    nokogiri (1.15.2-x86_64-linux)
       racc (~> 1.4)
-    racc (1.6.0)
+    racc (1.6.2)
     rack (2.2.4)
     rack-test (2.0.2)
       rack (>= 1.3)
@@ -197,7 +197,7 @@ DEPENDENCIES
   genspec!
   github-markup
   rails (~> 6.1.0)
-  railties (>= 4.2, < 7.1)
+  railties (>= 5.1, < 7.1)
   rake
   redcarpet
   rspec (>= 3)
