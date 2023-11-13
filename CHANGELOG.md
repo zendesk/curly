@@ -1,5 +1,8 @@
 ### Unreleased
 
+### Curly 3.3.0 (November 13, 2023)
+* Add support for Rails 7.1
+
 ### Curly 3.2.0 (June 1, 2023)
 
 * Add support for Ruby 3.2
