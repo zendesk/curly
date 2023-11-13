@@ -5,7 +5,7 @@ describe "Context blocks", type: :request do
     get '/new'
 
     case "#{ActionPack::VERSION::MAJOR}.#{ActionPack::VERSION::MINOR}"
-    when '6.1', '7.0'
+    when '6.1', '7.0', '7.1'
       expect(response.body).to have_structure <<-HTML.strip_heredoc
         <html>
         <head>

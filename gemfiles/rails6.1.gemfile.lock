@@ -11,7 +11,7 @@ PATH
   remote: ..
   specs:
     curly-templates (3.2.0)
-      actionpack (>= 5.1, < 7.1)
+      actionpack (>= 5.1, < 7.2)
       sorted_set
 
 GEM
@@ -188,8 +188,6 @@ GEM
 
 PLATFORMS
   ruby
-  x86_64-darwin
-  x86_64-linux
 
 DEPENDENCIES
   benchmark-ips
@@ -197,7 +195,7 @@ DEPENDENCIES
   genspec!
   github-markup
   rails (~> 6.1.0)
-  railties (>= 5.1, < 7.1)
+  railties (>= 5.1, < 7.2)
   rake
   redcarpet
   rspec (>= 3)

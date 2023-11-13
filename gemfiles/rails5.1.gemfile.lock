@@ -2,7 +2,7 @@ PATH
   remote: ..
   specs:
     curly-templates (3.2.0)
-      actionpack (>= 5.1, < 7.1)
+      actionpack (>= 5.1, < 7.2)
       sorted_set
 
 GEM
@@ -72,10 +72,6 @@ GEM
     nio4r (2.5.8)
     nokogiri (1.13.9)
       mini_portile2 (~> 2.8.0)
-      racc (~> 1.4)
-    nokogiri (1.13.9-x86_64-darwin)
-      racc (~> 1.4)
-    nokogiri (1.13.9-x86_64-linux)
       racc (~> 1.4)
     racc (1.6.0)
     rack (2.2.4)
@@ -157,8 +153,6 @@ GEM
 
 PLATFORMS
   ruby
-  x86_64-darwin
-  x86_64-linux
 
 DEPENDENCIES
   benchmark-ips
@@ -166,7 +160,7 @@ DEPENDENCIES
   genspec (>= 0.3.0)
   github-markup
   rails (~> 5.1.0)
-  railties (>= 5.1, < 7.1)
+  railties (>= 5.1, < 7.2)
   rake
   redcarpet
   rspec (>= 3)

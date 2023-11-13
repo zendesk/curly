@@ -19,12 +19,13 @@ jobs:
         gemfile:
           - rails6.1
           - rails7.0
+          - rails7.1
         include:
           - {ruby: '2.7', gemfile: rails5.1}
           - {ruby: '2.7', gemfile: rails5.2}
           - {ruby: '2.7', gemfile: rails6.0}
     steps:
-      - uses: zendesk/checkout@v3
+      - uses: zendesk/checkout@v4
       - uses: zendesk/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
