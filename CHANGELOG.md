@@ -1,5 +1,6 @@
 ### Unreleased
 
+* Drop upper limit on Rails, test with Rails main.
 * Drop support for Ruby < 3.1.
 * Drop support for Rails < 6.1.
 
