@@ -11,7 +11,7 @@ PATH
   remote: ..
   specs:
     curly-templates (3.3.0)
-      actionpack (>= 5.1, < 7.2)
+      actionpack (>= 6.1, < 7.2)
       sorted_set
 
 GEM
@@ -100,8 +100,7 @@ GEM
     crass (1.0.6)
     date (3.3.4)
     diff-lcs (1.5.0)
-    drb (2.2.0)
-      ruby2_keywords
+    drb (2.2.1)
     erubi (1.12.0)
     github-markup (4.0.2)
     globalid (1.2.1)
@@ -206,7 +205,6 @@ GEM
       rspec-mocks (~> 3.12)
       rspec-support (~> 3.12)
     rspec-support (3.12.1)
-    ruby2_keywords (0.0.5)
     set (1.0.3)
     sorted_set (1.0.3)
       rbtree
