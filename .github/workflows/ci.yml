@@ -19,9 +19,10 @@ jobs:
           - rails6.1
           - rails7.0
           - rails7.1
+          - rails_main
     steps:
-      - uses: zendesk/checkout@v4
-      - uses: zendesk/setup-ruby@v1
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: true

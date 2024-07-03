@@ -4,6 +4,7 @@
 .config
 coverage
 InstalledFiles
+gemfiles/rails_main.gemfile.lock
 lib/bundler/man
 pkg
 rdoc

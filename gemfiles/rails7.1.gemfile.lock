@@ -10,8 +10,8 @@ GIT
 PATH
   remote: ..
   specs:
-    curly-templates (3.3.0)
-      actionpack (>= 6.1, < 7.2)
+    curly-templates (3.4.0)
+      actionpack (>= 6.1)
       sorted_set
 
 GEM
@@ -235,7 +235,6 @@ DEPENDENCIES
   genspec!
   github-markup
   rails (~> 7.1.0)
-  railties (>= 5.1, < 7.2)
   rake
   redcarpet
   rspec (>= 3)
