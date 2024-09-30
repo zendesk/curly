@@ -202,12 +202,7 @@ describe Curly::TemplateHandler do
   end
 
   def render(source)
-    if ActionView::VERSION::MAJOR < 6
-      allow(template).to receive(:source).and_return(source)
-      code = Curly::TemplateHandler.call(template)
-    else
-      code = Curly::TemplateHandler.call(template, source)
-    end
+    code = Curly::TemplateHandler.call(template, source)
 
     context.reset!
     context.instance_eval(code)

@@ -34,12 +34,8 @@ module CompilationSupport
 
     handler = Curly::TemplateHandler
     template = ActionView::Template.new(source, identifier, handler, **details)
-    view = if ActionView::VERSION::MAJOR < 6
-             ActionView::Base.new
-           else
-             lookup_context = ActionView::LookupContext.new([])
-             ActionView::Base.with_empty_template_cache.new(lookup_context, {}, nil)
-           end
+    lookup_context = ActionView::LookupContext.new([])
+    view = ActionView::Base.with_empty_template_cache.new(lookup_context, {}, nil)
 
     begin
       template.render(view, locals, &block)

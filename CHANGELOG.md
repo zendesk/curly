@@ -1,5 +1,19 @@
 ### Unreleased
 
+### Curly 3.4.0 (July 2, 2024)
+* Drop upper limit on Rails, test with Rails main.
+* Drop support for Ruby < 3.1.
+* Drop support for Rails < 6.1.
+
+### Curly 3.3.0 (November 13, 2023)
+* Add support for Rails 7.1
+
+### Curly 3.2.0 (June 1, 2023)
+
+* Add support for Ruby 3.2
+* Drop support for Ruby 2.6
+* Drop support for Rails 4.2
+
 ### Curly 3.1.0 (November, 21, 2022)
 
 * Add support for Ruby 3.0 & 3.1

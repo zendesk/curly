@@ -1,3 +1,3 @@
 module Curly
-  VERSION = "3.1.0"
+  VERSION = "3.4.0"
 end

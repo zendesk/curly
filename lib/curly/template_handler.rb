@@ -13,17 +13,9 @@ class Curly::TemplateHandler
     # template - The ActionView::Template template that should be compiled.
     #
     # Returns a String containing the Ruby code representing the template.
-    if ActionView::VERSION::MAJOR < 6
-      def call(template)
-        instrument(template) do
-          compile_for_actionview5(template)
-        end
-      end
-    else
-      def call(template, source)
-        instrument(template) do
-          compile(template, source)
-        end
+    def call(template, source)
+      instrument(template) do
+        compile(template, source)
       end
     end
 

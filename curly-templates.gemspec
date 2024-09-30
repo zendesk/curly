@@ -1,10 +1,6 @@
 require './lib/curly/version'
 
 Gem::Specification.new do |s|
-  s.specification_version = 2 if s.respond_to? :specification_version=
-  s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.rubygems_version = '1.3.5'
-
   s.name              = 'curly-templates'
   s.version           = Curly::VERSION
 
@@ -20,10 +16,11 @@ Gem::Specification.new do |s|
 
   s.rdoc_options = ["--charset=UTF-8"]
 
-  s.add_dependency("actionpack", [">= 4.2", "< 7.1"])
+  s.required_ruby_version = ">= 3.1"
+
+  s.add_dependency("actionpack", ">= 6.1")
   s.add_dependency("sorted_set")
 
-  s.add_development_dependency("railties", [">= 4.2", "< 7.1"])
   s.add_development_dependency("rake")
   s.add_development_dependency("rspec", ">= 3")
 
