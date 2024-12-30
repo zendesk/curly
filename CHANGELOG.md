@@ -1,4 +1,5 @@
 ### Unreleased
+* Add tests with Rails 7.2 and 8.0
 
 ### Curly 3.4.0 (July 2, 2024)
 * Drop upper limit on Rails, test with Rails main.

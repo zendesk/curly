@@ -1,0 +1,4 @@
+eval_gemfile 'common.rb'
+
+gem 'rails', '~> 8.0.0'
+gem 'genspec', github: 'zendesk/genspec', branch: 'rails-8'
