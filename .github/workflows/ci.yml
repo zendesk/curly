@@ -14,6 +14,7 @@ jobs:
         ruby:
           - '3.2'
           - '3.3'
+          - '3.4'
         gemfile:
           - rails6.1
           - rails7.0
@@ -28,6 +29,11 @@ jobs:
             gemfile: rails7.0
           - ruby: '3.1'
             gemfile: rails7.1
+        exclude:
+          - ruby: '3.4'
+            gemfile: rails6.1
+          - ruby: '3.4'
+            gemfile: rails7.0
     steps:
       - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1
