@@ -1,1 +1,2 @@
 -r spec_helper
+--order random
