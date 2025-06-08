@@ -99,10 +99,40 @@ module Curly
       output <<-RUBY
         presenters << presenter
         options_stack << options
+        buffers << buffer
+
         items = Array(#{method_call})
+
+        cache_keys = items.each_with_index.map {|item, index|
+          options = options.merge("#{name}" => item, "#{counter}" => index + 1)
+          item_presenter_key = ::#{item_presenter_class}.new(self, options).cache_key
+
+          ActiveSupport::Cache.expand_cache_key(item_presenter_key) if item_presenter_key.present?
+        }.compact
+
+        cached_fragments = Rails.cache.read_multi(*cache_keys)
+
         items.each_with_index do |item, index|
           options = options.merge("#{name}" => item, "#{counter}" => index + 1)
           presenter = ::#{item_presenter_class}.new(self, options)
+
+          if cached_fragments.key?(presenter.cache_key)
+            buffers.last << cached_fragments[presenter.cache_key]
+            next
+          end
+
+          render_with_caching = proc do |&block|
+            value = block.call
+
+            if presenter.cache_key
+              Rails.cache.write(presenter.cache_key, value)
+            end
+
+            value
+          end
+
+          buffers.last << render_with_caching.call do
+            buffer = ActiveSupport::SafeBuffer.new
       RUBY
 
       @presenter_classes.push(item_presenter_class)
@@ -110,7 +140,11 @@ module Curly
       @presenter_classes.pop
 
       output <<-RUBY
+            buffer
+          end
         end
+
+        buffer = buffers.pop
         options = options_stack.pop
         presenter = presenters.pop
       RUBY
