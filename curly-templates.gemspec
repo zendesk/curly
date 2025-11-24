@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
 
   s.rdoc_options = ["--charset=UTF-8"]
 
-  s.required_ruby_version = ">= 3.1"
+  s.required_ruby_version = ">= 3.2"
 
   s.add_dependency("actionpack", ">= 6.1")
   s.add_dependency("sorted_set")

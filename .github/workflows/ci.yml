@@ -22,13 +22,7 @@ jobs:
           - rails7.2
           - rails8.0
           - rails_main
-        include:
-          - ruby: '3.1'
-            gemfile: rails6.1
-          - ruby: '3.1'
-            gemfile: rails7.0
-          - ruby: '3.1'
-            gemfile: rails7.1
+        include: []
         exclude:
           - ruby: '3.4'
             gemfile: rails6.1
