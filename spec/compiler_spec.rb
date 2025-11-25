@@ -117,6 +117,13 @@ describe Curly::Compiler do
       expect(render("{{^false?}}yeah!{{/false?}}")).to eq "yeah!"
     end
 
+    it "removes extra whitespace from the output" do
+      presenter.stub(:foo) { "" }
+      template = "{{^false?}}\n{{foo}}\n<a href='bar'>bar</a>\n{{foo}}\n{{/false?}}\n"
+
+      evaluate(template).should == "\n<a href='bar'>bar</a>\n"
+    end
+
     it "passes an argument to blocks" do
       define_presenter do
         def hello?(value)
