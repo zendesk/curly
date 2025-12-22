@@ -1,0 +1,10 @@
+class <%= @presenter_name %> < Curly::Presenter
+  <%- if @assign -%>
+  presents :<%= @assign %>
+
+  <%- end -%>
+  # Public methods are available to the template as components.
+  def greeting
+    "Hello, World!"
+  end
+end

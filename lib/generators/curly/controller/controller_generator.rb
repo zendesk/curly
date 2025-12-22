@@ -4,7 +4,7 @@ require 'rails/generators/named_base'
 module Curly
   module Generators
     class ControllerGenerator < Rails::Generators::NamedBase
-      source_root File.expand_path("../templates", __FILE__)
+      source_root File.expand_path("../../templates", __FILE__)
 
       argument :actions, type: :array, default: [], banner: "action action"
 
@@ -19,6 +19,7 @@ module Curly
           @view_path = File.join(base_views_path, "#{action}.html.curly")
           @presenter_path = File.join(base_presenters_path, "#{action}_presenter.rb")
           @action = action
+          @assign = class_path.last.try(:singularize)
           @presenter_name = "#{class_name}::#{action.capitalize}Presenter"
 
           template "view.html.curly.erb", @view_path
