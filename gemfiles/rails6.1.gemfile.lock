@@ -12,7 +12,6 @@ PATH
   specs:
     curly-templates (3.4.0)
       actionpack (>= 6.1)
-      sorted_set
 
 GEM
   remote: https://rubygems.org/
@@ -147,7 +146,6 @@ GEM
       rake (>= 12.2)
       thor (~> 1.0)
     rake (13.1.0)
-    rbtree (0.4.6)
     redcarpet (3.6.0)
     rspec (3.12.0)
       rspec-core (~> 3.12.0)
@@ -170,10 +168,6 @@ GEM
       rspec-mocks (~> 3.12)
       rspec-support (~> 3.12)
     rspec-support (3.12.1)
-    set (1.0.3)
-    sorted_set (1.0.3)
-      rbtree
-      set (~> 1.0)
     sprockets (4.2.1)
       concurrent-ruby (~> 1.0)
       rack (>= 2.2.4, < 4)
