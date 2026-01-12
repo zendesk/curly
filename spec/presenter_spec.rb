@@ -226,6 +226,29 @@ describe Curly::Presenter do
       expect(cache_key).to eq "Foo::BarPresenter/42/Foo::BumPresenter/1337"
     end
 
+    it "includes the cache keys of all presenters in the dependency list" do
+      presenter = Class.new(Curly::Presenter) do
+        version 42
+        depends_on 'foo/bum'
+        depends_on 'foo/aum'
+      end
+
+      dependency = Class.new(Curly::Presenter) do
+        version 1337
+      end
+
+      dependency_2 = Class.new(Curly::Presenter) do
+        version 1338
+      end
+
+      stub_const("Foo::BarPresenter", presenter)
+      stub_const("Foo::BumPresenter", dependency)
+      stub_const("Foo::AumPresenter", dependency_2)
+
+      cache_key = Foo::BarPresenter.cache_key
+      expect(cache_key).to eq "Foo::BarPresenter/42/Foo::AumPresenter/1338/Foo::BumPresenter/1337"
+    end
+
     it "uses the view path of a dependency if there is no presenter for it" do
       presenter = Class.new(Curly::Presenter) do
         version 42
@@ -249,7 +272,14 @@ describe Curly::Presenter do
       Curly::Presenter.dependencies
       parent = Class.new(Curly::Presenter) { depends_on 'foo' }
       presenter = Class.new(parent) { depends_on 'bar' }
-      expect(presenter.dependencies.to_a).to match_array ['foo', 'bar']
+      expect(presenter.dependencies).to eq ['bar', 'foo']
+    end
+
+    it "doesn’t include duplicates" do
+      Curly::Presenter.dependencies
+      parent = Class.new(Curly::Presenter) { depends_on 'foo' }
+      presenter = Class.new(parent) { depends_on 'bar'; depends_on 'foo' }
+      expect(presenter.dependencies).to eq ['bar', 'foo']
     end
   end
 end
