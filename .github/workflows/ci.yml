@@ -21,7 +21,6 @@ jobs:
           - rails7.1
           - rails7.2
           - rails8.0
-          - rails_main
         include: []
         exclude:
           - ruby: '3.4'

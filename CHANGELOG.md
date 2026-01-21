@@ -1,7 +1,9 @@
 ### Unreleased
 * Add tests with Rails 7.2 and 8.0
-* Add tests with Ruby 3.4
+* Add tests with Ruby 3.4 and 4.0
 * Drop support for Ruby < 3.2
+* Curly::Presenter#dependencies now return an Array instead of a SortedSet. Entries in this array will still be sorted.
+* Drops dependency on sorted_set 
 
 ### Curly 3.4.0 (July 2, 2024)
 * Drop upper limit on Rails, test with Rails main.

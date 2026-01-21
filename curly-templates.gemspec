@@ -19,7 +19,6 @@ Gem::Specification.new do |s|
   s.required_ruby_version = ">= 3.2"
 
   s.add_dependency("actionpack", ">= 6.1")
-  s.add_dependency("sorted_set")
 
   s.add_development_dependency("rake")
   s.add_development_dependency("rspec", ">= 3")
