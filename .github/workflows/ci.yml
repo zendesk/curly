@@ -1,6 +1,10 @@
 name: CI
 
-on: push
+on:
+  pull_request:
+  push:
+    branches:
+      - main
 
 jobs:
   specs:
@@ -16,20 +20,16 @@ jobs:
           - '3.3'
           - '3.4'
         gemfile:
-          - rails6.1
-          - rails7.0
           - rails7.1
           - rails7.2
           - rails8.0
-          - rails_main
-        include: []
-        exclude:
-          - ruby: '3.4'
-            gemfile: rails6.1
-          - ruby: '3.4'
-            gemfile: rails7.0
+        include:
+          - {ruby: '3.2', gemfile: rails6.1}
+          - {ruby: '3.2', gemfile: rails7.0}
+          - {ruby: '3.3', gemfile: rails6.1}
+          - {ruby: '3.3', gemfile: rails7.0}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
