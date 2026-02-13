@@ -7,6 +7,7 @@ platform :ruby do
   gem 'yard-tomdoc'
   gem 'redcarpet'
   gem 'github-markup'
+  gem 'ostruct'
   gem 'rspec-rails', require: false
   gem 'benchmark-ips', require: false
   gem 'stackprof', require: false
