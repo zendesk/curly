@@ -8,6 +8,10 @@ describe "Collection block components" do
       def name
         @item
       end
+
+      def cache_key
+        @item
+      end
     end
   end
 
@@ -74,5 +78,16 @@ describe "Collection block components" do
     end
 
     expect(render("{{*items}}<{{*parts}}[{{number}}]{{/parts}}>{{/items}}")).to eq "<[1][2]><[3][4]>"
+  end
+
+  example "cached rendering" do
+    define_presenter do
+      def items
+        ["one", "two", "three"]
+      end
+    end
+
+    render("{{*items}}<{{name}}>{{/items}}").should == "<one><two><three>"
+    render("{{*items}}<{{name}}>{{/items}}").should == "<one><two><three>"
   end
 end
