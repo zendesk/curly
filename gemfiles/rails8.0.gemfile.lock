@@ -10,7 +10,7 @@ GIT
 PATH
   remote: ..
   specs:
-    curly-templates (3.4.0)
+    curly-templates (4.0.0)
       actionpack (>= 6.1)
 
 GEM
