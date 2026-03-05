@@ -1,5 +1,6 @@
-### Unreleased
-* Add tests with Rails 7.2 and 8.0
+### 4.0.0
+* Curly 4.0.0 will be the final released version. This gem is not used in Zendesk services anymore and won’t be updated.
+* Add tests with Rails 7.2, 8.0, 8.1
 * Add tests with Ruby 3.4 and 4.0
 * Drop support for Ruby < 3.2
 * Curly::Presenter#dependencies now return an Array instead of a SortedSet. Entries in this array will still be sorted.

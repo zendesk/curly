@@ -1,5 +1,6 @@
 ENV["RAILS_ENV"] = "test"
 
+require 'logger'
 require 'dummy/config/environment'
 require 'rspec/rails'
 
