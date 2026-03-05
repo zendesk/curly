@@ -1,6 +1,9 @@
 Curly
 =======
 
+> [!WARNING]
+> This gem is not used in Zendesk services anymore and won’t be updated. Curly 4.0.0 will be the final released version.  
+
 Curly is a template language that completely separates structure and logic.
 Instead of interspersing your HTML with snippets of Ruby, all logic is moved
 to a presenter class.
